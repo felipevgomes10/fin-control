@@ -26,8 +26,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppBar />
-          {children}
+          <div className="flex flex-col h-screen">
+            <AppBar />
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

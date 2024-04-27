@@ -15,7 +15,7 @@ export default async function Login() {
   if (session) return redirect("/me/dashboard");
 
   return (
-    <div className="h-screen flex justify-center items-center">
+    <div className="flex justify-center items-center h-full">
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Login</CardTitle>
