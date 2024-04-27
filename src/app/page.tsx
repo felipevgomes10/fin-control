@@ -1,14 +1,9 @@
-"use client";
+import { auth } from "@/auth/auth";
+import { redirect } from "next/navigation";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+export default async function Home() {
+  const session = await auth();
 
-export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.push("/login");
-  }, [router]);
-
-  return null;
+  if (session) return redirect("/me/dashboard");
+  return redirect("/login");
 }

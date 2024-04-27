@@ -1,16 +1,19 @@
+import { auth } from "@/auth/auth";
+import { GithubSignIn } from "@/components/github-sign-in/github-sign-in";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { CardFooterContent } from "../components/card-footer-content/card-footer-content";
+import { redirect } from "next/navigation";
 
-export default function Login() {
+export default async function Login() {
+  const session = await auth();
+
+  if (session) return redirect("/me/dashboard");
+
   return (
     <div className="h-screen flex justify-center items-center">
       <Card className="w-[350px]">
@@ -19,20 +22,8 @@ export default function Login() {
           <CardDescription>Log into the application</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col gap-4">
-            <div>
-              <Label>Email</Label>
-              <Input type="email" placeholder="Enter your email" />
-            </div>
-            <div>
-              <Label>Password</Label>
-              <Input type="password" placeholder="Enter your password" />
-            </div>
-          </div>
+          <GithubSignIn />
         </CardContent>
-        <CardFooter>
-          <CardFooterContent />
-        </CardFooter>
       </Card>
     </div>
   );
