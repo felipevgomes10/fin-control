@@ -1,6 +1,6 @@
 import { signIn } from "@/auth/auth";
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
+import { GithubIcon } from "../github-icon/github-icon";
 
 export function GithubSignIn() {
   return (
@@ -14,7 +14,7 @@ export function GithubSignIn() {
         className="flex justify-center items-center gap-4 w-full"
         type="submit"
       >
-        <Github />
+        <GithubIcon />
         Sign-in with Github
       </Button>
     </form>
