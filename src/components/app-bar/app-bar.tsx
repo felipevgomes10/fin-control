@@ -45,7 +45,7 @@ export async function AppBar() {
                     variant="outline"
                     formAction={async () => {
                       "use server";
-                      await signOut();
+                      await signOut({ redirectTo: "/" });
                     }}
                   >
                     Sign out

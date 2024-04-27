@@ -16,21 +16,43 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setting up the database
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+This project uses [Prisma](https://www.prisma.io/) to interact with the database. To set up the database, you need to create a `.env.local` file in the root of the project and add the following environment variables:
 
-## Learn More
+```bash
+TURSO_DATABASE_URL=
+TURSO_AUTH_TOKEN=
+```
 
-To learn more about Next.js, take a look at the following resources:
+`TURSO_DATABASE_URL` is the URL to the database. `TURSO_AUTH_TOKEN` is the authentication token for the database.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+As this project uses [Turso](https://turso.tech/), you need to set up the turso database. To do this, create an account on Turso and create a new database. Then, add the database URL and the authentication token to the `.env.local` file. You can do this installing the [Turso CLI](https://docs.turso.tech/cli/installation) and running the following commands:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+# Assuming you have already created an account on Turso
+turso auth login
+turso database create <database-name>
 
-## Deploy on Vercel
+# Copy the database URL and the authentication token
+turso db show --url <database-name>
+turso db tokens create <database-name>
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+After setting up the environment variables, run the following command to create the prisma client types:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+npx prisma generate
+```
+
+Then run the following command to create the database tables:
+
+```bash
+npx prisma migrate dev --name <migration-name>
+```
+
+Now you need to send the migration to the database on Turso:
+
+```bash
+turso db shell turso-prisma-db < ./prisma/migrations/<migration-name>/migration.sql
+```
