@@ -1,16 +1,20 @@
-import { auth } from "@/auth/auth";
-import { columns } from "../components/table/columns";
-import { DataTable } from "../components/table/table";
-import { mockedMonthlyExpenses } from "../components/table/table-data";
+import { DashboardCard } from "../components/dashboard-card/dashboard-card";
 
-export default async function Dashboard() {
-  const session = await auth();
-
+export default function Dashboard() {
   return (
-    <section>
-      <div className="container mx-auto py-10">
-        <DataTable columns={columns} data={mockedMonthlyExpenses} />
-      </div>
+    <section className="flex justify-start items-center gap-4 flex-wrap">
+      <DashboardCard
+        title="Fixed Expenses"
+        description="Inside this page you can see and control your fixed expenses"
+        linkText=" Go to Fixed Expenses"
+        href="/me/dashboard/fixed-expenses"
+      />
+      <DashboardCard
+        title="Monthly Expenses"
+        description="Inside this page you can see and control your monthly expenses"
+        linkText=" Go to Monthly Expenses"
+        href="/me/dashboard/monthly-expense"
+      />
     </section>
   );
 }

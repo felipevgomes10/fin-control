@@ -9,11 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { formatCurrency } from "./utils";
 
-export type MonthlyExpenses = {
+export type MonthlyExpense = {
   id: string;
   label: string;
   month: string;
@@ -21,7 +21,7 @@ export type MonthlyExpenses = {
   target: number;
 };
 
-export const columns: ColumnDef<MonthlyExpenses>[] = [
+export const monthlyExpenseColumns: ColumnDef<MonthlyExpense>[] = [
   {
     accessorKey: "label",
     header: ({ column }) => {
@@ -34,6 +34,9 @@ export const columns: ColumnDef<MonthlyExpenses>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      return <div className="ml-4">{row.getValue("label")}</div>;
     },
   },
   {
@@ -59,7 +62,9 @@ export const columns: ColumnDef<MonthlyExpenses>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("totalExpenses"));
       return (
-        <div className="text-right font-medium">{formatCurrency(amount)}</div>
+        <div className="text-right font-medium mr-4">
+          {formatCurrency(amount)}
+        </div>
       );
     },
   },
@@ -81,7 +86,26 @@ export const columns: ColumnDef<MonthlyExpenses>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("target"));
       return (
-        <div className="text-right font-medium">{formatCurrency(amount)}</div>
+        <div className="text-right font-medium mr-4">
+          {formatCurrency(amount)}
+        </div>
+      );
+    },
+  },
+  {
+    id: "totalLeft",
+    header: () => {
+      return <div className="text-right">Total left</div>;
+    },
+    cell: ({ row }) => {
+      const totalExpenses = parseFloat(row.getValue("totalExpenses"));
+      const target = parseFloat(row.getValue("target"));
+      const totalLeft = target - totalExpenses;
+
+      return (
+        <div className="text-right font-medium">
+          {formatCurrency(totalLeft)}
+        </div>
       );
     },
   },
@@ -106,11 +130,10 @@ export const columns: ColumnDef<MonthlyExpenses>[] = [
             >
               Copy monthly expenses ID
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => alert("Item duplicated")}>
-              Duplicate item
-            </DropdownMenuItem>
+            <DropdownMenuItem>Duplicate item</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View details</DropdownMenuItem>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

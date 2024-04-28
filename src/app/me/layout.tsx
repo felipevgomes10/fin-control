@@ -10,7 +10,7 @@ export default function DashboardLayout({
       <section className="ml-16">
         <DashboardBreadcrumb />
       </section>
-      {children}
+      <div className="container mx-auto py-10">{children}</div>
     </main>
   );
 }
