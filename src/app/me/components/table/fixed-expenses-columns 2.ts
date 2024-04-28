@@ -2,25 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { toast } from "sonner";
 import { formatCurrency } from "./utils";
 
 export type FixedExpenses = {
@@ -76,23 +65,7 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const onDelete = async () => {
-        try {
-          const { id } = row.original;
-          const response = await fetch(`/api/fixed-expenses/${id}`, {
-            method: "DELETE",
-          });
-
-          if (!response.ok) throw new Error();
-
-          toast.success("Fixed expense deleted successfully");
-        } catch (error) {
-          toast.error("An error occurred. Please try again.");
-          console.error(error);
-        }
-      };
-
+    cell: () => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -104,32 +77,7 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>View details</DropdownMenuItem>
-            <DropdownMenuItem>
-              <Dialog>
-                <DialogTrigger
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  Delete
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      this item.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="ghost">Cancel</Button>
-                    </DialogClose>
-                    <Button variant="destructive" onClick={onDelete}>Delete</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </DropdownMenuItem>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
