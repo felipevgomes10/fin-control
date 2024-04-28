@@ -1,19 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
-import { createClient, type Client } from "@libsql/client";
+import { createClient } from "@libsql/client";
 import { env } from "@/env/env";
 
-let libsql: Client | null = null;
-let adapter: PrismaLibSQL | null = null;
+const libsql = createClient({
+  url: env.server.LOCAL_DB_URL || env.server.TURSO_DATABASE_URL,
+  authToken: env.server.TURSO_AUTH_TOKEN,
+});
+const adapter = new PrismaLibSQL(libsql);
 
-if (env.server.USE_LOCAL_DB === "true") {
-  libsql = createClient({
-    url: env.server.TURSO_DATABASE_URL,
-    authToken: env.server.TURSO_AUTH_TOKEN,
-  });
-  adapter = new PrismaLibSQL(libsql);
-}
-
-export const prisma = adapter
-  ? new PrismaClient({ adapter })
-  : new PrismaClient();
+export const prisma: PrismaClient = new PrismaClient({ adapter });
