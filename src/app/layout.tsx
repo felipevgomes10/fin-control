@@ -1,8 +1,9 @@
+import { AppBar } from "@/components/app-bar/app-bar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import { AppBar } from "@/components/app-bar/app-bar";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -30,6 +31,7 @@ export default function RootLayout({
             <AppBar />
             {children}
           </div>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
