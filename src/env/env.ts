@@ -7,6 +7,7 @@ const envSchema = z.object({
     AUTH_GITHUB_SECRET: z.string(),
     TURSO_DATABASE_URL: z.string(),
     TURSO_AUTH_TOKEN: z.string(),
+    USE_LOCAL_DB: z.string(),
   }),
 });
 
