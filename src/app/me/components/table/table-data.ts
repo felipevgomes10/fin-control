@@ -1,4 +1,3 @@
-import type { FixedExpenses } from "./fixed-expenses-columns";
 import type { MonthlyExpense } from "./monthly-expenses-columns";
 
 export const mockedMonthlyExpenses: MonthlyExpense[] = [
@@ -85,26 +84,5 @@ export const mockedMonthlyExpenses: MonthlyExpense[] = [
     month: "December",
     totalExpenses: 12000,
     target: 13000,
-  },
-];
-
-export const mockedFixedExpenses: FixedExpenses[] = [
-  {
-    id: "1",
-    label: "Rent",
-    amount: 1000,
-    createdAt: new Date().toUTCString(),
-  },
-  {
-    id: "2",
-    label: "Utilities",
-    amount: 200,
-    createdAt: new Date().toUTCString(),
-  },
-  {
-    id: "3",
-    label: "Internet",
-    amount: 50,
-    createdAt: new Date().toUTCString(),
   },
 ];

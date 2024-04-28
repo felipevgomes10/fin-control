@@ -2,6 +2,7 @@ import { auth } from "@/auth/auth";
 import { NextResponse } from "next/server";
 import { fixedExpensesSchema } from "./schema";
 import { prisma } from "../../../../prisma/client";
+import { revalidatePath } from "next/cache";
 
 export const POST = auth(async (req) => {
   if (!req.auth) {
@@ -11,9 +12,12 @@ export const POST = auth(async (req) => {
   try {
     const body = await req.json();
     const fixedExpense = fixedExpensesSchema.parse(body);
+
     await prisma.fixedExpense.create({
       data: { ...fixedExpense, userId: req.auth.user.id },
     });
+
+    revalidatePath("/me/dashboard/fixed-expenses");
 
     return NextResponse.json({
       message: "Fixed expense created",
