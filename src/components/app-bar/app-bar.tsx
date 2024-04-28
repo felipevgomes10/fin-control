@@ -35,7 +35,7 @@ export async function AppBar() {
               <PopoverTrigger asChild>
                 <Button>Account</Button>
               </PopoverTrigger>
-              <PopoverContent className="mt-2">
+              <PopoverContent className="mt-2" align="end">
                 <form className="flex gap-4">
                   <Button className="w-[50%]" variant="secondary" disabled>
                     Settings
