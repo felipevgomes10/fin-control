@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { usePathname } from "next/navigation";
+import React from "react";
 
 const breadcrumb = [
   {
@@ -41,8 +42,8 @@ export function DashboardBreadcrumb() {
         {breadcrumb.map(({ href, name }) => (
           <>
             {pathname === href && (
-              <>
-                <BreadcrumbItem key={href}>
+              <React.Fragment key={href}>
+                <BreadcrumbItem>
                   {isCurrentPage(href) && (
                     <BreadcrumbPage>{name}</BreadcrumbPage>
                   )}
@@ -51,7 +52,7 @@ export function DashboardBreadcrumb() {
                   )}
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
-              </>
+              </React.Fragment>
             )}
           </>
         ))}
