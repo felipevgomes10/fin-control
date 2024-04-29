@@ -54,5 +54,30 @@ npx prisma migrate dev --name <migration-name>
 Now you need to send the migration to the database on Turso:
 
 ```bash
-turso db shell turso-prisma-db < ./prisma/migrations/<migration-name>/migration.sql
+turso db shell <database-name> < ./prisma/migrations/<migration-name>/migration.sql
 ```
+
+## Setting up the database locally
+
+To run your database locally set up to following evironment variable:
+
+```bash
+LOCAL_DB_URL=http://127.0.0.1:8080
+```
+
+Then you can run:
+
+```bash
+npx prisma migrate dev
+turso dev --db-file ./prisma/dev.db
+```
+
+Then to access your database you can run:
+
+```bash
+npx prisma studio
+```
+
+## Issues
+
+[Top level await](https://github.com/prisma/prisma/issues/23600)
