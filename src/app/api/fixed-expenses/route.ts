@@ -1,8 +1,8 @@
 import { auth } from "@/auth/auth";
-import { NextResponse } from "next/server";
-import { fixedExpensesSchema } from "./schema";
-import { prisma } from "../../../../prisma/client";
 import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
+import { prisma } from "../../../../prisma/client";
+import { fixedExpensesSchema } from "./schema";
 
 export const POST = auth(async (req) => {
   if (!req.auth) {
@@ -17,7 +17,7 @@ export const POST = auth(async (req) => {
       data: { ...fixedExpense, userId: req.auth.user.id },
     });
 
-    revalidatePath("/me/dashboard/fixed-expenses");
+    revalidatePath("/me/dashboard/fixed-expenses", "page");
 
     return NextResponse.json({
       message: "Fixed expense created",
@@ -27,7 +27,7 @@ export const POST = auth(async (req) => {
   } catch (error) {
     return NextResponse.json(
       { message: "Failed to create fixed expense", error },
-      { status: 500 },
+      { status: 500 }
     );
   }
 });

@@ -1,7 +1,7 @@
 import { auth } from "@/auth/auth";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../../prisma/client";
-import { revalidatePath } from "next/cache";
 
 export const GET = auth(async (req, { params }) => {
   if (!req.auth) {
@@ -17,7 +17,7 @@ export const GET = auth(async (req, { params }) => {
     if (!fixedExpense) {
       return NextResponse.json(
         { message: "Fixed expense not found" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -25,7 +25,7 @@ export const GET = auth(async (req, { params }) => {
   } catch (error) {
     return NextResponse.json(
       { message: "Failed to get fixed expense", error },
-      { status: 500 },
+      { status: 500 }
     );
   }
 });
@@ -41,7 +41,7 @@ export const DELETE = auth(async (req, { params }) => {
       where: { id, userId: req.auth.user.id },
     });
 
-    revalidatePath("/me/dashboard/fixed-expenses");
+    revalidatePath("/me/dashboard/fixed-expenses", "page");
 
     return NextResponse.json({
       message: "Fixed expense deleted",
@@ -50,7 +50,7 @@ export const DELETE = auth(async (req, { params }) => {
   } catch (error) {
     return NextResponse.json(
       { message: "Failed to delete fixed expense", error },
-      { status: 500 },
+      { status: 500 }
     );
   }
 });
