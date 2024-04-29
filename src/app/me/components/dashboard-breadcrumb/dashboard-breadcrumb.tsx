@@ -40,9 +40,9 @@ export function DashboardBreadcrumb() {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         {breadcrumb.map(({ href, name }) => (
-          <>
+          <React.Fragment key={href}>
             {pathname === href && (
-              <React.Fragment key={href}>
+              <>
                 <BreadcrumbItem>
                   {isCurrentPage(href) && (
                     <BreadcrumbPage>{name}</BreadcrumbPage>
@@ -52,9 +52,9 @@ export function DashboardBreadcrumb() {
                   )}
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
-              </React.Fragment>
+              </>
             )}
-          </>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>
