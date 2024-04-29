@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -26,8 +25,8 @@ import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type MouseEvent } from "react";
 import { toast } from "sonner";
+import { formatCurrency, formatDate } from "../../../components/table/utils";
 import type { FixedExpenses } from "./fixed-expenses-columns";
-import { formatCurrency, formatDate } from "./utils";
 
 function DetailsDialogContent() {
   const [details, setDetails] = useState<FixedExpense | null>(null);

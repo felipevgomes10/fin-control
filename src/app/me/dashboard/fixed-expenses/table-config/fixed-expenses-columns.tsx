@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { formatCurrency, formatDate } from "../../../components/table/utils";
 import { ActionsCell } from "./actions-cell";
-import { formatCurrency, formatDate } from "./utils";
 
 export type FixedExpenses = {
   id: string;

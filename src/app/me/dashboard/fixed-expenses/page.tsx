@@ -1,8 +1,8 @@
 import { auth } from "@/auth/auth";
 import { prisma } from "../../../../../prisma/client";
-import { fixedExpensesColumns } from "../../components/table/fixed-expenses-columns";
 import { DataTable } from "../../components/table/table";
 import { FixedExpensesDialog } from "./components/fixed-expenses-dialog";
+import { fixedExpensesColumns } from "./table-config/fixed-expenses-columns";
 
 const getFixedExpenses = async () => {
   const session = await auth();
