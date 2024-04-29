@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { DataTable } from "../../components/table/table";
 import { formatCurrency } from "../../components/table/utils";
-import { FixedExpensesDialog } from "./components/fixed-expenses-dialog";
+import { FixedExpensesDialog } from "./components/fixed-expenses-dialog/fixed-expenses-dialog";
 import { fixedExpensesColumns } from "./table-config/fixed-expenses-columns";
 
 export default async function FixedExpenses() {

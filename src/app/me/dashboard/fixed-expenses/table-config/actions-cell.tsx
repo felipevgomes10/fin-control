@@ -1,7 +1,7 @@
 "use client";
 
 import { fixedExpensesSchema } from "@/app/api/fixed-expenses/schema";
-import { FixedExpenseForm } from "@/app/me/components/fixed-expense-form/fixed-expense-form";
+import { FixedExpenseForm } from "@/app/me/dashboard/fixed-expenses/components/fixed-expense-form/fixed-expense-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
