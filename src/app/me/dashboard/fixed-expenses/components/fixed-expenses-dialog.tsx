@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CheckedState } from "@radix-ui/react-checkbox";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,6 +24,8 @@ export function FixedExpensesDialog() {
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
   const [addNewExpenseChecked, setAddNewExpenseChecked] =
     useState<CheckedState>(false);
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof fixedExpensesSchema>>({
     defaultValues: {
@@ -47,6 +50,7 @@ export function FixedExpensesDialog() {
 
       toast.success("Fixed expense added successfully");
       form.reset();
+      router.refresh();
 
       if (!addNewExpenseChecked) dialogCloseRef.current?.click();
     } catch (error) {

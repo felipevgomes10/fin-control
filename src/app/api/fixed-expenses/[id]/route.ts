@@ -54,3 +54,31 @@ export const DELETE = auth(async (req, { params }) => {
     );
   }
 });
+
+export const PUT = auth(async (req, { params }) => {
+  if (!req.auth) {
+    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+  }
+
+  try {
+    const { id } = params as { id: string };
+    const body = await req.json();
+
+    const updatedFixedExpense = await prisma.fixedExpense.update({
+      where: { id, userId: req.auth.user.id },
+      data: body,
+    });
+
+    revalidatePath("/me/dashboard/fixed-expenses", "page");
+
+    return NextResponse.json(
+      { message: "Fixed expense updated", data: updatedFixedExpense },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to update fixed expense", error },
+      { status: 500 }
+    );
+  }
+});
