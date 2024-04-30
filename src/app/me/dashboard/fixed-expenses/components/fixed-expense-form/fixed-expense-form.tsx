@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { CheckedState } from "@radix-ui/react-checkbox";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
@@ -23,13 +23,15 @@ export function FixedExpenseForm({
   form,
   showCheckbox = true,
   onSubmit,
+  addNewExpanseState,
 }: {
   form: UseFormReturn<z.infer<typeof fixedExpensesSchema>>;
   showCheckbox?: boolean;
   onSubmit: (data: z.infer<typeof fixedExpensesSchema>) => Promise<void> | void;
+  addNewExpanseState?: [CheckedState, Dispatch<SetStateAction<CheckedState>>];
 }) {
   const [addNewExpenseChecked, setAddNewExpenseChecked] =
-    useState<CheckedState>(false);
+    addNewExpanseState || [];
 
   return (
     <Form {...form}>
@@ -82,7 +84,7 @@ export function FixedExpenseForm({
               <Checkbox
                 id="add-new"
                 checked={addNewExpenseChecked}
-                onCheckedChange={(value) => setAddNewExpenseChecked(value)}
+                onCheckedChange={(value) => setAddNewExpenseChecked?.(value)}
               />
               <label
                 htmlFor="add-new"

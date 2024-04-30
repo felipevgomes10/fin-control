@@ -78,7 +78,11 @@ export function FixedExpensesDialog() {
             done.
           </DialogDescription>
         </DialogHeader>
-        <FixedExpenseForm form={form} onSubmit={onSubmit} />
+        <FixedExpenseForm
+          form={form}
+          onSubmit={onSubmit}
+          addNewExpanseState={[addNewExpenseChecked, setAddNewExpenseChecked]}
+        />
       </DialogContent>
     </Dialog>
   );
