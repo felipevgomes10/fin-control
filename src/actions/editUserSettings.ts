@@ -13,6 +13,9 @@ export async function editUserSettings(formData: FormData) {
     const rawFormData = {
       currency: formData.get("currency") as string,
       locale: formData.get("locale") as string,
+      monthlyTargetExpense: parseFloat(
+        formData.get("monthlyTargetExpense") as string
+      ),
     };
 
     const userSettings = await prisma.userSettings.findFirst({

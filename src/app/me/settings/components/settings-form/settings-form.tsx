@@ -2,6 +2,7 @@
 
 import { editUserSettings } from "@/actions/editUserSettings";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -13,10 +14,12 @@ import {
 import { UserSettings } from "@prisma/client";
 import { useOptimistic } from "react";
 import { useFormStatus } from "react-dom";
+import { toast } from "sonner";
 
 type UserSettingsFormData = {
   currency: string;
   locale: string;
+  monthlyTargetExpense?: string;
 };
 
 export function SettingsForm({
@@ -31,6 +34,7 @@ export function SettingsForm({
   const initialData = {
     currency: userSettings?.currency || "",
     locale: userSettings?.locale || "",
+    monthlyTargetExpense: userSettings?.monthlyTargetExpense || "",
   };
   const [optimisticData, setOptimisticData] = useOptimistic(
     initialData,
@@ -43,12 +47,27 @@ export function SettingsForm({
         const rawFormData = {
           currency: formData.get("currency") as string,
           locale: formData.get("locale") as string,
+          monthlyTargetExpense: formData.get("monthlyTargetExpense") as string,
         };
         setOptimisticData(rawFormData);
         await editUserSettings(formData);
+        toast.success("Settings updated");
       }}
     >
       <div className="space-y-4">
+        <div className="flex flex-col gap-4">
+          <Label htmlFor="monthlyTargetExpense">Budget</Label>
+          <Input
+            id="monthlyTargetExpense"
+            className="w-[350px]"
+            name="monthlyTargetExpense"
+            type="number"
+            min="1"
+            required
+            defaultValue={optimisticData.monthlyTargetExpense}
+            placeholder="Enter your monthly budget"
+          />
+        </div>
         <div className="flex flex-col gap-4">
           <Label htmlFor="currency">Currency</Label>
           <Select
