@@ -1,5 +1,6 @@
 "use client";
 
+import { useTableContext } from "@/app/me/contexts/table-provider/table-provider";
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
@@ -45,17 +46,19 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
+    cell: function Cell({ row }) {
+      const intl = useTableContext();
       const amount = parseFloat(row.getValue("amount"));
-      return <div className="ml-4">{formatCurrency(amount)}</div>;
+      return <div className="ml-4">{formatCurrency(amount, intl)}</div>;
     },
   },
   {
     accessorKey: "createdAt",
     header: "Created at",
-    cell: ({ row }) => {
+    cell: function Cell({ row }) {
+      const intl = useTableContext();
       const date = row.getValue("createdAt") as string;
-      return <div>{formatDate(new Date(date))}</div>;
+      return <div>{formatDate(new Date(date), intl)}</div>;
     },
   },
   {

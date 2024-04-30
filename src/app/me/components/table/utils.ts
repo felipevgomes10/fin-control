@@ -1,21 +1,21 @@
 type FormatCurrencyOptions = {
-  locale: string;
-  currency: string;
+  locale: string | undefined | null;
+  currency: string | undefined | null;
 };
 
 type FormatDateOptions = {
-  locale: string;
+  locale?: string | undefined | null;
 };
 
 export function formatCurrency(
   amount: number,
-  options?: FormatCurrencyOptions,
+  options?: FormatCurrencyOptions
 ): string {
-  const { locale = "en-US", currency = "USD" } = options || {};
+  const { locale, currency } = options || {};
   try {
-    const formatted = new Intl.NumberFormat(locale, {
+    const formatted = new Intl.NumberFormat(locale || "en-US", {
       style: "currency",
-      currency,
+      currency: currency || "USD",
     }).format(amount);
 
     return formatted;
@@ -26,9 +26,9 @@ export function formatCurrency(
 }
 
 export function formatDate(date: Date, options?: FormatDateOptions) {
-  const { locale = "en-US" } = options || {};
+  const { locale } = options || {};
   try {
-    const formatted = new Intl.DateTimeFormat(locale, {
+    const formatted = new Intl.DateTimeFormat(locale || "en-US", {
       year: "numeric",
       month: "long",
       day: "2-digit",

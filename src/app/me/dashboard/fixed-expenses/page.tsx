@@ -1,4 +1,5 @@
 import { getFixedExpenses } from "@/actions/getFixedExpenses";
+import { getUserSettings } from "@/actions/getUserSettings";
 import {
   Card,
   CardContent,
@@ -11,7 +12,11 @@ import { FixedExpensesDialog } from "./components/fixed-expenses-dialog/fixed-ex
 import { fixedExpensesColumns } from "./table-config/fixed-expenses-columns";
 
 export default async function FixedExpenses() {
-  const fixedExpenses = await getFixedExpenses();
+  const [fixedExpenses, userSettings] = await Promise.all([
+    getFixedExpenses(),
+    getUserSettings(),
+  ]);
+
   const data = fixedExpenses.map(({ id, label, amount, createdAt }) => ({
     id,
     label,
@@ -26,6 +31,10 @@ export default async function FixedExpenses() {
         <DataTable
           columns={fixedExpensesColumns}
           data={data}
+          intl={{
+            locale: userSettings?.locale,
+            currency: userSettings?.currency,
+          }}
           actions={
             <div className="flex justify-end w-full mr-4">
               <FixedExpensesDialog />
@@ -40,7 +49,10 @@ export default async function FixedExpenses() {
           </CardHeader>
           <CardContent>
             <span className="text-2xl font-bold">
-              {formatCurrency(totalAmount)}
+              {formatCurrency(totalAmount, {
+                locale: userSettings?.locale,
+                currency: userSettings?.currency,
+              })}
             </span>
           </CardContent>
         </Card>
