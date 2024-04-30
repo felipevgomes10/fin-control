@@ -1,0 +1,233 @@
+"use client";
+
+import { monthlyExpensesSchema } from "@/app/api/monthly-expenses/schema";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { MonthlyExpense } from "@prisma/client";
+import type { CellContext } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState, type MouseEvent } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { MonthlyExpenseForm } from "../components/monthly-expense-form/monthly-expense-form";
+import type { MonthlyExpenses } from "./monthly-expenses-columns";
+
+function DetailsDialogContent({
+  closeDetailsModal,
+}: {
+  closeDetailsModal: () => void;
+}) {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const form = useForm<z.infer<typeof monthlyExpensesSchema>>({
+    defaultValues: async () => {
+      const response = await fetch(`/api/monthly-expenses/${id}`);
+      if (!response.ok) throw new Error("Could not fetch data");
+      const { data }: { data: MonthlyExpense } = await response.json();
+      return {
+        label: data.label,
+        amount: data.amount,
+        installments: data.installments || 1,
+        notes: data.notes || "",
+      };
+    },
+    resolver: zodResolver(monthlyExpensesSchema),
+  });
+  const expenseLabel = form.getValues("label");
+
+  const onSubmit = async (values: z.infer<typeof monthlyExpensesSchema>) => {
+    try {
+      const response = await fetch(`/api/monthly-expenses/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) throw new Error();
+
+      toast.success("Monthly expense updated successfully");
+      closeDetailsModal();
+      router.replace(pathname);
+      router.refresh();
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+      console.error(error);
+    }
+  };
+
+  if (form.formState.isLoading)
+    return (
+      <div className="flex flex-col space-y-3">
+        <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </div>
+      </div>
+    );
+
+  return (
+    <DialogHeader>
+      <DialogTitle>{expenseLabel} expense details</DialogTitle>
+      <DialogDescription>
+        See {expenseLabel} expense details here.
+      </DialogDescription>
+      <MonthlyExpenseForm
+        form={form}
+        onSubmit={onSubmit}
+        showCheckbox={false}
+      />
+    </DialogHeader>
+  );
+}
+
+export function ActionsCell({ row }: CellContext<MonthlyExpenses, unknown>) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  const closeDetailsModal = () => {
+    setShowDetailsModal(false);
+  };
+
+  const onDelete = async () => {
+    try {
+      const { id } = row.original;
+      const response = await fetch(`/api/monthly-expenses/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error();
+
+      toast.success("Monthly expense deleted successfully");
+      setShowDeleteModal(false);
+      router.refresh();
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+      console.error(error);
+    }
+  };
+
+  const onDetailsClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    const { id } = row.original;
+    router.push(`${pathname}?id=${id}`);
+  };
+
+  const cleanId = (open: boolean) => {
+    if (!open) router.replace(pathname);
+  };
+
+  return (
+    <>
+      {/* Delete Modal */}
+      <Dialog
+        open={showDeleteModal}
+        onOpenChange={(open) => setShowDeleteModal(open)}
+      >
+        <DialogPortal>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogClose />
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete this
+                item.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="ghost">Cancel</Button>
+              </DialogClose>
+              <Button variant="destructive" onClick={onDelete}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </DialogPortal>
+      </Dialog>
+      {/* Delete Modal */}
+
+      {/* Details Modal */}
+      <Dialog
+        open={showDetailsModal}
+        onOpenChange={(open) => {
+          cleanId(open);
+          setShowDetailsModal(open);
+        }}
+      >
+        <DialogPortal>
+          <DialogContent className="sm:max-w-[425px]">
+            {!id && (
+              <div className="flex flex-col space-y-3">
+                <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+              </div>
+            )}
+            {id && (
+              <DetailsDialogContent closeDetailsModal={closeDetailsModal} />
+            )}
+          </DialogContent>
+        </DialogPortal>
+      </Dialog>
+      {/* Details Modal */}
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={(e) => {
+              onDetailsClick(e);
+              setShowDetailsModal(true);
+            }}
+          >
+            View Details
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setShowDeleteModal(true)}>
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+}
