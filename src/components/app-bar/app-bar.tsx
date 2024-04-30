@@ -6,6 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import Link from "next/link";
 import { ThemeToggle } from "../theme/theme-toggle";
 import { Separator } from "../ui/separator";
 
@@ -37,8 +38,8 @@ export async function AppBar() {
               </PopoverTrigger>
               <PopoverContent className="mt-2" align="end">
                 <form className="flex gap-4">
-                  <Button className="w-[50%]" variant="secondary" disabled>
-                    Settings
+                  <Button className="w-[50%]" variant="secondary" asChild>
+                    <Link href="/me/settings">Settings</Link>
                   </Button>
                   <Button
                     className="w-[50%]"
