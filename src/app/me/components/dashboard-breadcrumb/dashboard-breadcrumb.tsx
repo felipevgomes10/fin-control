@@ -8,6 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -39,7 +40,9 @@ export function DashboardBreadcrumb() {
             <BreadcrumbPage>Dashboard</BreadcrumbPage>
           )}
           {!isCurrentPage(dashboardLink) && (
-            <BreadcrumbLink href={dashboardLink}>Dashboard</BreadcrumbLink>
+            <BreadcrumbLink asChild>
+              <Link href={dashboardLink}>Dashboard</Link>
+            </BreadcrumbLink>
           )}
         </BreadcrumbItem>
         <BreadcrumbSeparator />
@@ -52,7 +55,9 @@ export function DashboardBreadcrumb() {
                     <BreadcrumbPage>{name}</BreadcrumbPage>
                   )}
                   {!isCurrentPage(href) && (
-                    <BreadcrumbLink href={href}>{name}</BreadcrumbLink>
+                    <BreadcrumbLink asChild>
+                      <Link href={href}>{name}</Link>
+                    </BreadcrumbLink>
                   )}
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
