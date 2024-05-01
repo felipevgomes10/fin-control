@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import { VictoryPie, VictoryTheme } from "victory";
 
 export function Chart({
@@ -13,6 +14,8 @@ export function Chart({
   let monthlyTargetExpensePercent = (monthlyTargetExpense / sum) * 100;
   let totalExpensesPercent = (totalExpenses / sum) * 100;
 
+  const { theme } = useTheme();
+
   return (
     <div className="flex justify-center h-[500px]">
       <VictoryPie
@@ -23,7 +26,7 @@ export function Chart({
         colorScale={["#FFC107", "#FF5722"]}
         style={{
           labels: {
-            fill: "white",
+            fill: theme === "dark" ? "white" : "black",
             fontWeight: "bold",
           },
         }}

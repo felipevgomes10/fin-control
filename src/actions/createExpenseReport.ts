@@ -16,6 +16,12 @@ export async function createExpenseReport(formData: FormData) {
       year: parseInt(formData.get("year") as string),
     };
 
+    const userSettings = await prisma.userSettings.findFirst({
+      where: {
+        userId: session.user.id,
+      },
+    });
+
     const report = await prisma.report.findFirst({
       where: {
         userId: session.user.id,
@@ -54,6 +60,7 @@ export async function createExpenseReport(formData: FormData) {
       data: {
         userId: session.user.id,
         ...rawFormData,
+        monthlyTargetExpense: userSettings?.monthlyTargetExpense || null,
         fixedExpenses: {
           connect: fixedExpensesIds,
         },

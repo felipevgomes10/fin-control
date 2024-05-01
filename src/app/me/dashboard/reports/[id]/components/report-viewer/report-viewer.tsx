@@ -35,8 +35,15 @@ export async function ReportViewer({
 
   if (!report || !userSettings || !session) return null;
 
-  const { month, year, createdAt, fixedExpenses, monthlyExpenses } = report;
-  const { currency, locale, monthlyTargetExpense } = userSettings;
+  const {
+    month,
+    year,
+    createdAt,
+    fixedExpenses,
+    monthlyExpenses,
+    monthlyTargetExpense,
+  } = report;
+  const { currency, locale } = userSettings;
   const { user } = session;
 
   const formattedDate = formatDate(createdAt, { locale });
@@ -53,6 +60,15 @@ export async function ReportViewer({
     },
     0
   );
+
+  const isOverBudget =
+    monthlyTargetExpense && monthlyExpensesTotal > monthlyTargetExpense;
+  const totalLeft = monthlyTargetExpense
+    ? formatCurrency(monthlyTargetExpense - monthlyExpensesTotal, {
+        locale,
+        currency,
+      })
+    : "You have no budget set";
 
   return (
     <Card>
@@ -117,7 +133,31 @@ export async function ReportViewer({
           </section>
           <Separator className="mt-10 mb-8" />
           <section className="flex flex-col gap-3">
-            <h2 className="text-lg font-semibold">Results</h2>
+            <h2 className="flex justify-between items-center gap-3 text-lg font-semibold">
+              Results
+              {monthlyTargetExpense && (
+                <>
+                  <Separator className="flex-1" />
+                  <span
+                    data-type={isOverBudget ? "red" : "green"}
+                    className="data-[type='red']:text-red-500 data-[type='green']:text-green-500 font-semibold"
+                  >
+                    {isOverBudget
+                      ? "You are over the budget!"
+                      : "You are under the budget!"}
+                  </span>
+                </>
+              )}
+            </h2>
+            {monthlyTargetExpense && (
+              <div className="flex items-center gap-4">
+                <h3 className="font-medium">Budget</h3>
+                <Separator className="flex-1" />
+                <p className="font-bold border border-slate-800 p-2 rounded-md">
+                  {formatCurrency(monthlyTargetExpense, { locale, currency })}
+                </p>
+              </div>
+            )}
             <div className="flex items-center gap-4">
               <h3 className="font-medium">Total Fixed Expenses</h3>
               <Separator className="flex-1" />
@@ -133,7 +173,7 @@ export async function ReportViewer({
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <h3 className="font-medium">Total</h3>
+              <h3 className="font-medium">Total Expended</h3>
               <Separator className="flex-1" />
               <p className="font-bold border border-slate-800 p-2 rounded-md">
                 {formatCurrency(monthlyExpensesTotal + fixedExpensesTotal, {
@@ -142,12 +182,23 @@ export async function ReportViewer({
                 })}
               </p>
             </div>
+            {monthlyTargetExpense && (
+              <div className="flex items-center gap-4">
+                <h3 className="font-medium">Total Left</h3>
+                <Separator className="flex-1" />
+                <p className="font-bold border border-slate-800 p-2 rounded-md">
+                  {totalLeft}
+                </p>
+              </div>
+            )}
           </section>
           <section>
-            <Chart
-              monthlyTargetExpense={monthlyTargetExpense || 0}
-              totalExpenses={monthlyExpensesTotal + fixedExpensesTotal}
-            />
+            {monthlyTargetExpense && (
+              <Chart
+                monthlyTargetExpense={monthlyTargetExpense}
+                totalExpenses={monthlyExpensesTotal + fixedExpensesTotal}
+              />
+            )}
           </section>
         </main>
       </CardContent>
