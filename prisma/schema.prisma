@@ -132,14 +132,15 @@ model UserSettings {
 }
 
 model Report {
-  id              String           @id @default(cuid())
-  userId          String
-  month           Int
-  year            Int
-  fixedExpenses   FixedExpense[]
-  monthlyExpenses MonthlyExpense[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id                   String           @id @default(cuid())
+  userId               String
+  month                Int
+  year                 Int
+  monthlyTargetExpense Float?
+  fixedExpenses        FixedExpense[]
+  monthlyExpenses      MonthlyExpense[]
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
