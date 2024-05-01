@@ -12,63 +12,52 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-const breadcrumb = [
-  {
-    href: "/me/dashboard/fixed-expenses",
-    name: "Fixed Expenses",
-  },
-  {
-    href: "/me/dashboard/monthly-expense",
-    name: "Monthly Expense",
-  },
-  {
-    href: "/me/settings",
-    name: "Settings",
-  },
-  {
-    href: "/me/dashboard/reports",
-    name: "Reports",
-  },
-];
+const buildHref = (pathname: string, index: number) => {
+  return pathname
+    .split("/")
+    .slice(0, index + 1)
+    .join("/");
+};
+
+const isCurrentPage = (pathname: string, currentPath: string) => {
+  return pathname === currentPath;
+};
 
 export function DashboardBreadcrumb() {
   const pathname = usePathname();
-  const isCurrentPage = (href: string) => pathname === href;
-  const dashboardLink = "/me/dashboard";
 
   return (
     <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          {isCurrentPage(dashboardLink) && (
-            <BreadcrumbPage>Dashboard</BreadcrumbPage>
-          )}
-          {!isCurrentPage(dashboardLink) && (
-            <BreadcrumbLink asChild>
-              <Link href={dashboardLink}>Dashboard</Link>
-            </BreadcrumbLink>
-          )}
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        {breadcrumb.map(({ href, name }) => (
-          <React.Fragment key={href}>
-            {pathname === href && (
-              <>
-                <BreadcrumbItem>
-                  {isCurrentPage(href) && (
+      <BreadcrumbList className="capitalize">
+        {pathname.split("/").map((path, index) => {
+          if (path === "me") return <React.Fragment key={path} />;
+
+          const builtHref = buildHref(pathname, index);
+          const name = path.replace(/-/g, " ");
+
+          return (
+            <React.Fragment key={builtHref}>
+              {isCurrentPage(pathname, builtHref) && (
+                <>
+                  <BreadcrumbItem>
                     <BreadcrumbPage>{name}</BreadcrumbPage>
-                  )}
-                  {!isCurrentPage(href) && (
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                </>
+              )}
+              {!isCurrentPage(pathname, builtHref) && (
+                <>
+                  <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link href={href}>{name}</Link>
+                      <Link href={builtHref}>{name}</Link>
                     </BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-              </>
-            )}
-          </React.Fragment>
-        ))}
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                </>
+              )}
+            </React.Fragment>
+          );
+        })}
       </BreadcrumbList>
     </Breadcrumb>
   );
