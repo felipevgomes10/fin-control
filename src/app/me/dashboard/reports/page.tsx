@@ -10,10 +10,11 @@ export default async function Reports() {
     getExpensesReports(),
     getUserSettings(),
   ]);
-  const data = reports?.map(({ id, month, year }) => ({
+  const data = reports?.map(({ id, month, year, createdAt }) => ({
     id,
     month: months[month],
     year,
+    createdAt: createdAt.toUTCString(),
   }));
 
   return (
