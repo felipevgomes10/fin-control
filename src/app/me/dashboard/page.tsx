@@ -15,6 +15,12 @@ export default function Dashboard() {
         linkText=" Go to Monthly Expenses"
         href="/me/dashboard/monthly-expense"
       />
+      <DashboardCard
+        title="Reports"
+        description="Inside this page you can see the reports you created of your expenses "
+        linkText=" Go to Expenses Reports"
+        href="/me/dashboard/reports"
+      />
     </section>
   );
 }

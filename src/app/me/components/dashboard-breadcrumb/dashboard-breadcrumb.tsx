@@ -25,6 +25,10 @@ const breadcrumb = [
     href: "/me/settings",
     name: "Settings",
   },
+  {
+    href: "/me/dashboard/reports",
+    name: "Reports",
+  },
 ];
 
 export function DashboardBreadcrumb() {

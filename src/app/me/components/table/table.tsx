@@ -39,6 +39,10 @@ interface DataTableProps<TData, TValue> {
     locale: string | undefined | null;
     currency: string | undefined | null;
   };
+  filters?: {
+    accessorKey: string;
+    placeholder: string;
+  };
 }
 
 export function DataTable<TData, TValue>({
@@ -46,6 +50,7 @@ export function DataTable<TData, TValue>({
   data,
   actions,
   intl,
+  filters,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -68,15 +73,23 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const { accessorKey, placeholder } = filters || {};
+
   return (
     <TableProvider intl={intl}>
       <div>
         <div className="flex items-center py-4">
           <Input
-            placeholder="Filter labels..."
-            value={(table.getColumn("label")?.getFilterValue() as string) ?? ""}
+            placeholder={placeholder || "Filter labels..."}
+            value={
+              (table
+                .getColumn(accessorKey || "label")
+                ?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) =>
-              table.getColumn("label")?.setFilterValue(event.target.value)
+              table
+                .getColumn(accessorKey || "label")
+                ?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
