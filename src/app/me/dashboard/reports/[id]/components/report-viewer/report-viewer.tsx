@@ -16,6 +16,7 @@ import {
 } from "@prisma/client";
 import { months } from "../../../components/report-form/utils";
 import { Chart } from "../chart/chart";
+import { PrintReportButton } from "../print-report-button/print-report-button";
 
 type ReportWithExpenses = Report & {
   fixedExpenses: FixedExpense[];
@@ -71,9 +72,12 @@ export async function ReportViewer({
     : "You have no budget set";
 
   return (
-    <Card>
+    <Card id="print-area">
       <CardHeader>
-        <CardTitle>Expenses Report</CardTitle>
+        <CardTitle className="flex justify-between items-center gap-4">
+          Expenses Report
+          <PrintReportButton elementId="print-area" />
+        </CardTitle>
         <CardDescription className="flex flex-col gap-1">
           <span>
             {formattedMonth} {year} created on
@@ -110,12 +114,12 @@ export async function ReportViewer({
                     <div className="flex items-center gap-2">
                       <h3 className="font-medium">{label}</h3>
                       <span className="text-xs text-center text-slate-600">
-                        {installments
+                        {installments && installments > 1
                           ? `${formatCurrency(amount, {
                               locale,
                               currency,
                             })} (${installments}x)`
-                          : ""}
+                          : "One-time payment"}
                       </span>
                     </div>
                     <Separator className="flex-1" />
