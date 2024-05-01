@@ -190,7 +190,14 @@ export async function ReportViewer({
               <div className="flex items-center gap-4">
                 <h3 className="font-medium">Total Left</h3>
                 <Separator className="flex-1" />
-                <p className="font-bold border border-slate-800 p-2 rounded-md">
+                <p
+                  data-color={
+                    monthlyExpensesTotal > monthlyTargetExpense
+                      ? "red"
+                      : "green"
+                  }
+                  className="font-bold border border-slate-800 p-2 rounded-md data-[color='red']:text-red-500 data-[color='green']:text-green-500"
+                >
                   {totalLeft}
                 </p>
               </div>
