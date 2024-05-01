@@ -5,12 +5,17 @@ import { cache } from "react";
 import { prisma } from "../../prisma/client";
 
 export const getFixedExpenses = cache(async () => {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session) throw new Error("Not authenticated");
+    if (!session) throw new Error("Not authenticated");
 
-  const fixedExpenses = await prisma.fixedExpense.findMany({
-    where: { userId: session.user.id },
-  });
-  return fixedExpenses;
+    const fixedExpenses = await prisma.fixedExpense.findMany({
+      where: { userId: session.user.id },
+    });
+    return fixedExpenses;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 });

@@ -19,6 +19,6 @@ export const getExpensesReports = cache(async () => {
     return reports;
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 });

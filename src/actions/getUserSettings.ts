@@ -5,12 +5,17 @@ import { cache } from "react";
 import { prisma } from "../../prisma/client";
 
 export const getUserSettings = cache(async () => {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session) throw new Error("Not authenticated");
+    if (!session) throw new Error("Not authenticated");
 
-  const userSettings = await prisma.userSettings.findFirst({
-    where: { userId: session.user.id },
-  });
-  return userSettings;
+    const userSettings = await prisma.userSettings.findFirst({
+      where: { userId: session.user.id },
+    });
+    return userSettings;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 });
