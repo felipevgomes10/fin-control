@@ -30,7 +30,17 @@ export function DashboardBreadcrumb() {
     <Breadcrumb>
       <BreadcrumbList className="capitalize">
         {pathname.split("/").map((path, index) => {
-          if (path === "me") return <React.Fragment key={path} />;
+          if (path === "me")
+            return (
+              <>
+                <BreadcrumbItem key={path}>
+                  <BreadcrumbLink asChild>
+                    <Link href="/me/dashboard">{path}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </>
+            );
 
           const builtHref = buildHref(pathname, index);
           const name = path.replace(/-/g, " ");
