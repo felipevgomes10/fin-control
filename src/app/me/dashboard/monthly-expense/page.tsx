@@ -7,12 +7,13 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
+import { Suspense } from "react";
 import { DataTable } from "../../components/table/table";
 import { formatCurrency } from "../../components/table/utils";
 import { MonthlyExpensesDialog } from "./components/monthly-expenses-dialog/monthly-expenses-dialog";
 import { monthlyExpenseColumns } from "./table-config/monthly-expenses-columns";
 
-export default async function MonthlyExpense() {
+async function Content() {
   const [monthlyExpenses, fixedExpenses, userSettings] = await Promise.all([
     getMonthlyExpenses(),
     getFixedExpenses(),
@@ -104,5 +105,13 @@ export default async function MonthlyExpense() {
         </Card>
       </section>
     </>
+  );
+}
+
+export default function MonthlyExpense() {
+  return (
+    <Suspense>
+      <Content />
+    </Suspense>
   );
 }

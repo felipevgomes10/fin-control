@@ -6,12 +6,13 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
+import { Suspense } from "react";
 import { DataTable } from "../../components/table/table";
 import { formatCurrency } from "../../components/table/utils";
 import { FixedExpensesDialog } from "./components/fixed-expenses-dialog/fixed-expenses-dialog";
 import { fixedExpensesColumns } from "./table-config/fixed-expenses-columns";
 
-export default async function FixedExpenses() {
+async function Content() {
   const [fixedExpenses, userSettings] = await Promise.all([
     getFixedExpenses(),
     getUserSettings(),
@@ -58,5 +59,13 @@ export default async function FixedExpenses() {
         </Card>
       </section>
     </>
+  );
+}
+
+export default function FixedExpenses() {
+  return (
+    <Suspense>
+      <Content />
+    </Suspense>
   );
 }
