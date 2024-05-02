@@ -26,6 +26,7 @@ type Reports = {
 export const reportsColumns: ColumnDef<Reports>[] = [
   {
     accessorKey: "month",
+    enableHiding: false,
     header: ({ column }) => {
       return (
         <Button
@@ -69,6 +70,7 @@ export const reportsColumns: ColumnDef<Reports>[] = [
   },
   {
     id: "actions",
+    enableHiding: false,
     cell: function Cell({ row }) {
       const [showDeleteModal, setShowDeleteModal] = useState(false);
 
