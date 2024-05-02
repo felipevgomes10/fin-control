@@ -38,21 +38,26 @@ export async function createExpenseReport(formData: FormData) {
       );
     }
 
-    const fixedExpensesIds = await prisma.fixedExpense.findMany({
+    const fixedExpenses = await prisma.fixedExpense.findMany({
       where: {
         userId: session.user.id,
       },
       select: {
-        id: true,
+        label: true,
+        notes: true,
+        amount: true,
       },
     });
 
-    const monthlyExpensesIds = await prisma.monthlyExpense.findMany({
+    const monthlyExpenses = await prisma.monthlyExpense.findMany({
       where: {
         userId: session.user.id,
       },
       select: {
-        id: true,
+        label: true,
+        notes: true,
+        amount: true,
+        installments: true,
       },
     });
 
@@ -62,10 +67,10 @@ export async function createExpenseReport(formData: FormData) {
         ...rawFormData,
         monthlyTargetExpense: userSettings?.monthlyTargetExpense || null,
         fixedExpenses: {
-          connect: fixedExpensesIds,
+          create: fixedExpenses,
         },
         monthlyExpenses: {
-          connect: monthlyExpensesIds,
+          create: monthlyExpenses,
         },
       },
     });
