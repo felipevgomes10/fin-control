@@ -5,21 +5,16 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "../../prisma/client";
 
 export async function deleteExpenseReport(id: string) {
-  try {
-    const session = await auth();
+  const session = await auth();
 
-    if (!session) throw new Error("Not authenticated");
+  if (!session) throw new Error("Not authenticated");
 
-    await prisma.report.delete({
-      where: {
-        userId: session.user.id,
-        id,
-      },
-    });
+  await prisma.report.delete({
+    where: {
+      userId: session.user.id,
+      id,
+    },
+  });
 
-    revalidatePath("/me/dashboard/reports", "page");
-  } catch (error) {
-    console.error(error);
-    return { error: "An error occurred. Please try again." };
-  }
+  revalidatePath("/me/dashboard/reports", "page");
 }
