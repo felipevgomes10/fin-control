@@ -79,7 +79,7 @@ async function Content() {
                 {formatCurrency(totalMonthlyExpenseAmount, intl)}
               </span>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col mr-4">
               <span className="text-slate-500 text-sm">Fixed Expenses</span>
               <span className="text-2xl font-bold">
                 {formatCurrency(totalFixedExpenseAmount, intl)}
@@ -93,7 +93,7 @@ async function Content() {
               <span className="text-sm opacity-0">Total</span>
               <span
                 data-color={isOverBudget ? "red" : "green"}
-                className="text-sm text-slate-500 absolute left-0 whitespace-nowrap dark:data-[color=green]:text-green-400 data-[color=green]:text-green-700 dark:data-[color=red]:text-red-400 data-[color=red]:text-red-700"
+                className="text-sm text-slate-500 absolute right-0 whitespace-nowrap dark:data-[color=green]:text-green-400 data-[color=green]:text-green-700 dark:data-[color=red]:text-red-400 data-[color=red]:text-red-700"
               >
                 {isOverBudget ? "You are over budget" : "You are under budget"}
               </span>
