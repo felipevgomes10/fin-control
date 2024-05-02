@@ -8,10 +8,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  FixedExpense,
-  MonthlyExpense,
+import type {
   Report,
+  ReportFixedExpense,
+  ReportMonthlyExpense,
   UserSettings,
 } from "@prisma/client";
 import { months } from "../../../components/report-form/utils";
@@ -19,8 +19,8 @@ import { Chart } from "../chart/chart";
 import { PrintReportButton } from "../print-report-button/print-report-button";
 
 type ReportWithExpenses = Report & {
-  fixedExpenses: FixedExpense[];
-  monthlyExpenses: MonthlyExpense[];
+  fixedExpenses: ReportFixedExpense[];
+  monthlyExpenses: ReportMonthlyExpense[];
 };
 
 type ReportViewerProps = {
