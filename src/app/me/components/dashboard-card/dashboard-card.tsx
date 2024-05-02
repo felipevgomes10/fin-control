@@ -23,7 +23,7 @@ export function DashboardCard({
   href,
 }: DashboardCardProps) {
   return (
-    <Card className="w-[350px]">
+    <Card className="w-full sm:w-[350px]">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>

@@ -113,13 +113,20 @@ export async function ReportViewer({
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                       <h3 className="font-medium">{label}</h3>
-                      <span className="text-xs text-center text-slate-600">
-                        {installments && installments > 1
-                          ? `${formatCurrency(amount, {
-                              locale,
-                              currency,
-                            })} (${installments}x)`
-                          : "One-time payment"}
+                      <span className="text-[10px] sm:text-xs text-start sm:text-center text-slate-600">
+                        {installments && installments > 1 ? (
+                          <div>
+                            <span className="hidden sm:inline">
+                              {formatCurrency(amount, {
+                                locale,
+                                currency,
+                              })}{" "}
+                            </span>
+                            <span>{installments}x</span>
+                          </div>
+                        ) : (
+                          "One-time payment"
+                        )}
                       </span>
                     </div>
                     <Separator className="flex-1" />

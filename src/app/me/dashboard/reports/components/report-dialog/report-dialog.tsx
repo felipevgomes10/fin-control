@@ -19,7 +19,7 @@ export function ReportDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Create a Report</Button>
+        <Button className="w-full sm:w-max">Create a Report</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

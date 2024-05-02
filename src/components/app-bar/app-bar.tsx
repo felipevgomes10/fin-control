@@ -12,10 +12,12 @@ import { ThemeToggle } from "../theme/theme-toggle";
 import { Separator } from "../ui/separator";
 
 export async function AppBar() {
-  const [session, userSettings] = await Promise.all([
-    auth(),
-    getUserSettings(),
-  ]);
+  const session = await auth();
+
+  if (!session) return null;
+
+  const userSettings = await getUserSettings();
+
   const profileImage = userSettings?.profileImageURL || session?.user.image;
   const userName = userSettings?.userName || session?.user.name;
 
@@ -34,7 +36,7 @@ export async function AppBar() {
             </Avatar>
           )}
           {session && (
-            <div>
+            <div className="hidden sm:block">
               <h1 className="text-lg font-semibold">{userName}</h1>
               <p className="text-sm text-gray-500">{session.user.email}</p>
             </div>

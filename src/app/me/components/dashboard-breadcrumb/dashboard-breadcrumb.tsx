@@ -28,18 +28,18 @@ export function DashboardBreadcrumb() {
 
   return (
     <Breadcrumb>
-      <BreadcrumbList className="capitalize">
+      <BreadcrumbList className="capitalize flex gap-2 flex-wrap">
         {pathname.split("/").map((path, index) => {
           if (path === "me")
             return (
-              <>
-                <BreadcrumbItem key={path}>
+              <React.Fragment key={path}>
+                <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link href="/me/dashboard">{path}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
-              </>
+              </React.Fragment>
             );
 
           const builtHref = buildHref(pathname, index);

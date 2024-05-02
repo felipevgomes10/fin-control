@@ -68,7 +68,7 @@ export function MonthlyExpensesDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Add Monthly Expense</Button>
+        <Button className="w-full sm:w-max">Add Monthly Expense</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

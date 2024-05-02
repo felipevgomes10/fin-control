@@ -67,7 +67,7 @@ export function FixedExpensesDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Add Fixed Expense</Button>
+        <Button className="w-full sm:w-max">Add Fixed Expense</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

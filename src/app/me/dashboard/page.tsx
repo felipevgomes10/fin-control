@@ -2,7 +2,7 @@ import { DashboardCard } from "../components/dashboard-card/dashboard-card";
 
 export default function Dashboard() {
   return (
-    <section className="flex justify-start items-center gap-4 flex-wrap">
+    <section className="flex justify-center md:justify-start items-center gap-4 flex-wrap">
       <DashboardCard
         title="Fixed Expenses"
         description="Inside this page you can see and control your fixed expenses"

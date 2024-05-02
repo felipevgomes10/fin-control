@@ -70,8 +70,8 @@ export function SettingsForm({
             toast.success("Settings updated");
           }}
         >
-          <div className="flex gap-4">
-            <div className="flex flex-col gap-4">
+          <div className="flex gap-4 flex-wrap">
+            <div className="flex flex-col gap-4 w-full sm:w-[350px]">
               <Label htmlFor="userName">Name</Label>
               <Input
                 id="userName"
@@ -79,9 +79,10 @@ export function SettingsForm({
                 type="text"
                 defaultValue={optimisticData.userName}
                 placeholder="Enter your name"
+                className="w-full"
               />
             </div>
-            <div className="flex flex-col gap-4 flex-1">
+            <div className="flex flex-col gap-4 flex-1 min-w-[81px]">
               <Label htmlFor="monthlyTargetExpense">Budget</Label>
               <Input
                 id="monthlyTargetExpense"
@@ -93,7 +94,7 @@ export function SettingsForm({
                 placeholder="Enter your monthly budget"
               />
             </div>
-            <div className="flex flex-col gap-4 flex-1">
+            <div className="flex flex-col gap-4 flex-1 min-w-[81px]">
               <Label htmlFor="currency">Currency</Label>
               <Select
                 name="currency"
@@ -112,7 +113,7 @@ export function SettingsForm({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-4 flex-1">
+            <div className="flex flex-col gap-4 flex-1 min-w-[81px]">
               <Label htmlFor="locale">Locale</Label>
               <Select
                 name="locale"
@@ -132,8 +133,12 @@ export function SettingsForm({
               </Select>
             </div>
           </div>
-          <div className="flex justify-end">
-            <Button type="submit" disabled={pending}>
+          <div className="flex justify-start sm:justify-end">
+            <Button
+              className="w-full sm:w-max"
+              type="submit"
+              disabled={pending}
+            >
               {pending ? "Saving..." : "Save"}
             </Button>
           </div>
@@ -144,15 +149,17 @@ export function SettingsForm({
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">
           Profile Picture
         </h3>
-        <div className="flex flex-col gap-4 max-w-[200px]">
+        <div className="flex flex-col gap-4 w-full sm:max-w-[200px]">
           <div className="flex flex-col gap-4">
             {optimisticData.profileImageURL && (
-              <Image
-                src={optimisticData.profileImageURL}
-                alt={optimisticData.userName}
-                width={200}
-                height={200}
-              />
+              <div className="flex justify-center sm:justify-start border border-slate-500 rounded-md overflow-hidden w-full sm:w-[200px]">
+                <Image
+                  src={optimisticData.profileImageURL}
+                  alt={optimisticData.userName}
+                  width={200}
+                  height={200}
+                />
+              </div>
             )}
             <Upload.UploadButton
               className="self-center"
