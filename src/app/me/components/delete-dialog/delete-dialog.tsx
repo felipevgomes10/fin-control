@@ -17,12 +17,7 @@ import { toast } from "sonner";
 type DeleteDialogProps = {
   itemId: string;
   state: [boolean, Dispatch<SetStateAction<boolean>>];
-  action: (id: string) => Promise<
-    | {
-        error: string;
-      }
-    | undefined
-  >;
+  action: (id: string) => Promise<void>;
   successMessage?: string;
 };
 
