@@ -3,9 +3,9 @@ import {
   generateUploadDropzone,
 } from "@uploadthing/react";
 
-import type { OurFileRouter } from "@/app/api/uploadthing/core";
+import type { FileRouterType } from "@/app/api/uploadthing/core";
 
-const UploadButton = generateUploadButton<OurFileRouter>();
-const UploadDropzone = generateUploadDropzone<OurFileRouter>();
+const UploadButton = generateUploadButton<FileRouterType>();
+const UploadDropzone = generateUploadDropzone<FileRouterType>();
 
 export const Upload = { UploadButton, UploadDropzone };

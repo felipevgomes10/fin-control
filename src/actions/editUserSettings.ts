@@ -16,6 +16,7 @@ export async function editUserSettings(formData: FormData) {
       monthlyTargetExpense: parseFloat(
         formData.get("monthlyTargetExpense") as string
       ),
+      userName: formData.get("userName") as string,
     };
 
     const userSettings = await prisma.userSettings.findFirst({

@@ -1,3 +1,4 @@
+import { getUserSettings } from "@/actions/getUserSettings";
 import { auth, signOut } from "@/auth/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,12 @@ import { ThemeToggle } from "../theme/theme-toggle";
 import { Separator } from "../ui/separator";
 
 export async function AppBar() {
-  const session = await auth();
+  const [session, userSettings] = await Promise.all([
+    auth(),
+    getUserSettings(),
+  ]);
+  const profileImage = userSettings?.profileImageURL || session?.user.image;
+  const userName = userSettings?.userName || session?.user.name;
 
   return (
     <div>
@@ -19,13 +25,17 @@ export async function AppBar() {
         <div className="flex items-center gap-4">
           {session && (
             <Avatar>
-              <AvatarImage src={session.user.image} alt="profile-picture" />
-              <AvatarFallback>{session.user.name}</AvatarFallback>
+              <AvatarImage
+                src={profileImage}
+                alt="profile-picture"
+                className="object-cover"
+              />
+              <AvatarFallback>{userName}</AvatarFallback>
             </Avatar>
           )}
           {session && (
             <div>
-              <h1 className="text-lg font-semibold">{session.user.name}</h1>
+              <h1 className="text-lg font-semibold">{userName}</h1>
               <p className="text-sm text-gray-500">{session.user.email}</p>
             </div>
           )}

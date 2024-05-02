@@ -8,6 +8,16 @@ export async function updateProfileImage(url: string, userId: string) {
       where: { userId },
     });
 
+    if (!userSettings) {
+      await prisma.userSettings.create({
+        data: {
+          userId,
+          profileImageURL: url,
+        },
+      });
+      return;
+    }
+
     await prisma.userSettings.update({
       where: { userId },
       data: {

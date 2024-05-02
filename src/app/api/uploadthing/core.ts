@@ -5,8 +5,10 @@ import { UploadThingError } from "uploadthing/server";
 
 const f = createUploadthing();
 
-export const ourFileRouter = {
-  imageUploader: f({ image: { maxFileSize: "4MB" } })
+export const fileRouter = {
+  "upload-file": f({
+    image: { maxFileSize: "4MB", maxFileCount: 1, acl: "public-read" },
+  })
     .middleware(async () => {
       const session = await auth();
       if (!session) throw new UploadThingError("Not authenticated");
@@ -18,4 +20,4 @@ export const ourFileRouter = {
     }),
 } satisfies FileRouter;
 
-export type OurFileRouter = typeof ourFileRouter;
+export type FileRouterType = typeof fileRouter;

@@ -1,4 +1,4 @@
-import { ourFileRouter } from "@/app/api/uploadthing/core";
+import { fileRouter } from "@/app/api/uploadthing/core";
 import { AppBar } from "@/components/app-bar/app-bar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+        <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
