@@ -29,10 +29,7 @@ export function ReportForm({
       className="flex flex-col gap-4"
       action={async (formData: FormData) => {
         try {
-          const result = await createExpenseReport(formData);
-          if (result?.error) {
-            throw new Error(result.error);
-          }
+          await createExpenseReport(formData);
           toast.success("Report created");
           dialogCloseRef.current?.click();
         } catch (error) {
