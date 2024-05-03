@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { extractRouterConfig } from "uploadthing/server";
 
+import { Suspense } from "react";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -32,7 +33,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex flex-col h-screen">
-            <AppBar />
+            <Suspense>
+              <AppBar />
+            </Suspense>
             {children}
           </div>
           <Toaster />
