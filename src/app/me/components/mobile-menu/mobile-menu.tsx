@@ -50,7 +50,7 @@ export function MobileMenu() {
               <Button className="w-full" variant="secondary" asChild>
                 <Link
                   className="flex !justify-start items-center gap-2 w-full"
-                  href="/me/dashboard/monthly-expenses"
+                  href="/me/dashboard/monthly-expense"
                 >
                   <DollarSign />
                   Monthly Expenses
