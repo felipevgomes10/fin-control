@@ -20,7 +20,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { FixedExpense } from "@prisma/client";
 import type { CellContext } from "@tanstack/react-table";
@@ -80,16 +79,7 @@ function DetailsDialogContent({
     }
   };
 
-  if (form.formState.isLoading)
-    return (
-      <div className="flex flex-col space-y-3">
-        <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[250px]" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-    );
+  if (form.formState.isLoading) null;
 
   return (
     <DialogHeader>
@@ -183,20 +173,11 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
         }}
       >
         <DialogPortal>
-          <DialogContent className="sm:max-w-[425px]">
-            {!id && (
-              <div className="flex flex-col space-y-3">
-                <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[250px]" />
-                  <Skeleton className="h-4 w-[200px]" />
-                </div>
-              </div>
-            )}
-            {id && (
+          {id && (
+            <DialogContent className="sm:max-w-[425px]">
               <DetailsDialogContent closeDetailsModal={closeDetailsModal} />
-            )}
-          </DialogContent>
+            </DialogContent>
+          )}
         </DialogPortal>
       </Dialog>
       {/* Details Modal */}

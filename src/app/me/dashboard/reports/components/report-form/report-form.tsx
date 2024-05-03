@@ -66,7 +66,11 @@ export function ReportForm({
           className="opacity-50 cursor-not-allowed pointer-events-none"
         />
       </div>
-      <Button type="submit" className="w-[150px] self-end" disabled={pending}>
+      <Button
+        type="submit"
+        className="w-full sm:w-[150px] self-end"
+        disabled={pending}
+      >
         Create Report
       </Button>
     </form>

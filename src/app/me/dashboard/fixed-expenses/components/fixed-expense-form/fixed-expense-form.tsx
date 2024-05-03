@@ -41,7 +41,9 @@ export function FixedExpenseForm({
           name="label"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Label</FormLabel>
+              <FormLabel className="inline-block w-full text-left">
+                Label
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Give your fixed expense a name"
@@ -57,7 +59,9 @@ export function FixedExpenseForm({
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Amout</FormLabel>
+              <FormLabel className="inline-block w-full text-left">
+                Amout
+              </FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0.00" {...field} />
               </FormControl>
@@ -70,7 +74,9 @@ export function FixedExpenseForm({
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Notes</FormLabel>
+              <FormLabel className="inline-block w-full text-left">
+                Notes
+              </FormLabel>
               <FormControl>
                 <Textarea placeholder="Type here..." {...field} />
               </FormControl>
@@ -78,7 +84,7 @@ export function FixedExpenseForm({
             </FormItem>
           )}
         />
-        <DialogFooter>
+        <DialogFooter className="flex flex-col sm:flex-row gap-4">
           {showCheckbox && (
             <div className="flex items-center space-x-2">
               <Checkbox
@@ -96,7 +102,7 @@ export function FixedExpenseForm({
           )}
           <Button
             type="submit"
-            className="w-[150px]"
+            className="w-full sm:w-[150px]"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? "Saving..." : "Save Expense"}

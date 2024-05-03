@@ -43,7 +43,9 @@ export function MonthlyExpenseForm({
           name="label"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Label</FormLabel>
+              <FormLabel className="inline-block w-full text-left">
+                Label
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Give your monthly expense a name"
@@ -59,7 +61,9 @@ export function MonthlyExpenseForm({
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Amout</FormLabel>
+              <FormLabel className="inline-block w-full text-left">
+                Amout
+              </FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0.00" {...field} />
               </FormControl>
@@ -72,7 +76,9 @@ export function MonthlyExpenseForm({
           name="installments"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Installments</FormLabel>
+              <FormLabel className="inline-block w-full text-left">
+                Installments
+              </FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0" {...field} />
               </FormControl>
@@ -85,7 +91,9 @@ export function MonthlyExpenseForm({
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Notes</FormLabel>
+              <FormLabel className="inline-block w-full text-left">
+                Notes
+              </FormLabel>
               <FormControl>
                 <Textarea placeholder="Type here..." {...field} />
               </FormControl>
@@ -93,7 +101,7 @@ export function MonthlyExpenseForm({
             </FormItem>
           )}
         />
-        <DialogFooter>
+        <DialogFooter className="flex flex-col sm:flex-row gap-4">
           {showCheckbox && (
             <div className="flex items-center space-x-2">
               <Checkbox
@@ -111,7 +119,7 @@ export function MonthlyExpenseForm({
           )}
           <Button
             type="submit"
-            className="w-[150px]"
+            className="w-full sm:w-[150px]"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? "Saving..." : "Save Expense"}

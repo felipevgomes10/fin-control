@@ -60,7 +60,11 @@ export function DeleteDialog({
                 }
               }}
             >
-              <Button type="submit" variant="destructive">
+              <Button
+                className="w-full sm:w-auto"
+                type="submit"
+                variant="destructive"
+              >
                 Delete
               </Button>
             </form>
