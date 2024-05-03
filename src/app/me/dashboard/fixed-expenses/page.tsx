@@ -7,10 +7,12 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Suspense } from "react";
+import { Loading } from "../../components/loading/loading";
 import { DataTable } from "../../components/table/table";
 import { formatCurrency } from "../../components/table/utils";
 import { FixedExpensesDialog } from "./components/fixed-expenses-dialog/fixed-expenses-dialog";
 import { fixedExpensesColumns } from "./table-config/fixed-expenses-columns";
+import { fixedExpensesFakeColumns } from "./table-config/fixed-expenses-fake-columns";
 
 async function Content() {
   const [fixedExpenses, userSettings] = await Promise.all([
@@ -64,7 +66,17 @@ async function Content() {
 
 export default function FixedExpenses() {
   return (
-    <Suspense>
+    <Suspense
+      fallback={
+        <>
+          <Loading.TableSkeleton
+            columns={fixedExpensesFakeColumns}
+            rowsNumber={10}
+          />
+          <Loading.ResultCard title="Total Fixed Expenses" />
+        </>
+      }
+    >
       <Content />
     </Suspense>
   );

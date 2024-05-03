@@ -8,10 +8,12 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Suspense } from "react";
+import { Loading } from "../../components/loading/loading";
 import { DataTable } from "../../components/table/table";
 import { formatCurrency } from "../../components/table/utils";
 import { MonthlyExpensesDialog } from "./components/monthly-expenses-dialog/monthly-expenses-dialog";
 import { monthlyExpenseColumns } from "./table-config/monthly-expenses-columns";
+import { monthlyExpensesFakeColumns } from "./table-config/monthly-expenses-fake-columns";
 
 async function Content() {
   const [monthlyExpenses, fixedExpenses, userSettings] = await Promise.all([
@@ -110,7 +112,17 @@ async function Content() {
 
 export default function MonthlyExpense() {
   return (
-    <Suspense>
+    <Suspense
+      fallback={
+        <>
+          <Loading.TableSkeleton
+            columns={monthlyExpensesFakeColumns}
+            rowsNumber={10}
+          />
+          <Loading.ResultCard title="Total" />
+        </>
+      }
+    >
       <Content />
     </Suspense>
   );
