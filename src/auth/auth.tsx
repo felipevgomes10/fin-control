@@ -31,7 +31,7 @@ export const authConfig = {
             from: provider.from,
             to: [to],
             subject: "Sign in to Fin Control",
-            react: SignInEmailTemplate({ to, url }),
+            react: <SignInEmailTemplate url={url} to={to} />,
           });
 
           if (error) throw new Error(`Failed to send email: ${error.message}`);
