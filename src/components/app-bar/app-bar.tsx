@@ -1,4 +1,5 @@
 import { getUserSettings } from "@/actions/getUserSettings";
+import { MobileMenu } from "@/app/me/components/mobile-menu/mobile-menu";
 import { auth, signOut } from "@/auth/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -27,11 +28,13 @@ export async function AppBar() {
         <div className="flex items-center gap-4">
           {session && (
             <Avatar>
-              <AvatarImage
-                src={profileImage}
-                alt="profile-picture"
-                className="object-cover"
-              />
+              <Link href="/me/dashboard">
+                <AvatarImage
+                  src={profileImage}
+                  alt="profile-picture"
+                  className="object-cover"
+                />
+              </Link>
               <AvatarFallback>{userName}</AvatarFallback>
             </Avatar>
           )}
@@ -44,28 +47,33 @@ export async function AppBar() {
         </div>
         <div className="flex justify-end items-center gap-4">
           {session && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button>Account</Button>
-              </PopoverTrigger>
-              <PopoverContent className="mt-2" align="end">
-                <form className="flex gap-4">
-                  <Button className="w-[50%]" variant="secondary" asChild>
-                    <Link href="/me/settings">Settings</Link>
-                  </Button>
-                  <Button
-                    className="w-[50%]"
-                    variant="outline"
-                    formAction={async () => {
-                      "use server";
-                      await signOut({ redirectTo: "/" });
-                    }}
-                  >
-                    Sign out
-                  </Button>
-                </form>
-              </PopoverContent>
-            </Popover>
+            <>
+              <div className="block sm:hidden">
+                <MobileMenu />
+              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="secondary">Account</Button>
+                </PopoverTrigger>
+                <PopoverContent className="mt-2" align="end">
+                  <form className="flex gap-4">
+                    <Button className="w-[50%]" variant="secondary" asChild>
+                      <Link href="/me/settings">Settings</Link>
+                    </Button>
+                    <Button
+                      className="w-[50%]"
+                      variant="outline"
+                      formAction={async () => {
+                        "use server";
+                        await signOut({ redirectTo: "/" });
+                      }}
+                    >
+                      Sign out
+                    </Button>
+                  </form>
+                </PopoverContent>
+              </Popover>
+            </>
           )}
           <ThemeToggle />
         </div>
