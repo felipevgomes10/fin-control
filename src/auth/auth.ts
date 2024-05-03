@@ -1,7 +1,6 @@
-import { SignInEmailTemplate } from "@/app/(auth)/login/components/sign-in-email-template/sign-in-email-template";
+import { emailTemplateHtml } from "@/app/(auth)/login/components/sign-in-email-template/sign-in-email-template-html";
 import { env } from "@/env/env";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { renderAsync } from "@react-email/render";
 import NextAuth, { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import ResendProvider from "next-auth/providers/resend";
@@ -32,9 +31,7 @@ export const authConfig = {
             from: provider.from,
             to: [to],
             subject: "Sign in to Fin Control",
-            html: await renderAsync(<SignInEmailTemplate url={url} to={to} />, {
-              pretty: true,
-            }),
+            html: await emailTemplateHtml({ to, url }),
           });
 
           if (error) throw new Error(`Failed to send email: ${error.message}`);

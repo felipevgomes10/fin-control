@@ -9,7 +9,7 @@ import {
   Text,
 } from "@react-email/components";
 
-type SignInEmailTemplateProps = {
+export type SignInEmailTemplateProps = {
   lang?: string;
   to: string;
   url: string;
