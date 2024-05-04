@@ -1,5 +1,14 @@
 {
   "login": {
     "title": "Login"
+  },
+  "appBar": {
+    "account": "Conta",
+    "signOut": "Sair",
+    "settings": "Configurações",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema",
+    "toggleTheme": "Mudar tema"
   }
 }

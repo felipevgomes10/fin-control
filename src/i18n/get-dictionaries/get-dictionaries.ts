@@ -7,8 +7,8 @@ const dictionaries = {
     import("../dictionaries/pt-BR.json").then((module) => module.default),
 };
 
-export const getDictionary = async (locale: keyof typeof dictionaries) => {
-  const dictionary = dictionaries[locale];
+export const getDictionary = async (locale: string) => {
+  const dictionary = dictionaries[locale as keyof typeof dictionaries];
   if (!dictionary) throw new Error(`Locale "${locale}" not supported`);
   return dictionary();
 };
