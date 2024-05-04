@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Upload } from "@/components/uploadthing/upload";
+import { config } from "@/config/config";
 import { UserSettings } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -34,9 +35,6 @@ export function SettingsForm({
   userSettings: UserSettings | null;
 }) {
   const router = useRouter();
-
-  const currencies = ["USD", "BRL"];
-  const locales = ["en-US", "pt-BR"];
 
   const { pending } = useFormStatus();
   const initialData = {
@@ -105,7 +103,7 @@ export function SettingsForm({
                   <SelectValue placeholder="Choose your currency" />
                 </SelectTrigger>
                 <SelectContent>
-                  {currencies.map((currency) => (
+                  {config.currencies.map((currency) => (
                     <SelectItem key={currency} value={currency}>
                       {currency}
                     </SelectItem>
@@ -124,7 +122,7 @@ export function SettingsForm({
                   <SelectValue placeholder="Choose your locale" />
                 </SelectTrigger>
                 <SelectContent>
-                  {locales.map((locale) => (
+                  {config.locales.map((locale) => (
                     <SelectItem key={locale} value={locale}>
                       {locale}
                     </SelectItem>

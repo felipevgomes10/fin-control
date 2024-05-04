@@ -1,6 +1,6 @@
 "use server";
 
-import { months } from "@/app/me/dashboard/reports/components/report-form/utils";
+import { months } from "@/app/[locale]/me/dashboard/reports/components/report-form/utils";
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "../../prisma/client";

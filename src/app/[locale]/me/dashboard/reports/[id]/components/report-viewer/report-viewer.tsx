@@ -1,4 +1,7 @@
-import { formatCurrency, formatDate } from "@/app/me/components/table/utils";
+import {
+  formatCurrency,
+  formatDate,
+} from "@/app/[locale]/me/components/table/utils";
 import { auth } from "@/auth/auth";
 import {
   Card,

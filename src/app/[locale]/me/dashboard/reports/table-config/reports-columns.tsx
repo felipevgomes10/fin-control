@@ -1,9 +1,9 @@
 "use client";
 
 import { deleteExpenseReport } from "@/actions/deleteExpenseReport";
-import { DeleteDialog } from "@/app/me/components/delete-dialog/delete-dialog";
-import { formatDate } from "@/app/me/components/table/utils";
-import { useTableContext } from "@/app/me/contexts/table-provider/table-provider";
+import { DeleteDialog } from "@/app/[locale]/me/components/delete-dialog/delete-dialog";
+import { formatDate } from "@/app/[locale]/me/components/table/utils";
+import { useTableContext } from "@/app/[locale]/me/contexts/table-provider/table-provider";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

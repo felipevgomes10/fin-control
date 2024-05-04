@@ -1,4 +1,4 @@
-import { emailTemplateHtml } from "@/app/(auth)/login/components/sign-in-email-template/sign-in-email-template-html";
+import { emailTemplateHtml } from "@/app/[locale]/(auth)/login/components/sign-in-email-template/sign-in-email-template-html";
 import { env } from "@/env/env";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { type DefaultSession, type NextAuthConfig } from "next-auth";

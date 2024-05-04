@@ -1,5 +1,5 @@
 import { getUserSettings } from "@/actions/getUserSettings";
-import { MobileMenu } from "@/app/me/components/mobile-menu/mobile-menu";
+import { MobileMenu } from "@/app/[locale]/me/components/mobile-menu/mobile-menu";
 import { auth, signOut } from "@/auth/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

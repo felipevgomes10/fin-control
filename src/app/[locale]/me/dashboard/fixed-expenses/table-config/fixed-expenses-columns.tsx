@@ -1,6 +1,6 @@
 "use client";
 
-import { useTableContext } from "@/app/me/contexts/table-provider/table-provider";
+import { useTableContext } from "@/app/[locale]/me/contexts/table-provider/table-provider";
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
