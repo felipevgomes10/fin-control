@@ -14,9 +14,8 @@ import { config as appConfig } from "./config/config";
 export async function middleware(request: NextRequest) {
   const cookiesStore = cookies();
   const localeCookie = cookiesStore.get("user.locale");
-  const session = cookiesStore.get("authjs.session-token");
 
-  if (!session || !localeCookie) return;
+  if (!localeCookie) return;
 
   const { pathname } = request.nextUrl;
   const pathnameHasLocale = appConfig.locales.some(
