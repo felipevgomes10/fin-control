@@ -1,5 +1,4 @@
 import { fileRouter } from "@/app/api/uploadthing/core";
-import { AppBar } from "@/components/app-bar/app-bar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { config } from "@/config/config";
@@ -8,7 +7,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Suspense } from "react";
 import { extractRouterConfig } from "uploadthing/server";
 
 import "./globals.css";
@@ -29,7 +27,7 @@ export default function RootLayout({
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string };
+  params: { locale?: string };
 }>) {
   return (
     <html lang={params.locale} suppressHydrationWarning>
@@ -43,12 +41,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col h-screen">
-            <Suspense>
-              <AppBar />
-            </Suspense>
-            {children}
-          </div>
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>

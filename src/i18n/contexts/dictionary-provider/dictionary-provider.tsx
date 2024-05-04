@@ -1,18 +1,30 @@
 "use client";
 
-import enUS from "@/i18n/dictionaries/en-US.json";
+import dictionary from "@/i18n/dictionaries/en-US.json";
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 
-const DictionaryContext = createContext<typeof enUS>({} as typeof enUS);
+type Dictionary = typeof dictionary;
+
+type DictionaryContextType = {
+  dictionary: Dictionary;
+  locale: string;
+};
+
+const DictionaryContext = createContext<DictionaryContextType>({
+  dictionary,
+  locale: "en-US",
+});
 
 export function DictionaryProvider({
   children,
   dictionary,
+  locale,
 }: {
   children: ReactNode;
-  dictionary: typeof enUS;
+  dictionary: Dictionary;
+  locale: string;
 }) {
-  const value = useMemo(() => dictionary, [dictionary]);
+  const value = useMemo(() => ({ dictionary, locale }), [dictionary, locale]);
 
   return (
     <DictionaryContext.Provider value={value}>
@@ -22,6 +34,11 @@ export function DictionaryProvider({
 }
 
 export function useDictionary() {
-  const context = useContext(DictionaryContext);
-  return context;
+  const { dictionary } = useContext(DictionaryContext);
+  return dictionary;
+}
+
+export function useLocale() {
+  const { locale } = useContext(DictionaryContext);
+  return locale;
 }

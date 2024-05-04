@@ -14,6 +14,7 @@ declare module "next-auth" {
       name: string;
       email: string;
       image: string;
+      locale: string;
     } & DefaultSession["user"];
   }
 }
@@ -44,6 +45,11 @@ export const authConfig = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
     async session({ session, user }) {
+      const userSettings = await prisma.userSettings.findUnique({
+        where: { userId: user.id },
+      });
+
+      session.user.locale = userSettings?.locale ?? "en-US";
       session.user.id = user.id;
       return session;
     },

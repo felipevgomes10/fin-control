@@ -18,10 +18,9 @@ export async function AppBar() {
 
   if (!session) return null;
 
-  const userSettings = await getUserSettings();
-  const locale = userSettings?.locale || "en-US";
-  const dictionary = await getDictionary(locale);
+  const dictionary = await getDictionary(session.user.locale);
 
+  const userSettings = await getUserSettings();
   const profileImage = userSettings?.profileImageURL || session?.user.image;
   const userName = userSettings?.userName || session?.user.name;
 
