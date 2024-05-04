@@ -1,5 +1,5 @@
-import { getExpensesReport } from "@/actions/getExpensesReport";
-import { getUserSettings } from "@/actions/getUserSettings";
+import { getExpensesReport } from "@/actions/reports/get-expenses-report";
+import { getUserSettings } from "@/actions/user/get-user-settings";
 import { Suspense } from "react";
 import { ReportViewer } from "./components/report-viewer/report-viewer";
 

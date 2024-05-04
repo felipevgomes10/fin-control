@@ -1,6 +1,6 @@
 "use client";
 
-import { editUserSettings } from "@/actions/editUserSettings";
+import { editUserSettings } from "@/actions/user/edit-user-settings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

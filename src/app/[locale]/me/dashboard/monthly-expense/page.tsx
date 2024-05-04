@@ -1,6 +1,6 @@
-import { getFixedExpenses } from "@/actions/getFixedExpenses";
-import { getMonthlyExpenses } from "@/actions/getMontlyExpenses";
-import { getUserSettings } from "@/actions/getUserSettings";
+import { getFixedExpenses } from "@/actions/get-fixed-expenses";
+import { getMonthlyExpenses } from "@/actions/get-montly-expenses";
+import { getUserSettings } from "@/actions/user/get-user-settings";
 import {
   Card,
   CardContent,

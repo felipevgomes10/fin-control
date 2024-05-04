@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteExpenseReport } from "@/actions/deleteExpenseReport";
+import { deleteExpenseReport } from "@/actions/reports/delete-expense-report";
 import { DeleteDialog } from "@/app/[locale]/me/components/delete-dialog/delete-dialog";
 import { formatDate } from "@/app/[locale]/me/components/table/utils";
 import { useTableContext } from "@/app/[locale]/me/contexts/table-provider/table-provider";

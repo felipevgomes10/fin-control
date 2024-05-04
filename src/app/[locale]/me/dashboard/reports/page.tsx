@@ -1,5 +1,5 @@
-import { getExpensesReports } from "@/actions/getExpensesReports";
-import { getUserSettings } from "@/actions/getUserSettings";
+import { getExpensesReports } from "@/actions/reports/get-expenses-reports";
+import { getUserSettings } from "@/actions/user/get-user-settings";
 import type { Dictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import { Suspense } from "react";

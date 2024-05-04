@@ -1,4 +1,4 @@
-import { getUserSettings } from "@/actions/getUserSettings";
+import { getUserSettings } from "@/actions/user/get-user-settings";
 import {
   Card,
   CardContent,

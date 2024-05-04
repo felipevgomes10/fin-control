@@ -1,6 +1,6 @@
 "use client";
 
-import { createExpenseReport } from "@/actions/createExpenseReport";
+import { createExpenseReport } from "@/actions/reports/create-expense-report";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

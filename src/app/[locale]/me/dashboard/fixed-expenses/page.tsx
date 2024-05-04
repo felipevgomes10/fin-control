@@ -1,5 +1,5 @@
-import { getFixedExpenses } from "@/actions/getFixedExpenses";
-import { getUserSettings } from "@/actions/getUserSettings";
+import { getFixedExpenses } from "@/actions/expenses/get-fixed-expenses";
+import { getUserSettings } from "@/actions/user/get-user-settings";
 import { auth } from "@/auth/auth";
 import {
   Card,

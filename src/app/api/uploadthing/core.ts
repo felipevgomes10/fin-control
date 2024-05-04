@@ -1,4 +1,4 @@
-import { updateProfileImage } from "@/actions/updateProfileImage";
+import { updateProfileImage } from "@/actions/user/update-profile-image";
 import { auth } from "@/auth/auth";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";

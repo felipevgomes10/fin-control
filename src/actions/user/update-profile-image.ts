@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../prisma/client";
+import { prisma } from "../../../prisma/client";
 
 export async function updateProfileImage(url: string, userId: string) {
   const userSettings = await prisma.userSettings.findFirst({
