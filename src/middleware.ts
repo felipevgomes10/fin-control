@@ -16,10 +16,7 @@ export async function middleware(request: NextRequest) {
   const localeCookie = cookiesStore.get("user.locale");
   const session = cookiesStore.get("authjs.session-token");
 
-  if (!session || !localeCookie) {
-    request.nextUrl.pathname = "/login";
-    return NextResponse.redirect(request.nextUrl);
-  }
+  if (!session || !localeCookie) return;
 
   const { pathname } = request.nextUrl;
   const pathnameHasLocale = appConfig.locales.some(
