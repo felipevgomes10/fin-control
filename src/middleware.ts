@@ -31,7 +31,7 @@ async function getLocale({ userId }: { userId: string }) {
 
 export async function middleware(request: NextRequest) {
   const session = await auth();
-  if (!session) return NextResponse.redirect("en-US/login");
+  if (!session) return;
 
   const { pathname } = request.nextUrl;
   const pathnameHasLocale = appConfig.locales.some(
