@@ -1,6 +1,9 @@
 "use client";
 
-import { monthlyExpensesSchema } from "@/app/api/monthly-expenses/schema";
+import {
+  getMonthlyExpensesSchema,
+  monthlyExpensesSchema,
+} from "@/app/api/monthly-expenses/schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { useRouter } from "next/navigation";
@@ -27,6 +31,8 @@ export function MonthlyExpensesDialog() {
 
   const router = useRouter();
 
+  const dictionary = useDictionary();
+
   const form = useForm<z.infer<typeof monthlyExpensesSchema>>({
     defaultValues: {
       label: "",
@@ -34,7 +40,12 @@ export function MonthlyExpensesDialog() {
       notes: "",
       installments: 0,
     },
-    resolver: zodResolver(monthlyExpensesSchema),
+    resolver: zodResolver(
+      getMonthlyExpensesSchema({
+        label: dictionary.monthlyExpense.labelError,
+        amount: dictionary.monthlyExpense.amountError,
+      })
+    ),
   });
 
   const onSubmit = async (values: z.infer<typeof monthlyExpensesSchema>) => {
@@ -49,13 +60,13 @@ export function MonthlyExpensesDialog() {
 
       if (!response.ok) throw new Error();
 
-      toast.success("Monthly expense added successfully");
+      toast.success(dictionary.monthlyExpense.addSuccess);
       form.reset();
       router.refresh();
 
       if (!addNewExpenseChecked) dialogCloseRef.current?.click();
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      toast.error(dictionary.monthlyExpense.addError);
       console.error(error);
     }
   };
@@ -68,15 +79,16 @@ export function MonthlyExpensesDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-max">Add Monthly Expense</Button>
+        <Button className="w-full sm:w-max">
+          {dictionary.monthlyExpense.add}
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a Monthly Expense</DialogTitle>
+          <DialogTitle>{dictionary.monthlyExpense.dialogTitle}</DialogTitle>
           <DialogClose ref={dialogCloseRef} />
           <DialogDescription>
-            Add a new monthly expense to be used later. Click save when you are
-            done.
+            {dictionary.monthlyExpense.dialogDescription}
           </DialogDescription>
         </DialogHeader>
         <MonthlyExpenseForm

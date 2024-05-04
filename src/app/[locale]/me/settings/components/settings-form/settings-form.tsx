@@ -14,6 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Upload } from "@/components/uploadthing/upload";
 import { config } from "@/config/config";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { UserSettings } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -35,6 +36,7 @@ export function SettingsForm({
   userSettings: UserSettings | null;
 }) {
   const router = useRouter();
+  const dictionary = useDictionary();
 
   const { pending } = useFormStatus();
   const initialData = {
@@ -65,23 +67,26 @@ export function SettingsForm({
             };
             setOptimisticData(rawFormData);
             await editUserSettings(formData);
-            toast.success("Settings updated");
+            router.replace(`/${rawFormData.locale}/me/settings`);
+            toast.success(dictionary.settings.settingsUpdateSuccess);
           }}
         >
           <div className="flex gap-4 flex-wrap">
             <div className="flex flex-col gap-4 w-full sm:w-[350px]">
-              <Label htmlFor="userName">Name</Label>
+              <Label htmlFor="userName">{dictionary.settings.nameInput}</Label>
               <Input
                 id="userName"
                 name="userName"
                 type="text"
                 defaultValue={optimisticData.userName}
-                placeholder="Enter your name"
+                placeholder={dictionary.settings.nameInputPlaceholder}
                 className="w-full"
               />
             </div>
             <div className="flex flex-col gap-4 flex-1 min-w-[81px]">
-              <Label htmlFor="monthlyTargetExpense">Budget</Label>
+              <Label htmlFor="monthlyTargetExpense">
+                {dictionary.settings.budgetInput}
+              </Label>
               <Input
                 id="monthlyTargetExpense"
                 name="monthlyTargetExpense"
@@ -89,18 +94,22 @@ export function SettingsForm({
                 min="1"
                 required
                 defaultValue={optimisticData.monthlyTargetExpense}
-                placeholder="Enter your monthly budget"
+                placeholder={dictionary.settings.budgetInputPlaceholder}
               />
             </div>
             <div className="flex flex-col gap-4 flex-1 min-w-[81px]">
-              <Label htmlFor="currency">Currency</Label>
+              <Label htmlFor="currency">
+                {dictionary.settings.currencyInput}
+              </Label>
               <Select
                 name="currency"
                 required
                 defaultValue={optimisticData.currency}
               >
                 <SelectTrigger id="currency">
-                  <SelectValue placeholder="Choose your currency" />
+                  <SelectValue
+                    placeholder={dictionary.settings.currencyInputPlaceholder}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {config.currencies.map((currency) => (
@@ -112,14 +121,16 @@ export function SettingsForm({
               </Select>
             </div>
             <div className="flex flex-col gap-4 flex-1 min-w-[81px]">
-              <Label htmlFor="locale">Locale</Label>
+              <Label htmlFor="locale">{dictionary.settings.localeInput}</Label>
               <Select
                 name="locale"
                 required
                 defaultValue={optimisticData.locale}
               >
                 <SelectTrigger id="locale">
-                  <SelectValue placeholder="Choose your locale" />
+                  <SelectValue
+                    placeholder={dictionary.settings.localeInputPlaceholder}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {config.locales.map((locale) => (
@@ -137,7 +148,9 @@ export function SettingsForm({
               type="submit"
               disabled={pending}
             >
-              {pending ? "Saving..." : "Save"}
+              {pending
+                ? dictionary.settings.saving
+                : dictionary.settings.saveButton}
             </Button>
           </div>
         </form>
@@ -145,7 +158,7 @@ export function SettingsForm({
       <Separator className="mt-6 mb-6" />
       <section>
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">
-          Profile Picture
+          {dictionary.settings.profilePic}
         </h3>
         <div className="flex flex-col gap-4 w-full sm:max-w-[200px]">
           <div className="flex flex-col gap-4">
@@ -165,9 +178,21 @@ export function SettingsForm({
               appearance={{
                 button: "bg-primary text-primary-foreground",
               }}
+              content={{
+                button: ({ isUploading, uploadProgress }) => {
+                  return (
+                    <Button className="h-full w-full pointer-events-none relative z-50">
+                      {isUploading
+                        ? `${dictionary.settings.profilePicUploading} ${uploadProgress}%`
+                        : dictionary.settings.profilePicInput}
+                    </Button>
+                  );
+                },
+                allowedContent: `${dictionary.settings.profielPicType} 2MB`,
+              }}
               onClientUploadComplete={() => {
                 router.refresh();
-                toast.success("Profile picture updated");
+                toast.success(dictionary.settings.profilePicUpdateSuccess);
               }}
             />
           </div>

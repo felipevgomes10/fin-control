@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "next-themes";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { VictoryPie, VictoryTheme } from "victory";
 
 export function Chart({
@@ -14,7 +14,7 @@ export function Chart({
   let monthlyTargetExpensePercent = (monthlyTargetExpense / sum) * 100;
   let totalExpensesPercent = (totalExpenses / sum) * 100;
 
-  const { theme } = useTheme();
+  const dictionary = useDictionary();
 
   return (
     <div className="flex justify-center h-[500px]">
@@ -22,7 +22,10 @@ export function Chart({
         <VictoryPie
           theme={VictoryTheme.material}
           range={[0, 100]}
-          categories={["Budget", "Total Expenses"]}
+          categories={[
+            dictionary.report.budget,
+            dictionary.report.totalExpended,
+          ]}
           animate={{ duration: 2000 }}
           colorScale={["#FFC107", "#FF5722"]}
           style={{
@@ -32,11 +35,11 @@ export function Chart({
           }}
           data={[
             {
-              x: "Budget",
+              x: dictionary.report.budget,
               y: monthlyTargetExpensePercent - totalExpensesPercent,
             },
             {
-              x: "Total Expenses",
+              x: dictionary.report.totalExpended,
               y: monthlyTargetExpensePercent,
             },
           ]}
@@ -44,11 +47,13 @@ export function Chart({
         <div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[#FFC107]" />
-            <span className="w-[max-content]">Budget</span>
+            <span className="w-[max-content]">{dictionary.report.budget}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[#FF5722]" />
-            <span className="w-[max-content]">Total Expenses</span>
+            <span className="w-[max-content]">
+              {dictionary.report.totalExpended}
+            </span>
           </div>
         </div>
       </div>

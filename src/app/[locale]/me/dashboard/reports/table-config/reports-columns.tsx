@@ -12,10 +12,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dictionary,
+  useDictionary,
+} from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { months } from "../components/report-form/utils";
 
 type Reports = {
   id: string;
@@ -27,30 +32,43 @@ export const reportsColumns: ColumnDef<Reports>[] = [
   {
     accessorKey: "month",
     enableHiding: false,
-    header: ({ column }) => {
+    header: function Header({ column }) {
+      const dictionary = useDictionary();
+
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Month
+          {dictionary.table.month}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => {
-      return <div className="ml-4">{row.getValue("month")}</div>;
+    cell: function Cell({ row }) {
+      const month = months.findIndex((month) => {
+        return month === row.getValue("month");
+      });
+      const dictionary = useDictionary();
+
+      return (
+        <div className="ml-4">
+          {dictionary.months[month.toString() as keyof Dictionary["months"]]}
+        </div>
+      );
     },
   },
   {
     accessorKey: "year",
-    header: ({ column }) => {
+    header: function Header({ column }) {
+      const dictionary = useDictionary();
+
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Year
+          {dictionary.table.year}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -61,7 +79,10 @@ export const reportsColumns: ColumnDef<Reports>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: function Header() {
+      const dictionary = useDictionary();
+      return dictionary.table.createdAt;
+    },
     cell: function Cell({ row }) {
       const intl = useTableContext();
       const date = row.getValue("createdAt") as string;
@@ -73,6 +94,7 @@ export const reportsColumns: ColumnDef<Reports>[] = [
     enableHiding: false,
     cell: function Cell({ row }) {
       const [showDeleteModal, setShowDeleteModal] = useState(false);
+      const dictionary = useDictionary();
 
       return (
         <>
@@ -85,19 +107,19 @@ export const reportsColumns: ColumnDef<Reports>[] = [
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">{dictionary.table.srOnly}</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{dictionary.table.actions}</DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href={`/me/dashboard/reports/${row.original.id}`}>
-                  View Details
+                  {dictionary.table.viewDetails}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setShowDeleteModal(true)}>
-                Delete
+                {dictionary.table.delete}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

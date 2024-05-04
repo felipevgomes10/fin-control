@@ -17,6 +17,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  Dictionary,
+  useDictionary,
+} from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
@@ -75,6 +79,8 @@ export function DataTable<TData, TValue>({
 
   const { accessorKey, placeholder } = filters || {};
 
+  const dictionary = useDictionary();
+
   return (
     <TableProvider intl={intl}>
       <div>
@@ -98,7 +104,7 @@ export function DataTable<TData, TValue>({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="ml-auto">
-                  Columns
+                  {dictionary.table.columns}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -106,6 +112,9 @@ export function DataTable<TData, TValue>({
                   .getAllColumns()
                   .filter((column) => column.getCanHide())
                   .map((column) => {
+                    let columnText = column.id.charAt(0).toLowerCase();
+                    columnText += column.id.slice(1);
+
                     return (
                       <DropdownMenuCheckboxItem
                         key={column.id}
@@ -115,7 +124,11 @@ export function DataTable<TData, TValue>({
                           column.toggleVisibility(!!value)
                         }
                       >
-                        {column.id}
+                        {
+                          dictionary.table[
+                            columnText as keyof Dictionary["table"]
+                          ]
+                        }
                       </DropdownMenuCheckboxItem>
                     );
                   })}
@@ -166,7 +179,7 @@ export function DataTable<TData, TValue>({
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {dictionary.table.noResults}
                   </TableCell>
                 </TableRow>
               )}
@@ -180,7 +193,7 @@ export function DataTable<TData, TValue>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            {dictionary.table.previous}
           </Button>
           <Button
             variant="outline"
@@ -188,7 +201,7 @@ export function DataTable<TData, TValue>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            {dictionary.table.next}
           </Button>
         </div>
       </div>

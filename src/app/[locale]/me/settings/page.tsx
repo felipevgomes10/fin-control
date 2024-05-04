@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import { Suspense } from "react";
 import { SettingsForm } from "./components/settings-form/settings-form";
 
@@ -18,13 +19,19 @@ async function Content() {
   );
 }
 
-export default function Settings() {
+export default async function Settings({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  const dictionary = await getDictionary(params.locale);
+
   return (
     <section>
       <Card className="min-h-[400px]">
         <CardHeader>
-          <CardTitle>Settings</CardTitle>
-          <CardDescription>Change your settings</CardDescription>
+          <CardTitle>{dictionary.settings.title}</CardTitle>
+          <CardDescription>{dictionary.settings.subTitle}</CardDescription>
         </CardHeader>
         <Suspense>
           <Content />

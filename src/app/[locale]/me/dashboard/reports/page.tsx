@@ -1,12 +1,15 @@
 import { getExpensesReports } from "@/actions/getExpensesReports";
 import { getUserSettings } from "@/actions/getUserSettings";
+import type { Dictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import { Suspense } from "react";
+import { Loading } from "../../components/loading/loading";
 import { DataTable } from "../../components/table/table";
 import { ReportDialog } from "./components/report-dialog/report-dialog";
 import { months } from "./components/report-form/utils";
 import { reportsColumns } from "./table-config/reports-columns";
 
-async function Content() {
+async function Content({ dictionary }: { dictionary: Dictionary }) {
   const [reports, userSettings] = await Promise.all([
     getExpensesReports(),
     getUserSettings(),
@@ -28,7 +31,7 @@ async function Content() {
       }}
       filters={{
         accessorKey: "month",
-        placeholder: "Search by month...",
+        placeholder: dictionary.reports.filter,
       }}
       actions={
         <div className="flex justify-end w-full mr-4">
@@ -39,11 +42,37 @@ async function Content() {
   );
 }
 
-export default function Reports() {
+export default async function Reports({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  const dictionary = await getDictionary(params.locale);
+
   return (
     <section>
-      <Suspense>
-        <Content />
+      <Suspense
+        fallback={
+          <Loading.TableSkeleton
+            columns={[
+              {
+                accessorKey: "month",
+                header: dictionary.table.month,
+              },
+              {
+                accessorKey: "year",
+                header: dictionary.table.year,
+              },
+              {
+                accessorKey: "createdAt",
+                header: dictionary.table.createdAt,
+              },
+            ]}
+            rowsNumber={10}
+          />
+        }
+      >
+        <Content dictionary={dictionary} />
       </Suspense>
     </section>
   );

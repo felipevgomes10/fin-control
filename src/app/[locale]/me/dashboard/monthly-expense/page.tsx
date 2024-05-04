@@ -7,15 +7,16 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
+import type { Dictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import { Suspense } from "react";
 import { Loading } from "../../components/loading/loading";
 import { DataTable } from "../../components/table/table";
 import { formatCurrency } from "../../components/table/utils";
 import { MonthlyExpensesDialog } from "./components/monthly-expenses-dialog/monthly-expenses-dialog";
 import { monthlyExpenseColumns } from "./table-config/monthly-expenses-columns";
-import { monthlyExpensesFakeColumns } from "./table-config/monthly-expenses-fake-columns";
 
-async function Content() {
+async function Content({ dictionary }: { dictionary: Dictionary }) {
   const [monthlyExpenses, fixedExpenses, userSettings] = await Promise.all([
     getMonthlyExpenses(),
     getFixedExpenses(),
@@ -56,6 +57,10 @@ async function Content() {
     <>
       <section>
         <DataTable
+          filters={{
+            accessorKey: "label",
+            placeholder: dictionary.monthlyExpense.filter,
+          }}
           columns={monthlyExpenseColumns}
           data={data}
           intl={{
@@ -72,17 +77,21 @@ async function Content() {
       <section>
         <Card className="flex justify-end items-start sm:items-end flex-col">
           <CardHeader>
-            <CardDescription>Total Expenses</CardDescription>
+            <CardDescription>{dictionary.monthlyExpense.total}</CardDescription>
           </CardHeader>
           <CardContent className="flex gap-6 flex-wrap">
             <div className="flex flex-col">
-              <span className="text-slate-500 text-sm">Monthly Expenses</span>
+              <span className="text-slate-500 text-sm">
+                {dictionary.monthlyExpense.totalMonthlyExpenses}
+              </span>
               <span className="text-2xl font-bold">
                 {formatCurrency(totalMonthlyExpenseAmount, intl)}
               </span>
             </div>
             <div className="flex flex-col mr-4">
-              <span className="text-slate-500 text-sm">Fixed Expenses</span>
+              <span className="text-slate-500 text-sm">
+                {dictionary.monthlyExpense.totalFixedExpenses}
+              </span>
               <span className="text-2xl font-bold">
                 {formatCurrency(totalFixedExpenseAmount, intl)}
               </span>
@@ -97,7 +106,9 @@ async function Content() {
                 data-color={isOverBudget ? "red" : "green"}
                 className="text-sm text-slate-500 absolute left-0 right-auto sm:left-auto sm:right-0 whitespace-nowrap dark:data-[color=green]:text-green-400 data-[color=green]:text-green-700 dark:data-[color=red]:text-red-400 data-[color=red]:text-red-700"
               >
-                {isOverBudget ? "You are over budget" : "You are under budget"}
+                {isOverBudget
+                  ? dictionary.monthlyExpense.overBudget
+                  : dictionary.monthlyExpense.underBudget}
               </span>
               <span className="text-2xl font-bold">
                 {formatCurrency(totalExpenses, intl)}
@@ -110,20 +121,42 @@ async function Content() {
   );
 }
 
-export default function MonthlyExpense() {
+export default async function MonthlyExpense({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  const dictionary = await getDictionary(params.locale);
+
   return (
     <Suspense
       fallback={
         <>
           <Loading.TableSkeleton
-            columns={monthlyExpensesFakeColumns}
+            columns={[
+              { accessorKey: "label", header: dictionary.table.label },
+              { accessorKey: "amount", header: dictionary.table.amount },
+              {
+                accessorKey: "installments",
+                header: dictionary.table.installments,
+              },
+              {
+                accessorKey: "installmentAmount",
+                header: dictionary.table.installmentAmount,
+              },
+              {
+                accessorKey: "installmentsLeft",
+                header: dictionary.table.installmentsLeft,
+              },
+              { accessorKey: "createdAt", header: dictionary.table.createdAt },
+            ]}
             rowsNumber={10}
           />
-          <Loading.ResultCard title="Total" />
+          <Loading.ResultCard title={dictionary.monthlyExpense.total} />
         </>
       }
     >
-      <Content />
+      <Content dictionary={dictionary} />
     </Suspense>
   );
 }

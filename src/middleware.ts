@@ -37,14 +37,13 @@ export async function middleware(request: NextRequest) {
   const pathnameHasLocale = appConfig.locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
+
   if (pathnameHasLocale) return;
 
-  const { locale } = await getLocale({ userId: session.user.id });
-  request.nextUrl.pathname = `/${locale}${pathname}`;
-
+  request.nextUrl.pathname = `/${session.user.locale}${pathname}`;
   return NextResponse.redirect(request.nextUrl);
 }
 
 export const config = {
-  matcher: ["/((?!_next).*)"],
+  matcher: ["/((?!_next|api).*)"],
 };

@@ -1,24 +1,31 @@
+import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import { DashboardCard } from "../components/dashboard-card/dashboard-card";
 
-export default function Dashboard() {
+export default async function Dashboard({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  const dictionary = await getDictionary(params.locale);
+
   return (
     <section className="flex justify-center md:justify-start items-center gap-4 flex-wrap">
       <DashboardCard
-        title="Fixed Expenses"
-        description="Inside this page you can see and control your fixed expenses"
-        linkText=" Go to Fixed Expenses"
+        title={dictionary.dashboard.fixedExpenses}
+        description={dictionary.dashboard.fixedExpensesDescription}
+        linkText={dictionary.dashboard.fixedExpensesLink}
         href="/me/dashboard/fixed-expenses"
       />
       <DashboardCard
-        title="Monthly Expenses"
-        description="Inside this page you can see and control your monthly expenses"
-        linkText=" Go to Monthly Expenses"
+        title={dictionary.dashboard.monthlyExpenses}
+        description={dictionary.dashboard.monthlyExpensesDescription}
+        linkText={dictionary.dashboard.monthlyExpensesLink}
         href="/me/dashboard/monthly-expense"
       />
       <DashboardCard
-        title="Reports"
-        description="Inside this page you can see the reports you created of your expenses "
-        linkText=" Go to Expenses Reports"
+        title={dictionary.dashboard.reports}
+        description={dictionary.dashboard.reportsDescription}
+        linkText={dictionary.dashboard.reportsLink}
         href="/me/dashboard/reports"
       />
     </section>

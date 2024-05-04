@@ -11,13 +11,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import type { Dictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import type {
   Report,
   ReportFixedExpense,
   ReportMonthlyExpense,
   UserSettings,
 } from "@prisma/client";
-import { months } from "../../../components/report-form/utils";
 import { Chart } from "../chart/chart";
 import { PrintReportButton } from "../print-report-button/print-report-button";
 
@@ -39,6 +40,8 @@ export async function ReportViewer({
 
   if (!report || !userSettings || !session) return null;
 
+  const dictionary = await getDictionary(session.user.locale);
+
   const {
     month,
     year,
@@ -51,7 +54,8 @@ export async function ReportViewer({
   const { user } = session;
 
   const formattedDate = formatDate(createdAt, { locale });
-  const formattedMonth = months[month];
+  const formattedMonth =
+    dictionary.months[month.toString() as keyof Dictionary["months"]];
 
   const fixedExpensesTotal = fixedExpenses.reduce(
     (acc, { amount }) => acc + amount,
@@ -72,28 +76,30 @@ export async function ReportViewer({
         locale,
         currency,
       })
-    : "You have no budget set";
+    : dictionary.report.noBudget;
 
   return (
     <Card id="print-area">
       <CardHeader>
         <CardTitle className="flex justify-between items-center gap-4">
-          Expenses Report
+          {dictionary.report.title}
           <PrintReportButton elementId="print-area" />
         </CardTitle>
         <CardDescription className="flex flex-col gap-1">
           <span>
-            {formattedMonth} {year} created on
+            {formattedMonth} {year} {dictionary.report.createdOn}
           </span>
           <span>
-            {formattedDate} by {user.email}
+            {formattedDate} {dictionary.report.by} {user.email}
           </span>
         </CardDescription>
       </CardHeader>
       <CardContent>
         <main className="flex flex-col">
           <section className="flex flex-col gap-3">
-            <h2 className="text-lg font-semibold">Fixed Expenses</h2>
+            <h2 className="text-lg font-semibold">
+              {dictionary.report.fixedExpenses}
+            </h2>
             {fixedExpenses.map(({ id, label, notes, amount }) => (
               <div key={id}>
                 <div className="flex items-center gap-4">
@@ -109,7 +115,9 @@ export async function ReportViewer({
           </section>
           <Separator className="mt-10 mb-8" />
           <section className="flex flex-col gap-3">
-            <h2 className="text-lg font-semibold">Monthly Expenses</h2>
+            <h2 className="text-lg font-semibold">
+              {dictionary.report.monthlyExpenses}
+            </h2>
             {monthlyExpenses.map(
               ({ id, label, notes, amount, installments }) => (
                 <div key={id}>
@@ -128,7 +136,7 @@ export async function ReportViewer({
                             <span>{installments}x</span>
                           </div>
                         ) : (
-                          "One-time payment"
+                          dictionary.report.oneTimePayment
                         )}
                       </span>
                     </div>
@@ -148,7 +156,7 @@ export async function ReportViewer({
           <Separator className="mt-10 mb-8" />
           <section className="flex flex-col gap-3">
             <h2 className="flex justify-between items-center gap-3 text-lg font-semibold">
-              Results
+              {dictionary.report.results}
               {monthlyTargetExpense && (
                 <>
                   <Separator className="flex-1" />
@@ -157,15 +165,15 @@ export async function ReportViewer({
                     className="data-[type='red']:text-red-500 data-[type='green']:text-green-500 font-semibold"
                   >
                     {isOverBudget
-                      ? "You are over the budget!"
-                      : "You are under the budget!"}
+                      ? dictionary.report.overBudget
+                      : dictionary.report.underBudget}
                   </span>
                 </>
               )}
             </h2>
             {monthlyTargetExpense && (
               <div className="flex items-center gap-4">
-                <h3 className="font-medium">Budget</h3>
+                <h3 className="font-medium">{dictionary.report.budget}</h3>
                 <Separator className="flex-1" />
                 <p className="font-bold border border-slate-800 p-2 rounded-md">
                   {formatCurrency(monthlyTargetExpense, { locale, currency })}
@@ -173,21 +181,25 @@ export async function ReportViewer({
               </div>
             )}
             <div className="flex items-center gap-4">
-              <h3 className="font-medium">Total Fixed Expenses</h3>
+              <h3 className="font-medium">
+                {dictionary.report.totalFixedExpenses}
+              </h3>
               <Separator className="flex-1" />
               <p className="font-bold border border-slate-800 p-2 rounded-md">
                 {formatCurrency(fixedExpensesTotal, { locale, currency })}
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <h3 className="font-medium">Total Monthly Expenses</h3>
+              <h3 className="font-medium">
+                {dictionary.report.totalMonthlyExpenses}
+              </h3>
               <Separator className="flex-1" />
               <p className="font-bold border border-slate-800 p-2 rounded-md">
                 {formatCurrency(monthlyExpensesTotal, { locale, currency })}
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <h3 className="font-medium">Total Expended</h3>
+              <h3 className="font-medium">{dictionary.report.totalExpended}</h3>
               <Separator className="flex-1" />
               <p className="font-bold border border-slate-800 p-2 rounded-md">
                 {formatCurrency(monthlyExpensesTotal + fixedExpensesTotal, {
@@ -198,7 +210,7 @@ export async function ReportViewer({
             </div>
             {monthlyTargetExpense && (
               <div className="flex items-center gap-4">
-                <h3 className="font-medium">Total Left</h3>
+                <h3 className="font-medium">{dictionary.report.totalLeft}</h3>
                 <Separator className="flex-1" />
                 <p
                   data-color={

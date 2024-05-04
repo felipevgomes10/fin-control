@@ -3,7 +3,7 @@
 import dictionary from "@/i18n/dictionaries/en-US.json";
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 
-type Dictionary = typeof dictionary;
+export type Dictionary = typeof dictionary;
 
 type DictionaryContextType = {
   dictionary: Dictionary;

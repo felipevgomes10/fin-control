@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { type Dispatch, type SetStateAction } from "react";
 import type { UseFormReturn } from "react-hook-form";
@@ -35,6 +36,8 @@ export function MonthlyExpenseForm({
   const [addNewExpenseChecked, setAddNewExpenseChecked] =
     addNewExpanseState || [];
 
+  const dictionary = useDictionary();
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -44,11 +47,11 @@ export function MonthlyExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="inline-block w-full text-left">
-                Label
+                {dictionary.monthlyExpense.labelInput}
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Give your monthly expense a name"
+                  placeholder={dictionary.monthlyExpense.labelPlaceholder}
                   {...field}
                 />
               </FormControl>
@@ -62,7 +65,7 @@ export function MonthlyExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="inline-block w-full text-left">
-                Amout
+                {dictionary.monthlyExpense.amountInput}
               </FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0.00" {...field} />
@@ -77,7 +80,7 @@ export function MonthlyExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="inline-block w-full text-left">
-                Installments
+                {dictionary.monthlyExpense.installmentsInput}
               </FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0" {...field} />
@@ -92,10 +95,13 @@ export function MonthlyExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="inline-block w-full text-left">
-                Notes
+                {dictionary.monthlyExpense.notesInput}
               </FormLabel>
               <FormControl>
-                <Textarea placeholder="Type here..." {...field} />
+                <Textarea
+                  placeholder={dictionary.monthlyExpense.notesPlaceholder}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -113,7 +119,7 @@ export function MonthlyExpenseForm({
                 htmlFor="add-new"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Add a new expense after saving.
+                {dictionary.monthlyExpense.dialogCheckbox}
               </label>
             </div>
           )}
@@ -122,7 +128,9 @@ export function MonthlyExpenseForm({
             className="w-full sm:w-[150px]"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "Saving..." : "Save Expense"}
+            {form.formState.isSubmitting
+              ? dictionary.monthlyExpense.saving
+              : dictionary.monthlyExpense.save}
           </Button>
         </DialogFooter>
       </form>

@@ -10,24 +10,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { useRef } from "react";
 import { ReportForm } from "../report-form/report-form";
 
 export function ReportDialog() {
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
+  const dictionary = useDictionary();
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-max">Create a Report</Button>
+        <Button className="w-full sm:w-max">{dictionary.reports.add}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create a Report of your expenses</DialogTitle>
+          <DialogTitle>{dictionary.reports.dialogTitle}</DialogTitle>
           <DialogClose ref={dialogCloseRef} />
           <DialogDescription>
-            Create a report of your expenses to see how much you spent in a
-            month
+            {dictionary.reports.dialogDescription}
           </DialogDescription>
         </DialogHeader>
         <ReportForm dialogCloseRef={dialogCloseRef} />

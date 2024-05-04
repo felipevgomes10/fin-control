@@ -2,6 +2,7 @@
 
 import { useTableContext } from "@/app/[locale]/me/contexts/table-provider/table-provider";
 import { Button } from "@/components/ui/button";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { formatCurrency, formatDate } from "../../../components/table/utils";
@@ -19,13 +20,15 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
   {
     accessorKey: "label",
     enableHiding: false,
-    header: ({ column }) => {
+    header: function Header({ column }) {
+      const dictionary = useDictionary();
+
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Label
+          {dictionary.table.label}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -36,13 +39,15 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
   },
   {
     accessorKey: "amount",
-    header: ({ column }) => {
+    header: function Header({ column }) {
+      const dictionary = useDictionary();
+
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Amount
+          {dictionary.table.amount}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -55,30 +60,39 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
   },
   {
     accessorKey: "installments",
-    header: ({ column }) => {
+    header: function Header({ column }) {
+      const dictionary = useDictionary();
+
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Installments
+          {dictionary.table.installments}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => {
+    cell: function Cell({ row }) {
+      const dictionary = useDictionary();
       const installments = parseInt(row.getValue("installments"));
       const hasInstallments = !isNaN(installments) && installments > 1;
+
       return (
         <div className="ml-4">
-          {hasInstallments ? installments + "x" : "One-time payment"}
+          {hasInstallments
+            ? installments + "x"
+            : dictionary.monthlyExpense.oneTimePayment}
         </div>
       );
     },
   },
   {
     id: "installmentAmount",
-    header: "Installment amount",
+    header: function Header() {
+      const dictionary = useDictionary();
+      return dictionary.table.installmentAmount;
+    },
     cell: function Cell({ row }) {
       const intl = useTableContext();
 
@@ -96,8 +110,12 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
   },
   {
     id: "installmentsLeft",
-    header: "Installments left",
-    cell: ({ row }) => {
+    header: function Header() {
+      const dictionary = useDictionary();
+      return dictionary.table.installmentsLeft;
+    },
+    cell: function Cell({ row }) {
+      const dictionary = useDictionary();
       const installments = parseInt(row.getValue("installments"));
       const hasInstallments = !isNaN(installments) && installments > 1;
 
@@ -111,12 +129,19 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
 
       const installmentsLeft = installments - (currentMonth - createdAtMonth);
 
-      return <div>{installmentsLeft} installments left</div>;
+      return (
+        <div>
+          {installmentsLeft} {dictionary.monthlyExpense.installmentsLeft}
+        </div>
+      );
     },
   },
   {
     accessorKey: "createdAt",
-    header: "Created at",
+    header: function Header() {
+      const dictionary = useDictionary();
+      return dictionary.table.createdAt;
+    },
     cell: function Cell({ row }) {
       const intl = useTableContext();
       const date = row.getValue("createdAt") as string;

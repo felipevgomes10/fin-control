@@ -11,6 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dictionary,
+  useDictionary,
+} from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { RefObject } from "react";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
@@ -24,13 +28,15 @@ export function ReportForm({
   const currentMonth = new Date().getMonth();
   const { pending } = useFormStatus();
 
+  const dictionary = useDictionary();
+
   return (
     <form
       className="flex flex-col gap-4"
       action={async (formData: FormData) => {
         try {
           await createExpenseReport(formData);
-          toast.success("Report created");
+          toast.success(dictionary.reports.addSuccess);
           dialogCloseRef.current?.click();
         } catch (error) {
           console.error(error);
@@ -39,28 +45,33 @@ export function ReportForm({
       }}
     >
       <div className="flex flex-col gap-4">
-        <Label htmlFor="month">Month</Label>
+        <Label htmlFor="month">{dictionary.reports.monthInput}</Label>
         <Select name="month" required>
           <SelectTrigger id="month">
-            <SelectValue placeholder="Choose the month" />
+            <SelectValue
+              placeholder={dictionary.reports.monthInputPlaceholder}
+            />
           </SelectTrigger>
           <SelectContent>
             {months
               .filter((_, index) => index <= currentMonth)
               .map((month, index) => (
                 <SelectItem key={month} value={index.toString()}>
-                  {month}
+                  {
+                    dictionary.months[
+                      index.toString() as keyof Dictionary["months"]
+                    ]
+                  }
                 </SelectItem>
               ))}
           </SelectContent>
         </Select>
       </div>
       <div className="flex flex-col gap-4">
-        <Label htmlFor="year">Year</Label>
+        <Label htmlFor="year">{dictionary.reports.yearInput}</Label>
         <Input
           id="year"
           name="year"
-          placeholder="Enter the year"
           required
           value={new Date().getFullYear().toString()}
           className="opacity-50 cursor-not-allowed pointer-events-none"
@@ -71,7 +82,7 @@ export function ReportForm({
         className="w-full sm:w-[150px] self-end"
         disabled={pending}
       >
-        Create Report
+        {dictionary.reports.add}
       </Button>
     </form>
   );

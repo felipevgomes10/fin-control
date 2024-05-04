@@ -1,7 +1,10 @@
 "use client";
 
 import { FixedExpenseForm } from "@/app/[locale]/me/dashboard/fixed-expenses/components/fixed-expense-form/fixed-expense-form";
-import { fixedExpensesSchema } from "@/app/api/fixed-expenses/schema";
+import {
+  fixedExpensesSchema,
+  getFixedExpensesSchema,
+} from "@/app/api/fixed-expenses/schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { useRouter } from "next/navigation";
@@ -25,6 +29,8 @@ export function FixedExpensesDialog() {
   const [addNewExpenseChecked, setAddNewExpenseChecked] =
     useState<CheckedState>(false);
 
+  const dictionary = useDictionary();
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof fixedExpensesSchema>>({
@@ -33,7 +39,12 @@ export function FixedExpensesDialog() {
       amount: 0,
       notes: "",
     },
-    resolver: zodResolver(fixedExpensesSchema),
+    resolver: zodResolver(
+      getFixedExpensesSchema({
+        label: dictionary.fixedExpenses.labelError,
+        amount: dictionary.fixedExpenses.amountError,
+      })
+    ),
   });
 
   const onSubmit = async (values: z.infer<typeof fixedExpensesSchema>) => {
@@ -48,13 +59,13 @@ export function FixedExpensesDialog() {
 
       if (!response.ok) throw new Error();
 
-      toast.success("Fixed expense added successfully");
+      toast.success(dictionary.fixedExpenses.addSuccess);
       form.reset();
       router.refresh();
 
       if (!addNewExpenseChecked) dialogCloseRef.current?.click();
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      toast.error(dictionary.fixedExpenses.addError);
       console.error(error);
     }
   };
@@ -67,15 +78,16 @@ export function FixedExpensesDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-max">Add Fixed Expense</Button>
+        <Button className="w-full sm:w-max">
+          {dictionary.fixedExpenses.add}
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a Fixed Expense</DialogTitle>
+          <DialogTitle>{dictionary.fixedExpenses.dialogTitle}</DialogTitle>
           <DialogClose ref={dialogCloseRef} />
           <DialogDescription>
-            Add a new fixed expense to be used later. Click save when you are
-            done.
+            {dictionary.fixedExpenses.dialogDescription}
           </DialogDescription>
         </DialogHeader>
         <FixedExpenseForm

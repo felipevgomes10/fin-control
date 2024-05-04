@@ -2,6 +2,7 @@
 
 import { useTableContext } from "@/app/[locale]/me/contexts/table-provider/table-provider";
 import { Button } from "@/components/ui/button";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { formatCurrency, formatDate } from "../../../components/table/utils";
@@ -18,13 +19,15 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
   {
     accessorKey: "label",
     enableHiding: false,
-    header: ({ column }) => {
+    header: function Header({ column }) {
+      const dictionary = useDictionary();
+
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Label
+          {dictionary.table.label}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -35,13 +38,15 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
   },
   {
     accessorKey: "amount",
-    header: ({ column }) => {
+    header: function Header({ column }) {
+      const dictionary = useDictionary();
+
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Amount
+          {dictionary.table.amount}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -54,7 +59,11 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Created at",
+    header: function Header() {
+      const dictionary = useDictionary();
+
+      return dictionary.table.createdAt;
+    },
     cell: function Cell({ row }) {
       const intl = useTableContext();
       const date = row.getValue("createdAt") as string;

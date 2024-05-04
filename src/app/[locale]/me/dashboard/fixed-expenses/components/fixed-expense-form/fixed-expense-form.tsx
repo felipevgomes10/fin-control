@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { type Dispatch, type SetStateAction } from "react";
 import type { UseFormReturn } from "react-hook-form";
@@ -33,6 +34,8 @@ export function FixedExpenseForm({
   const [addNewExpenseChecked, setAddNewExpenseChecked] =
     addNewExpanseState || [];
 
+  const dictionary = useDictionary();
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -42,11 +45,11 @@ export function FixedExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="inline-block w-full text-left">
-                Label
+                {dictionary.fixedExpenses.labelInput}
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Give your fixed expense a name"
+                  placeholder={dictionary.fixedExpenses.labelPlaceholder}
                   {...field}
                 />
               </FormControl>
@@ -60,7 +63,7 @@ export function FixedExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="inline-block w-full text-left">
-                Amout
+                {dictionary.fixedExpenses.amountInput}
               </FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0.00" {...field} />
@@ -75,10 +78,13 @@ export function FixedExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="inline-block w-full text-left">
-                Notes
+                {dictionary.fixedExpenses.notesInput}
               </FormLabel>
               <FormControl>
-                <Textarea placeholder="Type here..." {...field} />
+                <Textarea
+                  placeholder={dictionary.fixedExpenses.notesPlaceholder}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,7 +102,7 @@ export function FixedExpenseForm({
                 htmlFor="add-new"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Add a new expense after saving.
+                {dictionary.fixedExpenses.dialogCheckbox}
               </label>
             </div>
           )}
@@ -105,7 +111,9 @@ export function FixedExpenseForm({
             className="w-full sm:w-[150px]"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "Saving..." : "Save Expense"}
+            {form.formState.isSubmitting
+              ? dictionary.fixedExpenses.saving
+              : dictionary.fixedExpenses.save}
           </Button>
         </DialogFooter>
       </form>

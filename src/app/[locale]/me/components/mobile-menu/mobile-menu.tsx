@@ -1,3 +1,4 @@
+import { auth } from "@/auth/auth";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -6,6 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import {
   DollarSign,
   LayoutDashboard,
@@ -14,7 +16,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-export function MobileMenu() {
+export async function MobileMenu() {
+  const session = await auth();
+
+  if (!session) return null;
+
+  const dictionary = await getDictionary(session.user.locale);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -32,7 +40,7 @@ export function MobileMenu() {
                   className="flex !justify-start items-center gap-2 w-full"
                   href="/me/dashboard"
                 >
-                  <LayoutDashboard /> Dashboard
+                  <LayoutDashboard /> {dictionary.links.dashboard}
                 </Link>
               </Button>
             </li>
@@ -42,7 +50,7 @@ export function MobileMenu() {
                   className="flex !justify-start items-center gap-2 w-full"
                   href="/me/dashboard/fixed-expenses"
                 >
-                  <LocateFixedIcon /> Fixed Expenses
+                  <LocateFixedIcon /> {dictionary.links["fixed-expenses"]}
                 </Link>
               </Button>
             </li>
@@ -53,7 +61,7 @@ export function MobileMenu() {
                   href="/me/dashboard/monthly-expense"
                 >
                   <DollarSign />
-                  Monthly Expenses
+                  {dictionary.links["monthly-expense"]}
                 </Link>
               </Button>
             </li>
@@ -64,7 +72,7 @@ export function MobileMenu() {
                   href="/me/dashboard/reports"
                 >
                   <Paperclip />
-                  Reports
+                  {dictionary.links.reports}
                 </Link>
               </Button>
             </li>

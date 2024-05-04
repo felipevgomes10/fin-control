@@ -11,6 +11,7 @@ import {
   DialogPortal,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 
@@ -28,6 +29,7 @@ export function DeleteDialog({
   successMessage,
 }: DeleteDialogProps) {
   const [showDeleteModal, setShowDeleteModal] = state;
+  const dictionary = useDictionary();
 
   return (
     <Dialog
@@ -37,16 +39,15 @@ export function DeleteDialog({
       <DialogPortal>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogTitle>{dictionary.deleteDialog.title}</DialogTitle>
             <DialogClose />
             <DialogDescription>
-              This action cannot be undone. This will permanently delete this
-              item.
+              {dictionary.deleteDialog.description}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="ghost">Cancel</Button>
+              <Button variant="ghost">{dictionary.deleteDialog.cancel}</Button>
             </DialogClose>
             <form
               action={async () => {
@@ -65,7 +66,7 @@ export function DeleteDialog({
                 type="submit"
                 variant="destructive"
               >
-                Delete
+                {dictionary.deleteDialog.delete}
               </Button>
             </form>
           </DialogFooter>

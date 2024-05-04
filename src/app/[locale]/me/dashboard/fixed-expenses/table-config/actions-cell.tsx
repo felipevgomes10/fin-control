@@ -1,7 +1,10 @@
 "use client";
 
 import { FixedExpenseForm } from "@/app/[locale]/me/dashboard/fixed-expenses/components/fixed-expense-form/fixed-expense-form";
-import { fixedExpensesSchema } from "@/app/api/fixed-expenses/schema";
+import {
+  fixedExpensesSchema,
+  getFixedExpensesSchema,
+} from "@/app/api/fixed-expenses/schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,6 +23,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { FixedExpense } from "@prisma/client";
 import type { CellContext } from "@tanstack/react-table";
@@ -36,6 +40,8 @@ function DetailsDialogContent({
 }: {
   closeDetailsModal: () => void;
 }) {
+  const dictionary = useDictionary();
+
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
@@ -53,7 +59,12 @@ function DetailsDialogContent({
         notes: data.notes || "",
       };
     },
-    resolver: zodResolver(fixedExpensesSchema),
+    resolver: zodResolver(
+      getFixedExpensesSchema({
+        label: dictionary.fixedExpenses.labelError,
+        amount: dictionary.fixedExpenses.amountError,
+      })
+    ),
   });
   const expenseLabel = form.getValues("label");
 
@@ -69,12 +80,12 @@ function DetailsDialogContent({
 
       if (!response.ok) throw new Error();
 
-      toast.success("Fixed expense updated successfully");
+      toast.success(dictionary.fixedExpenses.updateSuccess);
       closeDetailsModal();
       router.replace(pathname);
       router.refresh();
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      toast.error(dictionary.fixedExpenses.updateError);
       console.error(error);
     }
   };
@@ -83,9 +94,11 @@ function DetailsDialogContent({
 
   return (
     <DialogHeader>
-      <DialogTitle>{expenseLabel} expense details</DialogTitle>
+      <DialogTitle>
+        {expenseLabel} - {dictionary.fixedExpenses.dialogEditTitle}
+      </DialogTitle>
       <DialogDescription>
-        See {expenseLabel} expense details here.
+        {expenseLabel} - {dictionary.fixedExpenses.dialogEditDescription}.
       </DialogDescription>
       <FixedExpenseForm form={form} onSubmit={onSubmit} showCheckbox={false} />
     </DialogHeader>
@@ -95,6 +108,8 @@ function DetailsDialogContent({
 export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+
+  const dictionary = useDictionary();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -115,11 +130,11 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
 
       if (!response.ok) throw new Error();
 
-      toast.success("Fixed expense deleted successfully");
+      toast.success(dictionary.fixedExpenses.deleteSuccess);
       setShowDeleteModal(false);
       router.refresh();
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      toast.error(dictionary.fixedExpenses.deleteError);
       console.error(error);
     }
   };
@@ -144,19 +159,20 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
         <DialogPortal>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogTitle>{dictionary.deleteDialog.title}</DialogTitle>
               <DialogClose />
               <DialogDescription>
-                This action cannot be undone. This will permanently delete this
-                item.
+                {dictionary.deleteDialog.description}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="ghost">Cancel</Button>
+                <Button variant="ghost">
+                  {dictionary.deleteDialog.cancel}
+                </Button>
               </DialogClose>
               <Button variant="destructive" onClick={onDelete}>
-                Delete
+                {dictionary.deleteDialog.delete}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -185,22 +201,22 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{dictionary.table.srOnly}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>{dictionary.table.actions}</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={(e) => {
               onDetailsClick(e);
               setShowDetailsModal(true);
             }}
           >
-            View Details
+            {dictionary.table.viewDetails}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowDeleteModal(true)}>
-            Delete
+            {dictionary.table.delete}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
