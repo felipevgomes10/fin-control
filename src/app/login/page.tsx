@@ -18,7 +18,7 @@ import { ConfirmationToast } from "./components/confirmation-toast/confirmation-
 export default async function Login() {
   const session = await auth();
 
-  if (session) return redirect("/me/dashboard");
+  if (session) return redirect(`/${session.user.locale}/me/dashboard`);
 
   return (
     <div className="flex justify-center items-center h-screen">
