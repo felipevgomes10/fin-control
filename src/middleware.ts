@@ -7,13 +7,16 @@
 //   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 // };
 
+import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
-import { auth } from "./auth/auth";
 import { config as appConfig } from "./config/config";
 
 export async function middleware(request: NextRequest) {
-  const session = await auth();
-  if (!session) {
+  const cookiesStore = cookies();
+  const localeCookie = cookiesStore.get("user.locale");
+  const session = cookiesStore.get("authjs.session-token");
+
+  if (!session || !localeCookie) {
     request.nextUrl.pathname = "/login";
     return NextResponse.redirect(request.nextUrl);
   }
@@ -25,7 +28,7 @@ export async function middleware(request: NextRequest) {
 
   if (pathnameHasLocale) return;
 
-  request.nextUrl.pathname = `/${session.user.locale}${pathname}`;
+  request.nextUrl.pathname = `/${localeCookie.value}${pathname}`;
   return NextResponse.redirect(request.nextUrl);
 }
 
