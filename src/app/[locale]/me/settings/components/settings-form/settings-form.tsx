@@ -67,7 +67,6 @@ export function SettingsForm({
             };
             setOptimisticData(rawFormData);
             await editUserSettings(formData);
-            router.replace(`/${rawFormData.locale}/me/settings`);
             toast.success(dictionary.settings.settingsUpdateSuccess);
           }}
         >
