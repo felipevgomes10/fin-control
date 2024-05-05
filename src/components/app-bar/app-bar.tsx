@@ -71,7 +71,7 @@ export async function AppBar() {
                       variant="outline"
                       formAction={async () => {
                         "use server";
-                        await signOut({ redirectTo: "/" });
+                        await signOut({ redirectTo: "/login" });
                       }}
                     >
                       {dictionary.appBar.signOut}
