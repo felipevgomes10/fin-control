@@ -37,7 +37,7 @@ export async function editUserSettings(formData: FormData) {
     data: rawFormData,
   });
 
-  revalidatePath("/me/settings");
+  revalidatePath("/[locale]/me/settings");
 
   return { message: "Settings updated" };
 }

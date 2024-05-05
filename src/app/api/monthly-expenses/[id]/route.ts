@@ -41,7 +41,7 @@ export const DELETE = auth(async (req, { params }) => {
       where: { id, userId: req.auth.user.id },
     });
 
-    revalidatePath("/me/dashboard/monthly-expenses", "page");
+    revalidatePath("/[locale]/me/dashboard/monthly-expenses", "page");
 
     return NextResponse.json({
       message: "Monthly expense deleted",
@@ -72,7 +72,7 @@ export const PUT = auth(async (req, { params }) => {
       },
     });
 
-    revalidatePath("/me/dashboard/monthly-expenses", "page");
+    revalidatePath("/[locale]/me/dashboard/monthly-expenses", "page");
 
     return NextResponse.json(
       { message: "Monthly expense updated", data: updatedMonthlyExpense },

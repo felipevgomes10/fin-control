@@ -17,7 +17,7 @@ export const POST = auth(async (req) => {
       data: { ...fixedExpense, userId: req.auth.user.id },
     });
 
-    revalidatePath("/me/dashboard/fixed-expenses", "page");
+    revalidatePath("/[locale]/me/dashboard/fixed-expenses", "page");
 
     return NextResponse.json({
       message: "Fixed expense created",

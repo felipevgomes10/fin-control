@@ -22,7 +22,7 @@ export const POST = auth(async (req) => {
       },
     });
 
-    revalidatePath("/me/dashboard/monthly-expenses", "page");
+    revalidatePath("/[locale]/me/dashboard/monthly-expenses", "page");
 
     return NextResponse.json({
       message: "Monthly expense created",

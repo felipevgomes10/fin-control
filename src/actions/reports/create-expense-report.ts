@@ -74,7 +74,7 @@ export async function createExpenseReport(formData: FormData) {
     },
   });
 
-  revalidatePath("/me/dashboard/reports", "page");
+  revalidatePath("/[locale]/me/dashboard/reports", "page");
 
   return { message: "Report created" };
 }

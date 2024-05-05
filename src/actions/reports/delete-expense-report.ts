@@ -16,5 +16,5 @@ export async function deleteExpenseReport(id: string) {
     },
   });
 
-  revalidatePath("/me/dashboard/reports", "page");
+  revalidatePath("/[locale]/me/dashboard/reports", "page");
 }
