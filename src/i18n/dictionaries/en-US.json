@@ -142,7 +142,8 @@
     "yearInput": "Year",
     "dialogSave": "Create Report",
     "addSuccess": "Report created successfully",
-    "addError": "Error creating Report"
+    "addError": "Error creating Report",
+    "deleteSuccess": "Report deleted successfully"
   },
   "report": {
     "title": "Expenses Report",

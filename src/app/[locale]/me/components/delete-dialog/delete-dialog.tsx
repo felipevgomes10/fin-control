@@ -20,6 +20,7 @@ type DeleteDialogProps = {
   state: [boolean, Dispatch<SetStateAction<boolean>>];
   action: (id: string) => Promise<void>;
   successMessage?: string;
+  setOptimisticData?: (...params: any) => void;
 };
 
 export function DeleteDialog({
@@ -27,6 +28,7 @@ export function DeleteDialog({
   state,
   action,
   successMessage,
+  setOptimisticData,
 }: DeleteDialogProps) {
   const [showDeleteModal, setShowDeleteModal] = state;
   const dictionary = useDictionary();
@@ -52,8 +54,13 @@ export function DeleteDialog({
             <form
               action={async () => {
                 try {
-                  await action(itemId);
+                  setOptimisticData?.({
+                    action: "delete",
+                    payload: { id: itemId },
+                  });
                   setShowDeleteModal(false);
+
+                  await action(itemId);
                   toast.success(successMessage || "Item deleted successfully");
                 } catch (error) {
                   toast.error((error as Error).message);

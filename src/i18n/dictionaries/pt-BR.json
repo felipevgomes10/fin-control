@@ -142,7 +142,8 @@
     "yearInput": "Ano",
     "dialogSave": "Criar Relatório",
     "addSuccess": "Relatório criado com sucesso",
-    "addError": "Erro ao criar o Relatório"
+    "addError": "Erro ao criar o Relatório",
+    "deleteSuccess": "Relatório excluído com sucesso"
   },
   "report": {
     "title": "Relatório de Despesas",

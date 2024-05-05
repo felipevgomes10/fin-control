@@ -1,19 +1,18 @@
 import { getExpensesReports } from "@/actions/reports/get-expenses-reports";
 import { getUserSettings } from "@/actions/user/get-user-settings";
-import type { Dictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import { Suspense } from "react";
 import { Loading } from "../../components/loading/loading";
-import { DataTable } from "../../components/table/table";
-import { ReportDialog } from "./components/report-dialog/report-dialog";
 import { months } from "./components/report-form/utils";
-import { reportsColumns } from "./table-config/reports-columns";
+import { ReportsTable } from "./components/reports-table/reports-table";
+import { ReportsProvider } from "./contexts/reports-context/reports-context";
 
-async function Content({ dictionary }: { dictionary: Dictionary }) {
+async function Content() {
   const [reports, userSettings] = await Promise.all([
     getExpensesReports(),
     getUserSettings(),
   ]);
+
   const data = reports?.map(({ id, month, year, createdAt }) => ({
     id,
     month: months[month],
@@ -22,23 +21,9 @@ async function Content({ dictionary }: { dictionary: Dictionary }) {
   }));
 
   return (
-    <DataTable
-      columns={reportsColumns}
-      data={data || []}
-      intl={{
-        locale: userSettings?.locale,
-        currency: userSettings?.currency,
-      }}
-      filters={{
-        accessorKey: "month",
-        placeholder: dictionary.reports.filter,
-      }}
-      actions={
-        <div className="flex justify-end w-full mr-4">
-          <ReportDialog />
-        </div>
-      }
-    />
+    <ReportsProvider initalData={data}>
+      <ReportsTable userSettings={userSettings} />
+    </ReportsProvider>
   );
 }
 
@@ -72,7 +57,7 @@ export default async function Reports({
           />
         }
       >
-        <Content dictionary={dictionary} />
+        <Content />
       </Suspense>
     </section>
   );

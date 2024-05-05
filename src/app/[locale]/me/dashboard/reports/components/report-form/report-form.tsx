@@ -16,8 +16,8 @@ import {
   useDictionary,
 } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { RefObject } from "react";
-import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
+import { useReportsProvider } from "../../contexts/reports-context/reports-context";
 import { months } from "./utils";
 
 export function ReportForm({
@@ -26,18 +26,28 @@ export function ReportForm({
   dialogCloseRef: RefObject<HTMLButtonElement>;
 }) {
   const currentMonth = new Date().getMonth();
-  const { pending } = useFormStatus();
-
   const dictionary = useDictionary();
+  const { setOptimisticReports } = useReportsProvider();
 
   return (
     <form
       className="flex flex-col gap-4"
       action={async (formData: FormData) => {
         try {
+          setOptimisticReports({
+            action: "add",
+            payload: {
+              id: crypto.randomUUID(),
+              month: months[parseInt(formData.get("month") as string)],
+              year: new Date().getFullYear(),
+              createdAt: new Date().toUTCString(),
+            },
+          });
+
+          dialogCloseRef.current?.click();
+
           await createExpenseReport(formData);
           toast.success(dictionary.reports.addSuccess);
-          dialogCloseRef.current?.click();
         } catch (error) {
           console.error(error);
           toast.error((error as Error).message);
@@ -77,11 +87,7 @@ export function ReportForm({
           className="opacity-50 cursor-not-allowed pointer-events-none"
         />
       </div>
-      <Button
-        type="submit"
-        className="w-full sm:w-[150px] self-end"
-        disabled={pending}
-      >
+      <Button type="submit" className="w-full sm:w-[150px] self-end">
         {dictionary.reports.add}
       </Button>
     </form>

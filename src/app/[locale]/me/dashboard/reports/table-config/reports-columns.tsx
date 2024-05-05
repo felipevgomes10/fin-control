@@ -21,6 +21,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { months } from "../components/report-form/utils";
+import { useReportsProvider } from "../contexts/reports-context/reports-context";
 
 type Reports = {
   id: string;
@@ -95,6 +96,7 @@ export const reportsColumns: ColumnDef<Reports>[] = [
     cell: function Cell({ row }) {
       const [showDeleteModal, setShowDeleteModal] = useState(false);
       const dictionary = useDictionary();
+      const { setOptimisticReports } = useReportsProvider();
 
       return (
         <>
@@ -102,7 +104,8 @@ export const reportsColumns: ColumnDef<Reports>[] = [
             itemId={row.original.id}
             state={[showDeleteModal, setShowDeleteModal]}
             action={deleteExpenseReport}
-            successMessage="Report deleted successfully."
+            setOptimisticData={setOptimisticReports}
+            successMessage={dictionary.reports.deleteSuccess}
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
