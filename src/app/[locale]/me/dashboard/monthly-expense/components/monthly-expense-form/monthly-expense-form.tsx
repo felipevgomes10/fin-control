@@ -23,15 +23,13 @@ import { z } from "zod";
 export function MonthlyExpenseForm({
   form,
   showCheckbox = true,
-  onSubmit,
   addNewExpanseState,
+  action,
 }: {
   form: UseFormReturn<z.infer<typeof monthlyExpensesSchema>>;
   showCheckbox?: boolean;
-  onSubmit: (
-    data: z.infer<typeof monthlyExpensesSchema>
-  ) => Promise<void> | void;
   addNewExpanseState?: [CheckedState, Dispatch<SetStateAction<CheckedState>>];
+  action: (formData: FormData) => any;
 }) {
   const [addNewExpenseChecked, setAddNewExpenseChecked] =
     addNewExpanseState || [];
@@ -40,7 +38,7 @@ export function MonthlyExpenseForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form action={action} className="space-y-4">
         <FormField
           control={form.control}
           name="label"

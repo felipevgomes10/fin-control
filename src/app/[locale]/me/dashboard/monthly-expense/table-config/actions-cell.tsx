@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  getMonthlyExpensesSchema,
-  monthlyExpensesSchema,
-} from "@/app/api/monthly-expenses/schema";
+import { deleteMonthlyExpense } from "@/actions/expenses/delete-monthly-expense";
+import { updateMonthlyExpense } from "@/actions/expenses/update-monthly-expense";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,87 +21,109 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import {
+  getMonthlyExpensesSchema,
+  monthlyExpensesSchema,
+} from "@/schemas/monthly-expense-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { MonthlyExpense } from "@prisma/client";
 import type { CellContext } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, type MouseEvent } from "react";
+import { useState } from "react";
+import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { MonthlyExpenseForm } from "../components/monthly-expense-form/monthly-expense-form";
+import { useMonthlyExpensesContext } from "../contexts/monthly-expense-provider/monthly-expense-provider";
 import type { MonthlyExpenses } from "./monthly-expenses-columns";
 
 function DetailsDialogContent({
+  id,
   closeDetailsModal,
 }: {
+  id: string;
   closeDetailsModal: () => void;
 }) {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-
-  const router = useRouter();
-  const pathname = usePathname();
-
   const dictionary = useDictionary();
 
+  const { optimisticMonthlyExpenses, setOptimisticMonthlyExpenses } =
+    useMonthlyExpensesContext();
+
+  const formSchema = getMonthlyExpensesSchema({
+    label: dictionary.monthlyExpense.labelError,
+    amount: dictionary.monthlyExpense.amountError,
+  });
   const form = useForm<z.infer<typeof monthlyExpensesSchema>>({
     defaultValues: async () => {
-      const response = await fetch(`/api/monthly-expenses/${id}`);
-      if (!response.ok) throw new Error("Could not fetch data");
-      const { data }: { data: MonthlyExpense } = await response.json();
+      const data = optimisticMonthlyExpenses.find(
+        (expense) => expense.id === id
+      );
+
+      if (!data) throw new Error("Could not find expense");
+
       return {
         label: data.label,
         amount: data.amount,
-        installments: data.installments || 1,
         notes: data.notes || "",
+        installments: data.installments,
       };
     },
-    resolver: zodResolver(
-      getMonthlyExpensesSchema({
-        label: dictionary.monthlyExpense.labelError,
-        amount: dictionary.monthlyExpense.amountError,
-      })
-    ),
+    resolver: zodResolver(formSchema),
   });
-  const expenseLabel = form.getValues("label");
+  const openExpense = optimisticMonthlyExpenses.find((expense) => {
+    return expense.id === id;
+  });
 
-  const onSubmit = async (values: z.infer<typeof monthlyExpensesSchema>) => {
-    try {
-      const response = await fetch(`/api/monthly-expenses/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+  async function updateAction(formData: FormData) {
+    form.clearErrors();
+
+    const expense = optimisticMonthlyExpenses.find((expense) => {
+      return expense.id === id;
+    });
+
+    if (!expense) throw new Error("Could not find expense");
+
+    const rawData = {
+      label: formData.get("label") as string,
+      amount: parseFloat(formData.get("amount") as string),
+      notes: formData.get("notes") as string,
+      installments: parseInt(formData.get("installments") as string),
+    };
+
+    const validation = formSchema.safeParse(rawData);
+    if (!validation.success) {
+      const errors = validation.error.flatten();
+      Object.entries(errors.fieldErrors).forEach(([field, error]) => {
+        form.setError(field as any, { message: error[0] });
       });
-
-      if (!response.ok) throw new Error();
-
-      toast.success(dictionary.monthlyExpense.updateSuccess);
-      closeDetailsModal();
-      router.replace(pathname);
-      router.refresh();
-    } catch (error) {
-      toast.error(dictionary.monthlyExpense.updateError);
-      console.error(error);
+      return;
     }
-  };
 
-  if (form.formState.isLoading) return null;
+    flushSync(() => {
+      setOptimisticMonthlyExpenses({
+        action: "update",
+        payload: { id: expense.id, ...rawData, createdAt: expense.createdAt },
+      });
+      closeDetailsModal();
+    });
+
+    form.reset();
+
+    await updateMonthlyExpense(expense.id, formData);
+    toast.success(dictionary.monthlyExpense.addSuccess);
+  }
 
   return (
     <DialogHeader>
       <DialogTitle>
-        {expenseLabel} - {dictionary.monthlyExpense.dialogEditTitle}
+        {openExpense?.label} - {dictionary.monthlyExpense.dialogEditTitle}
       </DialogTitle>
       <DialogDescription>
-        {expenseLabel} - {dictionary.monthlyExpense.dialogEditDescription}
+        {openExpense?.label} - {dictionary.monthlyExpense.dialogEditDescription}
       </DialogDescription>
       <MonthlyExpenseForm
         form={form}
-        onSubmit={onSubmit}
+        action={updateAction}
         showCheckbox={false}
       />
     </DialogHeader>
@@ -114,45 +134,28 @@ export function ActionsCell({ row }: CellContext<MonthlyExpenses, unknown>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-  const router = useRouter();
-  const pathname = usePathname();
-
   const dictionary = useDictionary();
-
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
 
   const closeDetailsModal = () => {
     setShowDetailsModal(false);
   };
 
-  const onDelete = async () => {
-    try {
-      const { id } = row.original;
-      const response = await fetch(`/api/monthly-expenses/${id}`, {
-        method: "DELETE",
-      });
+  const { setOptimisticMonthlyExpenses } = useMonthlyExpensesContext();
 
-      if (!response.ok) throw new Error();
-
-      toast.success(dictionary.monthlyExpense.deleteSuccess);
-      setShowDeleteModal(false);
-      router.refresh();
-    } catch (error) {
-      toast.error(dictionary.monthlyExpense.deleteError);
-      console.error(error);
-    }
-  };
-
-  const onDetailsClick = (e: MouseEvent) => {
-    e.stopPropagation();
+  async function deleteAction() {
     const { id } = row.original;
-    router.push(`${pathname}?id=${id}`);
-  };
 
-  const cleanId = (open: boolean) => {
-    if (!open) router.replace(pathname);
-  };
+    flushSync(() => {
+      setOptimisticMonthlyExpenses({
+        action: "delete",
+        payload: { id },
+      });
+      setShowDeleteModal(false);
+    });
+
+    await deleteMonthlyExpense(id);
+    toast.success(dictionary.monthlyExpense.deleteSuccess);
+  }
 
   return (
     <>
@@ -176,9 +179,11 @@ export function ActionsCell({ row }: CellContext<MonthlyExpenses, unknown>) {
                   {dictionary.deleteDialog.cancel}
                 </Button>
               </DialogClose>
-              <Button variant="destructive" onClick={onDelete}>
-                {dictionary.deleteDialog.delete}
-              </Button>
+              <form action={deleteAction}>
+                <Button type="submit" variant="destructive">
+                  {dictionary.deleteDialog.delete}
+                </Button>
+              </form>
             </DialogFooter>
           </DialogContent>
         </DialogPortal>
@@ -188,17 +193,15 @@ export function ActionsCell({ row }: CellContext<MonthlyExpenses, unknown>) {
       {/* Details Modal */}
       <Dialog
         open={showDetailsModal}
-        onOpenChange={(open) => {
-          cleanId(open);
-          setShowDetailsModal(open);
-        }}
+        onOpenChange={(open) => setShowDetailsModal(open)}
       >
         <DialogPortal>
-          {id && (
-            <DialogContent className="sm:max-w-[425px]">
-              <DetailsDialogContent closeDetailsModal={closeDetailsModal} />
-            </DialogContent>
-          )}
+          <DialogContent className="sm:max-w-[425px]">
+            <DetailsDialogContent
+              id={row.original.id}
+              closeDetailsModal={closeDetailsModal}
+            />
+          </DialogContent>
         </DialogPortal>
       </Dialog>
       {/* Details Modal */}
@@ -212,12 +215,7 @@ export function ActionsCell({ row }: CellContext<MonthlyExpenses, unknown>) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{dictionary.table.actions}</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={(e) => {
-              onDetailsClick(e);
-              setShowDetailsModal(true);
-            }}
-          >
+          <DropdownMenuItem onClick={() => setShowDetailsModal(true)}>
             {dictionary.table.viewDetails}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowDeleteModal(true)}>
