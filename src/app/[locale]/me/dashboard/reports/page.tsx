@@ -21,7 +21,7 @@ async function Content() {
   }));
 
   return (
-    <ReportsProvider initalData={data}>
+    <ReportsProvider initialData={data}>
       <ReportsTable userSettings={userSettings} />
     </ReportsProvider>
   );

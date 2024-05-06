@@ -17,7 +17,7 @@ type ReportsContextType = {
 
 type ReportsContextProps = {
   children: React.ReactNode;
-  initalData: FormattedReport[];
+  initialData: FormattedReport[];
 };
 
 type OptimisticReportsReducerParams =
@@ -51,11 +51,14 @@ function optimisticReportsReducer(
   }
 }
 
-export function ReportsProvider({ children, initalData }: ReportsContextProps) {
+export function ReportsProvider({
+  children,
+  initialData,
+}: ReportsContextProps) {
   const [optimisticReports, setOptimisticReports] = useOptimistic<
     FormattedReport[],
     OptimisticReportsReducerParams
-  >(initalData || [], optimisticReportsReducer);
+  >(initialData || [], optimisticReportsReducer);
 
   return (
     <ReportsContext.Provider

@@ -19,7 +19,7 @@ type FixedExpensesContextType = {
 
 type FixedExpensesContextProps = {
   children: React.ReactNode;
-  initalData: FormattedFixedExpense[];
+  initialData: FormattedFixedExpense[];
 };
 
 type OptimisticFixedExpensesReducerParams =
@@ -61,12 +61,12 @@ function optimisticFixedExpensesReducer(
 
 export function FixedExpensesProvider({
   children,
-  initalData,
+  initialData,
 }: FixedExpensesContextProps) {
   const [optimisticFixedExpenses, setOptimisticFixedExpenses] = useOptimistic<
     FormattedFixedExpense[],
     OptimisticFixedExpensesReducerParams
-  >(initalData || [], optimisticFixedExpensesReducer);
+  >(initialData || [], optimisticFixedExpensesReducer);
 
   return (
     <FixedExpensesContext.Provider

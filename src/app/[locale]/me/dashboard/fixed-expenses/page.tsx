@@ -22,7 +22,7 @@ async function Content() {
   }));
 
   return (
-    <FixedExpensesProvider initalData={data}>
+    <FixedExpensesProvider initialData={data}>
       <FixedExpensesTable userSettings={userSettings} />
     </FixedExpensesProvider>
   );
