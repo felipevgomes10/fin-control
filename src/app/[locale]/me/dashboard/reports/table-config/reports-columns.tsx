@@ -21,7 +21,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { months } from "../components/report-form/utils";
-import { useReportsProvider } from "../contexts/reports-context/reports-context";
+import { useReportsContext } from "../contexts/reports-context/reports-context";
 
 type Reports = {
   id: string;
@@ -96,7 +96,7 @@ export const reportsColumns: ColumnDef<Reports>[] = [
     cell: function Cell({ row }) {
       const [showDeleteModal, setShowDeleteModal] = useState(false);
       const dictionary = useDictionary();
-      const { setOptimisticReports } = useReportsProvider();
+      const { setOptimisticReports } = useReportsContext();
 
       return (
         <>

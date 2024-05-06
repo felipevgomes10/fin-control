@@ -72,7 +72,7 @@ export function ReportsProvider({
   );
 }
 
-export function useReportsProvider() {
+export function useReportsContext() {
   const context = useContext(ReportsContext);
   return context;
 }

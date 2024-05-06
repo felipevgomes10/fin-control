@@ -3,7 +3,7 @@
 import { DataTable } from "@/app/[locale]/me/components/table/table";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { UserSettings } from "@prisma/client";
-import { useReportsProvider } from "../../contexts/reports-context/reports-context";
+import { useReportsContext } from "../../contexts/reports-context/reports-context";
 import { reportsColumns } from "../../table-config/reports-columns";
 import { ReportDialog } from "../report-dialog/report-dialog";
 
@@ -13,7 +13,7 @@ export function ReportsTable({
   userSettings: UserSettings | null;
 }) {
   const dictionary = useDictionary();
-  const { optimisticReports } = useReportsProvider();
+  const { optimisticReports } = useReportsContext();
 
   return (
     <DataTable

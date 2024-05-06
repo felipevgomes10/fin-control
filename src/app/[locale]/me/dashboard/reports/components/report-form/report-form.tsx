@@ -17,7 +17,7 @@ import {
 } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { RefObject } from "react";
 import { toast } from "sonner";
-import { useReportsProvider } from "../../contexts/reports-context/reports-context";
+import { useReportsContext } from "../../contexts/reports-context/reports-context";
 import { months } from "./utils";
 
 export function ReportForm({
@@ -27,7 +27,7 @@ export function ReportForm({
 }) {
   const currentMonth = new Date().getMonth();
   const dictionary = useDictionary();
-  const { setOptimisticReports } = useReportsProvider();
+  const { setOptimisticReports } = useReportsContext();
 
   return (
     <form
