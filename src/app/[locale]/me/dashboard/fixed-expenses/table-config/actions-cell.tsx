@@ -1,10 +1,8 @@
 "use client";
 
+import { deleteFixedExpense } from "@/actions/expenses/delete-fixed-expense";
+import { updateFixedExpense } from "@/actions/expenses/update-fixed-expense";
 import { FixedExpenseForm } from "@/app/[locale]/me/dashboard/fixed-expenses/components/fixed-expense-form/fixed-expense-form";
-import {
-  fixedExpensesSchema,
-  getFixedExpensesSchema,
-} from "@/app/api/fixed-expenses/schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,83 +22,106 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import {
+  fixedExpenseSchema,
+  getFixedExpenseSchema,
+} from "@/schemas/fixed-expense-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { FixedExpense } from "@prisma/client";
 import type { CellContext } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, type MouseEvent } from "react";
+import { useState } from "react";
+import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useFixedExpensesContext } from "../contexts/fixed-expenses-context/fixed-expenses-context";
 import type { FixedExpenses } from "./fixed-expenses-columns";
 
 function DetailsDialogContent({
+  id,
   closeDetailsModal,
 }: {
+  id: string;
   closeDetailsModal: () => void;
 }) {
   const dictionary = useDictionary();
 
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const { optimisticFixedExpenses, setOptimisticFixedExpenses } =
+    useFixedExpensesContext();
 
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const form = useForm<z.infer<typeof fixedExpensesSchema>>({
+  const formSchema = getFixedExpenseSchema({
+    label: dictionary.fixedExpenses.labelError,
+    amount: dictionary.fixedExpenses.amountError,
+  });
+  const form = useForm<z.infer<typeof fixedExpenseSchema>>({
     defaultValues: async () => {
-      const response = await fetch(`/api/fixed-expenses/${id}`);
-      if (!response.ok) throw new Error("Could not fetch data");
-      const { data }: { data: FixedExpense } = await response.json();
+      const data = optimisticFixedExpenses.find((expense) => expense.id === id);
+
+      if (!data) throw new Error("Could not find expense");
+
       return {
         label: data.label,
         amount: data.amount,
         notes: data.notes || "",
       };
     },
-    resolver: zodResolver(
-      getFixedExpensesSchema({
-        label: dictionary.fixedExpenses.labelError,
-        amount: dictionary.fixedExpenses.amountError,
-      })
-    ),
+    resolver: zodResolver(formSchema),
   });
-  const expenseLabel = form.getValues("label");
+  const openExpense = optimisticFixedExpenses.find((expense) => {
+    return expense.id === id;
+  });
 
-  const onSubmit = async (values: z.infer<typeof fixedExpensesSchema>) => {
-    try {
-      const response = await fetch(`/api/fixed-expenses/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+  async function updateAction(formData: FormData) {
+    form.clearErrors();
+
+    const expense = optimisticFixedExpenses.find((expense) => {
+      return expense.id === id;
+    });
+
+    if (!expense) throw new Error("Could not find expense");
+
+    const rawData = {
+      label: formData.get("label") as string,
+      amount: parseFloat(formData.get("amount") as string),
+      notes: formData.get("notes") as string,
+    };
+
+    const validation = formSchema.safeParse(rawData);
+    if (!validation.success) {
+      const errors = validation.error.flatten();
+      Object.entries(errors.fieldErrors).forEach(([field, error]) => {
+        form.setError(field as any, { message: error[0] });
       });
-
-      if (!response.ok) throw new Error();
-
-      toast.success(dictionary.fixedExpenses.updateSuccess);
-      closeDetailsModal();
-      router.replace(pathname);
-      router.refresh();
-    } catch (error) {
-      toast.error(dictionary.fixedExpenses.updateError);
-      console.error(error);
+      return;
     }
-  };
 
-  if (form.formState.isLoading) null;
+    flushSync(() => {
+      setOptimisticFixedExpenses({
+        action: "update",
+        payload: { id: expense.id, ...rawData, createdAt: expense.createdAt },
+      });
+      closeDetailsModal();
+    });
+
+    form.reset();
+
+    await updateFixedExpense(expense.id, formData);
+    toast.success(dictionary.fixedExpenses.addSuccess);
+  }
 
   return (
     <DialogHeader>
       <DialogTitle>
-        {expenseLabel} - {dictionary.fixedExpenses.dialogEditTitle}
+        {openExpense?.label} - {dictionary.fixedExpenses.dialogEditTitle}
       </DialogTitle>
       <DialogDescription>
-        {expenseLabel} - {dictionary.fixedExpenses.dialogEditDescription}.
+        {openExpense?.label} - {dictionary.fixedExpenses.dialogEditDescription}.
       </DialogDescription>
-      <FixedExpenseForm form={form} onSubmit={onSubmit} showCheckbox={false} />
+      <FixedExpenseForm
+        form={form}
+        action={updateAction}
+        showCheckbox={false}
+      />
     </DialogHeader>
   );
 }
@@ -111,43 +132,26 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
 
   const dictionary = useDictionary();
 
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-
   const closeDetailsModal = () => {
     setShowDetailsModal(false);
   };
 
-  const onDelete = async () => {
-    try {
-      const { id } = row.original;
-      const response = await fetch(`/api/fixed-expenses/${id}`, {
-        method: "DELETE",
-      });
+  const { setOptimisticFixedExpenses } = useFixedExpensesContext();
 
-      if (!response.ok) throw new Error();
-
-      toast.success(dictionary.fixedExpenses.deleteSuccess);
-      setShowDeleteModal(false);
-      router.refresh();
-    } catch (error) {
-      toast.error(dictionary.fixedExpenses.deleteError);
-      console.error(error);
-    }
-  };
-
-  const onDetailsClick = (e: MouseEvent) => {
-    e.stopPropagation();
+  async function deleteAction() {
     const { id } = row.original;
-    router.push(`${pathname}?id=${id}`);
-  };
 
-  const cleanId = (open: boolean) => {
-    if (!open) router.replace(pathname);
-  };
+    flushSync(() => {
+      setOptimisticFixedExpenses({
+        action: "delete",
+        payload: { id },
+      });
+      setShowDeleteModal(false);
+    });
+
+    await deleteFixedExpense(id);
+    toast.success(dictionary.fixedExpenses.deleteSuccess);
+  }
 
   return (
     <>
@@ -171,9 +175,11 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
                   {dictionary.deleteDialog.cancel}
                 </Button>
               </DialogClose>
-              <Button variant="destructive" onClick={onDelete}>
-                {dictionary.deleteDialog.delete}
-              </Button>
+              <form action={deleteAction}>
+                <Button type="submit" variant="destructive">
+                  {dictionary.deleteDialog.delete}
+                </Button>
+              </form>
             </DialogFooter>
           </DialogContent>
         </DialogPortal>
@@ -183,17 +189,15 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
       {/* Details Modal */}
       <Dialog
         open={showDetailsModal}
-        onOpenChange={(open) => {
-          cleanId(open);
-          setShowDetailsModal(open);
-        }}
+        onOpenChange={(open) => setShowDetailsModal(open)}
       >
         <DialogPortal>
-          {id && (
-            <DialogContent className="sm:max-w-[425px]">
-              <DetailsDialogContent closeDetailsModal={closeDetailsModal} />
-            </DialogContent>
-          )}
+          <DialogContent className="sm:max-w-[425px]">
+            <DetailsDialogContent
+              id={row.original.id}
+              closeDetailsModal={closeDetailsModal}
+            />
+          </DialogContent>
         </DialogPortal>
       </Dialog>
       {/* Details Modal */}
@@ -207,12 +211,7 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{dictionary.table.actions}</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={(e) => {
-              onDetailsClick(e);
-              setShowDetailsModal(true);
-            }}
-          >
+          <DropdownMenuItem onClick={() => setShowDetailsModal(true)}>
             {dictionary.table.viewDetails}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowDeleteModal(true)}>

@@ -1,6 +1,5 @@
 "use client";
 
-import { fixedExpensesSchema } from "@/app/api/fixed-expenses/schema";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogFooter } from "@/components/ui/dialog";
@@ -15,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import { fixedExpenseSchema } from "@/schemas/fixed-expense-schema";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { type Dispatch, type SetStateAction } from "react";
 import type { UseFormReturn } from "react-hook-form";
@@ -23,13 +23,13 @@ import { z } from "zod";
 export function FixedExpenseForm({
   form,
   showCheckbox = true,
-  onSubmit,
   addNewExpanseState,
+  action,
 }: {
-  form: UseFormReturn<z.infer<typeof fixedExpensesSchema>>;
+  form: UseFormReturn<z.infer<typeof fixedExpenseSchema>>;
   showCheckbox?: boolean;
-  onSubmit: (data: z.infer<typeof fixedExpensesSchema>) => Promise<void> | void;
   addNewExpanseState?: [CheckedState, Dispatch<SetStateAction<CheckedState>>];
+  action: (formData: FormData) => any;
 }) {
   const [addNewExpenseChecked, setAddNewExpenseChecked] =
     addNewExpanseState || [];
@@ -38,7 +38,7 @@ export function FixedExpenseForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form action={action} className="space-y-4">
         <FormField
           control={form.control}
           name="label"
@@ -106,14 +106,8 @@ export function FixedExpenseForm({
               </label>
             </div>
           )}
-          <Button
-            type="submit"
-            className="w-full sm:w-[150px]"
-            disabled={form.formState.isSubmitting}
-          >
-            {form.formState.isSubmitting
-              ? dictionary.fixedExpenses.saving
-              : dictionary.fixedExpenses.save}
+          <Button type="submit" className="w-full sm:w-[150px]">
+            {dictionary.fixedExpenses.save}
           </Button>
         </DialogFooter>
       </form>

@@ -1,10 +1,7 @@
 "use client";
 
+import { createFixedExpense } from "@/actions/expenses/create-fixed-expense";
 import { FixedExpenseForm } from "@/app/[locale]/me/dashboard/fixed-expenses/components/fixed-expense-form/fixed-expense-form";
-import {
-  fixedExpensesSchema,
-  getFixedExpensesSchema,
-} from "@/app/api/fixed-expenses/schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,13 +13,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import {
+  fixedExpenseSchema,
+  getFixedExpenseSchema,
+} from "@/schemas/fixed-expense-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CheckedState } from "@radix-ui/react-checkbox";
-import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useFixedExpensesContext } from "../../contexts/fixed-expenses-context/fixed-expenses-context";
 
 export function FixedExpensesDialog() {
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
@@ -31,44 +33,55 @@ export function FixedExpensesDialog() {
 
   const dictionary = useDictionary();
 
-  const router = useRouter();
-
-  const form = useForm<z.infer<typeof fixedExpensesSchema>>({
+  const formSchema = getFixedExpenseSchema({
+    label: dictionary.fixedExpenses.labelError,
+    amount: dictionary.fixedExpenses.amountError,
+  });
+  const form = useForm<z.infer<typeof fixedExpenseSchema>>({
     defaultValues: {
       label: "",
       amount: 0,
       notes: "",
     },
-    resolver: zodResolver(
-      getFixedExpensesSchema({
-        label: dictionary.fixedExpenses.labelError,
-        amount: dictionary.fixedExpenses.amountError,
-      })
-    ),
+    resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = async (values: z.infer<typeof fixedExpensesSchema>) => {
-    try {
-      const response = await fetch("/api/fixed-expenses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+  const { setOptimisticFixedExpenses } = useFixedExpensesContext();
+
+  async function action(formData: FormData) {
+    form.clearErrors();
+
+    const rawData = {
+      label: formData.get("label") as string,
+      amount: parseInt(formData.get("amount") as string),
+      notes: formData.get("notes") as string,
+    };
+
+    const validation = formSchema.safeParse(rawData);
+    if (!validation.success) {
+      const errors = validation.error.flatten();
+      Object.entries(errors.fieldErrors).forEach(([field, error]) => {
+        form.setError(field as any, { message: error[0] });
       });
-
-      if (!response.ok) throw new Error();
-
-      toast.success(dictionary.fixedExpenses.addSuccess);
-      form.reset();
-      router.refresh();
-
-      if (!addNewExpenseChecked) dialogCloseRef.current?.click();
-    } catch (error) {
-      toast.error(dictionary.fixedExpenses.addError);
-      console.error(error);
+      return;
     }
-  };
+
+    flushSync(() => {
+      setOptimisticFixedExpenses({
+        action: "add",
+        payload: {
+          id: crypto.randomUUID(),
+          createdAt: new Date().toUTCString(),
+          ...rawData,
+        },
+      });
+      if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
+    });
+
+    await createFixedExpense(formData);
+    form.reset();
+    toast.success(dictionary.fixedExpenses.addSuccess);
+  }
 
   return (
     <Dialog
@@ -92,8 +105,8 @@ export function FixedExpensesDialog() {
         </DialogHeader>
         <FixedExpenseForm
           form={form}
-          onSubmit={onSubmit}
           addNewExpanseState={[addNewExpenseChecked, setAddNewExpenseChecked]}
+          action={action}
         />
       </DialogContent>
     </Dialog>

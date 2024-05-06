@@ -13,5 +13,5 @@ const createSchema = (messages?: { label?: string; amount?: string }) => {
   });
 };
 
-export const fixedExpensesSchema = createSchema();
-export const getFixedExpensesSchema = createSchema;
+export const fixedExpenseSchema = createSchema();
+export const getFixedExpenseSchema = createSchema;
