@@ -83,7 +83,7 @@
     "dialogEditDescription": "detalhes da despesa aqui",
     "labelInput": "Rótulo",
     "labelPlaceholder": "Dê um nome para sua despesa",
-    "amountInput": "Quantidade",
+    "amountInput": "Valor",
     "notesInput": "Notas",
     "notesPlaceholder": "Adicione algumas notas",
     "dialogSave": "Salvar Despesa",
@@ -97,7 +97,7 @@
     "save": "Salvar Despesa",
     "saving": "Salvando...",
     "labelError": "Rótulo é obrigatório",
-    "amountError": "Quantidade precisa ser maior que 0"
+    "amountError": "Valor precisa ser maior que 0"
   },
   "monthlyExpense": {
     "filter": "Filtrar rótulos...",
@@ -113,7 +113,7 @@
     "dialogEditDescription": "detalhes da despesa aqui",
     "labelInput": "Rótulo",
     "labelPlaceholder": "Dê um nome para sua despesa",
-    "amountInput": "Quantidade",
+    "amountInput": "Valor",
     "notesInput": "Notas",
     "notesPlaceholder": "Adicione algumas notas",
     "installmentsInput": "Parcelas",
@@ -130,7 +130,7 @@
     "save": "Salvar Despesa",
     "saving": "Salvando...",
     "labelError": "Rótulo é obrigatório",
-    "amountError": "Quantidade precisa ser maior que 0"
+    "amountError": "Valor precisa ser maior que 0"
   },
   "reports": {
     "filter": "Pesquisar por mês...",
