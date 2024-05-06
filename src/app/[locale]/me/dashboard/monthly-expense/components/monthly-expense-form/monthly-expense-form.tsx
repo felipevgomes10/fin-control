@@ -1,6 +1,5 @@
 "use client";
 
-import { monthlyExpensesSchema } from "@/app/api/monthly-expenses/schema";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogFooter } from "@/components/ui/dialog";
@@ -15,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
+import { monthlyExpensesSchema } from "@/schemas/monthly-expense-schema";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { type Dispatch, type SetStateAction } from "react";
 import type { UseFormReturn } from "react-hook-form";
