@@ -3,7 +3,7 @@
 import { months } from "@/app/[locale]/me/dashboard/reports/components/report-form/utils";
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
-import { prisma } from "../../../prisma/client";
+import { prisma } from "~/prisma/client";
 
 export async function createExpenseReport(formData: FormData) {
   const session = await auth();

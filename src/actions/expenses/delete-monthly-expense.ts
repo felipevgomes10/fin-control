@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
-import { prisma } from "../../../prisma/client";
+import { prisma } from "~/prisma/client";
 
 export async function deleteMonthlyExpense(id: string) {
   const session = await auth();

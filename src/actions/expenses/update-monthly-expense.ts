@@ -1,8 +1,8 @@
 "use server";
 
 import { auth } from "@/auth/auth";
-import { prisma } from "../../../prisma/client";
 import { revalidatePath } from "next/cache";
+import { prisma } from "~/prisma/client";
 
 export async function updateMonthlyExpense(id: string, formData: FormData) {
   const session = await auth();

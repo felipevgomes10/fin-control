@@ -5,7 +5,7 @@ import NextAuth, { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import ResendProvider from "next-auth/providers/resend";
 import { Resend } from "resend";
-import { prisma } from "../../prisma/client";
+import { prisma } from "~/prisma/client";
 
 declare module "next-auth" {
   interface Session {

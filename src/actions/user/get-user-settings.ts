@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth/auth";
 import { cache } from "react";
-import { prisma } from "../../../prisma/client";
+import { prisma } from "~/prisma/client";
 
 export const getUserSettings = cache(async () => {
   const session = await auth();
