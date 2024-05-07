@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { Dispatch, SetStateAction } from "react";
+import { flushSync } from "react-dom";
 import { toast } from "sonner";
 
 type DeleteDialogProps = {
@@ -54,11 +55,13 @@ export function DeleteDialog({
             <form
               action={async () => {
                 try {
-                  setOptimisticData?.({
-                    action: "delete",
-                    payload: { id: itemId },
+                  flushSync(() => {
+                    setOptimisticData?.({
+                      action: "delete",
+                      payload: { id: itemId },
+                    });
+                    setShowDeleteModal(false);
                   });
-                  setShowDeleteModal(false);
 
                   await action(itemId);
                   toast.success(successMessage || "Item deleted successfully");
