@@ -1,23 +1,28 @@
 import { getFixedExpenses } from "@/actions/expenses/get-fixed-expenses";
 import { getMonthlyExpenses } from "@/actions/expenses/get-montly-expenses";
+import { getTags } from "@/actions/tags/get-tags";
 import { getUserSettings } from "@/actions/user/get-user-settings";
 import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import { Suspense } from "react";
 import { Loading } from "../../components/loading/loading";
+import { joinTags } from "../../components/table/utils";
 import { MonthlyExpenseTable } from "./components/monthly-expense-table/monthly-expense-table";
 import { MonthlyExpensesProvider } from "./contexts/monthly-expense-provider/monthly-expense-provider";
 
 async function Content() {
-  const [monthlyExpenses, fixedExpenses, userSettings] = await Promise.all([
-    getMonthlyExpenses(),
-    getFixedExpenses(),
-    getUserSettings(),
-  ]);
+  const [monthlyExpenses, fixedExpenses, tags, userSettings] =
+    await Promise.all([
+      getMonthlyExpenses(),
+      getFixedExpenses(),
+      getTags(),
+      getUserSettings(),
+    ]);
 
   const data = monthlyExpenses.map(
-    ({ id, label, amount, installments, createdAt }) => ({
+    ({ id, label, tags, amount, installments, createdAt }) => ({
       id,
       label,
+      tags: joinTags(tags.map(({ id }) => id)),
       amount,
       installments: installments || 1,
       createdAt: createdAt.toUTCString(),
@@ -25,7 +30,7 @@ async function Content() {
   );
 
   return (
-    <MonthlyExpensesProvider initialData={data}>
+    <MonthlyExpensesProvider initialData={data} tags={tags}>
       <MonthlyExpenseTable
         userSettings={userSettings}
         fixedExpenses={fixedExpenses}

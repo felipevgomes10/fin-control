@@ -1,5 +1,6 @@
 "use client";
 
+import { Combobox } from "@/components/combobox/combobox";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogFooter } from "@/components/ui/dialog";
@@ -19,6 +20,7 @@ import type { CheckedState } from "@radix-ui/react-checkbox";
 import { type Dispatch, type SetStateAction } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
+import { useMonthlyExpensesContext } from "../../contexts/monthly-expense-provider/monthly-expense-provider";
 
 export function MonthlyExpenseForm({
   form,
@@ -35,6 +37,12 @@ export function MonthlyExpenseForm({
     addNewExpanseState || [];
 
   const dictionary = useDictionary();
+
+  const { tags } = useMonthlyExpensesContext();
+  const comboboxOptions = tags.map(({ id, label }) => ({
+    value: id,
+    label,
+  }));
 
   return (
     <Form {...form}>
@@ -82,6 +90,35 @@ export function MonthlyExpenseForm({
               </FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="tags"
+          defaultValue={[]}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="inline-block w-full text-left">
+                {dictionary.monthlyExpense.tagInput}
+              </FormLabel>
+              <FormControl>
+                <Combobox
+                  id={field.name}
+                  name={field.name}
+                  options={comboboxOptions}
+                  selectPlaceholder={
+                    dictionary.monthlyExpense.tagInputPlaceholder
+                  }
+                  searchPlaceholder={
+                    dictionary.monthlyExpense.tagSearchPlaceholder
+                  }
+                  notFoundPlaceholder={dictionary.monthlyExpense.tagNotFound}
+                  value={Array.isArray(field.value) ? field.value : []}
+                  onChange={field.onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

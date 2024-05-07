@@ -138,6 +138,8 @@
     "installmentsInput": "Installments",
     "tagInput": "Tag",
     "tagInputPlaceholder": "Choose a tag",
+    "tagSearchPlaceholder": "Search for a tag",
+    "tagNotFound": "Tag not found",
     "dialogSave": "Save Expense",
     "dialogCheckbox": "Add new expense after saving",
     "installmentsLeft": "installments Left",

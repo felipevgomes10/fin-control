@@ -1,12 +1,13 @@
 "use client";
 
-import { Tag } from "@prisma/client";
+import type { Tag } from "@prisma/client";
 import { createContext, useContext, useOptimistic } from "react";
 
 export type FormattedMonthlyExpense = {
   id: string;
   label: string;
   amount: number;
+  tags: string;
   installments: number;
   createdAt: string;
   notes?: string | null;
@@ -23,6 +24,7 @@ type MonthlyExpenseContextType = {
 type MonthlyExpensesContextProps = {
   children: React.ReactNode;
   initialData: FormattedMonthlyExpense[];
+  tags: Tag[];
 };
 
 type OptimisticMonthlyExpensesReducerParams =
@@ -66,6 +68,7 @@ function optimisticMonthlyExpensesReducer(
 export function MonthlyExpensesProvider({
   children,
   initialData,
+  tags,
 }: MonthlyExpensesContextProps) {
   const [optimisticMonthlyExpenses, setOptimisticMonthlyExpenses] =
     useOptimistic<
@@ -78,7 +81,7 @@ export function MonthlyExpensesProvider({
       value={{
         optimisticMonthlyExpenses,
         setOptimisticMonthlyExpenses,
-        tags: [],
+        tags,
       }}
     >
       {children}

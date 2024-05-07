@@ -1,5 +1,6 @@
 "use server";
 
+import { splitTags } from "@/app/[locale]/me/components/table/utils";
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
@@ -9,6 +10,8 @@ export async function createMonthlyExpense(formData: FormData) {
 
   if (!session) throw new Error("Not authenticated");
 
+  const tagsIds = splitTags(formData.get("tags") as string);
+
   const rawData = {
     label: formData.get("label") as string,
     amount: parseInt(formData.get("amount") as string),
@@ -17,7 +20,13 @@ export async function createMonthlyExpense(formData: FormData) {
   };
 
   await prisma.monthlyExpense.create({
-    data: { ...rawData, userId: session.user.id },
+    data: {
+      ...rawData,
+      userId: session.user.id,
+      tags: {
+        connect: tagsIds.map((id) => ({ id })),
+      },
+    },
   });
 
   revalidatePath("/[locale]/me/dashboard/monthly-expense", "page");

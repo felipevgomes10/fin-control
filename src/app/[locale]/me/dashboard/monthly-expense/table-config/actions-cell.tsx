@@ -33,6 +33,7 @@ import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { splitTags } from "../../../components/table/utils";
 import { MonthlyExpenseForm } from "../components/monthly-expense-form/monthly-expense-form";
 import { useMonthlyExpensesContext } from "../contexts/monthly-expense-provider/monthly-expense-provider";
 import type { MonthlyExpenses } from "./monthly-expenses-columns";
@@ -46,7 +47,7 @@ function DetailsDialogContent({
 }) {
   const dictionary = useDictionary();
 
-  const { optimisticMonthlyExpenses, setOptimisticMonthlyExpenses } =
+  const { optimisticMonthlyExpenses, setOptimisticMonthlyExpenses, tags } =
     useMonthlyExpensesContext();
 
   const formSchema = getMonthlyExpensesSchema({
@@ -61,8 +62,16 @@ function DetailsDialogContent({
 
       if (!data) throw new Error("Could not find expense");
 
+      const selectedTags = splitTags(data.tags)
+        .filter(Boolean)
+        .map((tag) => {
+          const selectedTag = tags.find((t) => t.id === tag);
+          return { value: tag, label: selectedTag?.label || "" };
+        });
+
       return {
         label: data.label,
+        tags: selectedTags || [],
         amount: data.amount,
         notes: data.notes || "",
         installments: data.installments,
@@ -86,6 +95,7 @@ function DetailsDialogContent({
     const rawData = {
       label: formData.get("label") as string,
       amount: parseFloat(formData.get("amount") as string),
+      tags: formData.get("tags") as string,
       notes: formData.get("notes") as string,
       installments: parseInt(formData.get("installments") as string),
     };
@@ -110,7 +120,7 @@ function DetailsDialogContent({
     form.reset();
 
     await updateMonthlyExpense(expense.id, formData);
-    toast.success(dictionary.monthlyExpense.addSuccess);
+    toast.success(dictionary.monthlyExpense.updateSuccess);
   }
 
   return (

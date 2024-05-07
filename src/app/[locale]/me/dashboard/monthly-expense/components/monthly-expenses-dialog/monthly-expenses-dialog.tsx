@@ -44,6 +44,7 @@ export function MonthlyExpensesDialog() {
     defaultValues: {
       label: "",
       amount: 0,
+      tags: [],
       notes: "",
       installments: 0,
     },
@@ -58,6 +59,7 @@ export function MonthlyExpensesDialog() {
     const rawData = {
       label: formData.get("label") as string,
       amount: parseInt(formData.get("amount") as string),
+      tags: formData.get("tags") as string,
       notes: formData.get("notes") as string,
       installments: parseInt(formData.get("installments") as string),
     };

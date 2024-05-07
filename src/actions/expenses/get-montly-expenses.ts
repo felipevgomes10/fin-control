@@ -11,6 +11,7 @@ export const getMonthlyExpenses = cache(async () => {
 
   const monthlyExpenses = await prisma.monthlyExpense.findMany({
     where: { userId: session.user.id },
+    include: { tags: true },
   });
   return monthlyExpenses;
 });

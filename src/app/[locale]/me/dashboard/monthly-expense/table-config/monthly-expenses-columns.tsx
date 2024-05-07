@@ -1,11 +1,18 @@
 "use client";
 
 import { useTableContext } from "@/app/[locale]/me/contexts/table-provider/table-provider";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { formatCurrency, formatDate } from "../../../components/table/utils";
+import {
+  formatCurrency,
+  formatDate,
+  splitTags,
+  tagsFilterFn,
+} from "../../../components/table/utils";
+import { useMonthlyExpensesContext } from "../contexts/monthly-expense-provider/monthly-expense-provider";
 import { ActionsCell } from "./actions-cell";
 
 export type MonthlyExpenses = {
@@ -132,6 +139,42 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
       return (
         <div>
           {installmentsLeft} {dictionary.monthlyExpense.installmentsLeft}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "tags",
+    filterFn: tagsFilterFn,
+    header: function Header() {
+      const dictionary = useDictionary();
+      return dictionary.table.tags;
+    },
+    cell: function Cell({ row }) {
+      const { tags } = useMonthlyExpensesContext();
+
+      const tagsCell = row.getValue("tags") as string;
+      const tagsIds = splitTags(tagsCell).filter(Boolean);
+
+      const hasMoreThanTwo = tagsIds.length > 2;
+      const additionalValuesText = hasMoreThanTwo
+        ? ` +${tagsIds.length - 2}`
+        : "";
+
+      const tagsBadges = tagsIds.slice(0, 2).map((tag) => {
+        const foundTag = tags.find(({ id }) => id === tag);
+        return <Badge key={tag}>{foundTag?.label}</Badge>;
+      });
+
+      return (
+        <div className="ml-1">
+          {tagsCell ? (
+            <div className="flex gap-2 flex-wrap w-max">
+              {tagsBadges} {additionalValuesText}
+            </div>
+          ) : (
+            "-"
+          )}
         </div>
       );
     },

@@ -1,7 +1,13 @@
 "use client";
 
+import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/advanced-filters";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
-import { formatCurrency } from "@/app/[locale]/me/components/table/utils";
+import {
+  formatCurrency,
+  joinTags,
+  splitTags,
+  swapTagsLabelsByIds,
+} from "@/app/[locale]/me/components/table/utils";
 import {
   Card,
   CardContent,
@@ -10,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { FixedExpense, UserSettings } from "@prisma/client";
+import { useSearchParams } from "next/navigation";
 import { useMonthlyExpensesContext } from "../../contexts/monthly-expense-provider/monthly-expense-provider";
 import { monthlyExpenseColumns } from "../../table-config/monthly-expenses-columns";
 import { MonthlyExpensesDialog } from "../monthly-expenses-dialog/monthly-expenses-dialog";
@@ -22,7 +29,7 @@ export function MonthlyExpenseTable({
   fixedExpenses: FixedExpense[];
 }) {
   const dictionary = useDictionary();
-  const { optimisticMonthlyExpenses } = useMonthlyExpensesContext();
+  const { optimisticMonthlyExpenses, tags } = useMonthlyExpensesContext();
 
   const totalMonthlyExpenseAmount = optimisticMonthlyExpenses.reduce(
     (acc, { amount, installments }) => {
@@ -33,6 +40,20 @@ export function MonthlyExpenseTable({
 
   const totalFixedExpenseAmount = fixedExpenses.reduce(
     (acc, { amount }) => (acc += amount),
+    0
+  );
+
+  const search = useSearchParams();
+  const tagsFilter = splitTags(search.get("tags") || "");
+  const tagsIds = swapTagsLabelsByIds(tags, tagsFilter);
+  const taggedTotalAmount = optimisticMonthlyExpenses.reduce(
+    (acc, { amount, installments, tags }) => {
+      const foundTag = splitTags(tags).find((tag) =>
+        joinTags(tagsIds).includes(tag)
+      );
+      if (foundTag) return acc + amount / installments;
+      return acc;
+    },
     0
   );
 
@@ -53,6 +74,7 @@ export function MonthlyExpenseTable({
           filters={{
             searchAccessorKey: "label",
             searchPlaceholder: dictionary.monthlyExpense.filter,
+            AdvancedFilters,
           }}
           columns={monthlyExpenseColumns}
           data={optimisticMonthlyExpenses}
@@ -73,6 +95,14 @@ export function MonthlyExpenseTable({
             <CardDescription>{dictionary.monthlyExpense.total}</CardDescription>
           </CardHeader>
           <CardContent className="flex gap-6 flex-wrap">
+            <div className="flex flex-col">
+              <span className="text-slate-500 text-sm">
+                {dictionary.monthlyExpense.filteredTotal}
+              </span>
+              <span className="text-2xl font-bold">
+                {formatCurrency(taggedTotalAmount, intl)}
+              </span>
+            </div>
             <div className="flex flex-col">
               <span className="text-slate-500 text-sm">
                 {dictionary.monthlyExpense.totalMonthlyExpenses}

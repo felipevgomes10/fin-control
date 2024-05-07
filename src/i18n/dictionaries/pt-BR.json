@@ -138,6 +138,8 @@
     "installmentsInput": "Parcelas",
     "tagInput": "Tag",
     "tagInputPlaceholder": "Selecione uma tag",
+    "tagSearchPlaceholder": "Pesquisar por tags",
+    "tagNotFound": "Nenhuma tag encontrada",
     "dialogSave": "Salvar Despesa",
     "dialogCheckbox": "Adicionar nova despesa após salvar",
     "installmentsLeft": "parcelas restantes",

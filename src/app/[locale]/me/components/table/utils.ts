@@ -57,7 +57,10 @@ export function tagsFilterFn<TData>(
 }
 
 export function splitTags(tags: string) {
-  return tags.split(",").map((tag) => tag.trim());
+  return tags
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
 }
 
 export function joinTags(tags: string[]) {
