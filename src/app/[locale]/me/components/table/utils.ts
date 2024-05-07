@@ -1,4 +1,5 @@
-import { Row } from "@tanstack/react-table";
+import type { Tag } from "@prisma/client";
+import type { Row } from "@tanstack/react-table";
 
 type FormatCurrencyOptions = {
   locale: string | undefined | null;
@@ -61,4 +62,15 @@ export function splitTags(tags: string) {
 
 export function joinTags(tags: string[]) {
   return tags.join(",");
+}
+
+export function swapTagsLabelsByIds(tags: Tag[], tagsLabels: string[]) {
+  return tagsLabels
+    .map((tagLabel) => {
+      const foundTag = tags.find((tag) => {
+        return tag.label.toLocaleLowerCase() === tagLabel.toLocaleLowerCase();
+      });
+      return foundTag?.id || "";
+    })
+    .filter(Boolean);
 }

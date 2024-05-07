@@ -4,7 +4,9 @@ import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/a
 import { DataTable } from "@/app/[locale]/me/components/table/table";
 import {
   formatCurrency,
+  joinTags,
   splitTags,
+  swapTagsLabelsByIds,
 } from "@/app/[locale]/me/components/table/utils";
 import {
   Card,
@@ -25,17 +27,20 @@ export function FixedExpensesTable({
   userSettings: UserSettings | null;
 }) {
   const dictionary = useDictionary();
-  const { optimisticFixedExpenses } = useFixedExpensesContext();
+  const { optimisticFixedExpenses, tags } = useFixedExpensesContext();
   const totalAmount = optimisticFixedExpenses.reduce(
     (acc, { amount }) => acc + amount,
     0
   );
 
   const search = useSearchParams();
-  const tagsFilter = splitTags(search.get("tags") || "") || [];
+  const tagsFilter = splitTags(search.get("tags") || "");
+  const tagsIds = swapTagsLabelsByIds(tags, tagsFilter);
   const taggedTotalAmount = optimisticFixedExpenses.reduce(
     (acc, { amount, tags }) => {
-      const foundTag = splitTags(tags).find((tag) => tagsFilter.includes(tag));
+      const foundTag = splitTags(tags).find((tag) =>
+        joinTags(tagsIds).includes(tag)
+      );
       if (foundTag) return acc + amount;
       return acc;
     },

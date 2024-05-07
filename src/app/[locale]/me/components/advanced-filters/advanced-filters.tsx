@@ -11,10 +11,10 @@ import {
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { Table as TTable } from "@tanstack/table-core";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useFixedExpensesContext } from "../../dashboard/fixed-expenses/contexts/fixed-expenses-context/fixed-expenses-context";
 import { useMonthlyExpensesContext } from "../../dashboard/monthly-expense/contexts/monthly-expense-provider/monthly-expense-provider";
-import { joinTags } from "../table/utils";
+import { joinTags, splitTags, swapTagsLabelsByIds } from "../table/utils";
 
 export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
   const dictionary = useDictionary();
@@ -24,7 +24,10 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
 
   const { tags: fixedExpensesTags } = useFixedExpensesContext();
   const { tags: monthlyExpensesTags } = useMonthlyExpensesContext();
-  const tags = [...fixedExpensesTags, ...monthlyExpensesTags];
+  const tags = useMemo(
+    () => [...fixedExpensesTags, ...monthlyExpensesTags],
+    [fixedExpensesTags, monthlyExpensesTags]
+  );
 
   const comboboxOptions = tags.map((tag) => ({
     value: tag.id,
@@ -32,12 +35,14 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
   }));
 
   useEffect(() => {
-    const tags = search.get("tags");
-    if (tags) {
+    const tagsLabels = search.get("tags");
+    if (tagsLabels) {
+      const tagsLabelsArray = splitTags(tagsLabels || "");
+      const tagsIds = swapTagsLabelsByIds(tags, tagsLabelsArray);
       const column = table.getColumn("tags");
-      column?.setFilterValue(tags);
+      column?.setFilterValue(joinTags(tagsIds));
     }
-  }, [search, table]);
+  }, [search, table, tags]);
 
   function getValue() {
     const column = table.getColumn("tags");
@@ -49,7 +54,9 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
     const column = table.getColumn("tags");
     const tags = joinTags(value.map((option) => option.value));
     column?.setFilterValue(tags);
-    router.push(`?tags=${tags}`);
+
+    const tagsLabels = joinTags(value.map((option) => option.label));
+    router.push(`?tags=${tagsLabels}`);
   }
 
   return (
