@@ -67,7 +67,7 @@ export function FixedExpensesTable({
         />
       </section>
       <section>
-        <Card className="flex justify-end items-end flex-col">
+        <Card className="flex items-start sm:items-end flex-col">
           <CardHeader>
             <CardDescription>{dictionary.fixedExpenses.total}</CardDescription>
           </CardHeader>
