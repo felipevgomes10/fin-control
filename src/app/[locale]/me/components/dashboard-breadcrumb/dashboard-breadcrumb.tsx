@@ -51,6 +51,7 @@ export function DashboardBreadcrumb() {
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
+        <BreadcrumbSeparator />
         {pathname.split("/").map((path, index) => {
           const builtHref = buildHref(pathname, index);
           const name = path as keyof Dictionary["links"];
@@ -59,12 +60,16 @@ export function DashboardBreadcrumb() {
             return null;
           }
 
+          const translation = dictionary.links[name];
+
+          if (!translation) return null;
+
           return (
             <React.Fragment key={builtHref}>
               {isCurrentPage(pathname, builtHref) && (
                 <>
                   <BreadcrumbItem>
-                    <BreadcrumbPage>{dictionary.links[name]}</BreadcrumbPage>
+                    <BreadcrumbPage>{translation}</BreadcrumbPage>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                 </>
@@ -73,7 +78,7 @@ export function DashboardBreadcrumb() {
                 <>
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link href={builtHref}>{dictionary.links[name]}</Link>
+                      <Link href={builtHref}>{translation}</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />

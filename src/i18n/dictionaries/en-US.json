@@ -16,7 +16,8 @@
     "fixed-expenses": "Fixed Expenses",
     "monthly-expense": "Monthly Expenses",
     "reports": "Reports",
-    "settings": "Settings"
+    "settings": "Settings",
+    "tags": "Tags"
   },
   "dashboard": {
     "fixedExpenses": "Fixed Expenses",
