@@ -34,6 +34,7 @@ import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { splitTags } from "../../../components/table/utils";
 import { useFixedExpensesContext } from "../contexts/fixed-expenses-context/fixed-expenses-context";
 import type { FixedExpenses } from "./fixed-expenses-columns";
 
@@ -59,8 +60,7 @@ function DetailsDialogContent({
 
       if (!data) throw new Error("Could not find expense");
 
-      const selectedTags = data.tags
-        .split(",")
+      const selectedTags = splitTags(data.tags)
         .filter(Boolean)
         .map((tag) => {
           const selectedTag = tags.find((t) => t.id === tag);

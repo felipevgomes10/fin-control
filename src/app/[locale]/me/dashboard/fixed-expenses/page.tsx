@@ -5,6 +5,7 @@ import { auth } from "@/auth/auth";
 import { getDictionary } from "@/i18n/get-dictionaries/get-dictionaries";
 import { Suspense } from "react";
 import { Loading } from "../../components/loading/loading";
+import { joinTags } from "../../components/table/utils";
 import { FixedExpensesTable } from "./components/fixed-expenses-table/fixed-expenses-table";
 import { FixedExpensesProvider } from "./contexts/fixed-expenses-context/fixed-expenses-context";
 
@@ -20,7 +21,7 @@ async function Content() {
       id,
       label,
       amount,
-      tags: tags.map(({ id }) => id).join(","),
+      tags: joinTags(tags.map(({ id }) => id)),
       notes,
       createdAt: createdAt.toUTCString(),
     })

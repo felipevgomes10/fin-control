@@ -1,5 +1,6 @@
 "use server";
 
+import { splitTags } from "@/app/[locale]/me/components/table/utils";
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
@@ -15,7 +16,7 @@ export async function updateFixedExpense(id: string, formData: FormData) {
   });
 
   let tagsToRemove: string[] = [];
-  const tagsIds = (formData.get("tags") as string).split(",");
+  const tagsIds = splitTags(formData.get("tags") as string);
 
   if (expenseTags) {
     tagsToRemove = expenseTags.tags

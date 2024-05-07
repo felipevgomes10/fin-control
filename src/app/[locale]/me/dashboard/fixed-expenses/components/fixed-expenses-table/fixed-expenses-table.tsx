@@ -2,7 +2,10 @@
 
 import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/advanced-filters";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
-import { formatCurrency } from "@/app/[locale]/me/components/table/utils";
+import {
+  formatCurrency,
+  splitTags,
+} from "@/app/[locale]/me/components/table/utils";
 import {
   Card,
   CardContent,
@@ -29,10 +32,10 @@ export function FixedExpensesTable({
   );
 
   const search = useSearchParams();
-  const tagsFilter = search.get("tags")?.split(",") || [];
+  const tagsFilter = splitTags(search.get("tags") || "") || [];
   const taggedTotalAmount = optimisticFixedExpenses.reduce(
     (acc, { amount, tags }) => {
-      const foundTag = tags.split(",").find((tag) => tagsFilter.includes(tag));
+      const foundTag = splitTags(tags).find((tag) => tagsFilter.includes(tag));
       if (foundTag) return acc + amount;
       return acc;
     },

@@ -1,5 +1,6 @@
 "use server";
 
+import { splitTags } from "@/app/[locale]/me/components/table/utils";
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
@@ -9,7 +10,7 @@ export async function createFixedExpense(formData: FormData) {
 
   if (!session) throw new Error("Not authenticated");
 
-  const tagsIds = (formData.get("tags") as string).split(",");
+  const tagsIds = splitTags(formData.get("tags") as string);
 
   const rawData = {
     label: formData.get("label") as string,

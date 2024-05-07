@@ -11,9 +11,10 @@ import {
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { Table as TTable } from "@tanstack/table-core";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useFixedExpensesContext } from "../../dashboard/fixed-expenses/contexts/fixed-expenses-context/fixed-expenses-context";
 import { useMonthlyExpensesContext } from "../../dashboard/monthly-expense/contexts/monthly-expense-provider/monthly-expense-provider";
-import { useEffect } from "react";
+import { joinTags } from "../table/utils";
 
 export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
   const dictionary = useDictionary();
@@ -46,7 +47,7 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
 
   function onChange(value: ComboboxOption[]) {
     const column = table.getColumn("tags");
-    const tags = value.map((option) => option.value).join(",");
+    const tags = joinTags(value.map((option) => option.value));
     column?.setFilterValue(tags);
     router.push(`?tags=${tags}`);
   }

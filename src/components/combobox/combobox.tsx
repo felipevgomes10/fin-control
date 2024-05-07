@@ -1,5 +1,6 @@
 "use client";
 
+import { joinTags } from "@/app/[locale]/me/components/table/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -84,7 +85,7 @@ export function Combobox({
       ? ` +${selectedValues.length - 3}`
       : "";
 
-    return selectedValues.slice(0, 3).join(", ") + additionalValuesText;
+    return joinTags(selectedValues.slice(0, 3)) + additionalValuesText;
   };
 
   return (
@@ -134,7 +135,7 @@ export function Combobox({
       <input
         type="hidden"
         name={name}
-        value={(value || []).map((item) => item.value).join(",")}
+        value={joinTags((value || []).map((item) => item.value))}
       />
     </>
   );

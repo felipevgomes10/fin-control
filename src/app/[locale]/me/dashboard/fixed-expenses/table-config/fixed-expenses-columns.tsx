@@ -9,6 +9,7 @@ import { ArrowUpDown } from "lucide-react";
 import {
   formatCurrency,
   formatDate,
+  splitTags,
   tagsFilterFn,
 } from "../../../components/table/utils";
 import { useFixedExpensesContext } from "../contexts/fixed-expenses-context/fixed-expenses-context";
@@ -75,7 +76,7 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
       const { tags } = useFixedExpensesContext();
 
       const tagsCell = row.getValue("tags") as string;
-      const tagsIds = tagsCell.split(",").filter(Boolean);
+      const tagsIds = splitTags(tagsCell).filter(Boolean);
 
       const hasMoreThanTwo = tagsIds.length > 2;
       const additionalValuesText = hasMoreThanTwo

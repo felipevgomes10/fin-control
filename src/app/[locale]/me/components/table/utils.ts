@@ -51,6 +51,14 @@ export function tagsFilterFn<TData>(
   filterValue: any
 ) {
   const tags = row.getValue("tags") as string;
-  const foundTag = tags.split(",").find((tag) => filterValue.includes(tag));
+  const foundTag = splitTags(tags).find((tag) => filterValue.includes(tag));
   return !!foundTag;
+}
+
+export function splitTags(tags: string) {
+  return tags.split(",").map((tag) => tag.trim());
+}
+
+export function joinTags(tags: string[]) {
+  return tags.join(",");
 }
