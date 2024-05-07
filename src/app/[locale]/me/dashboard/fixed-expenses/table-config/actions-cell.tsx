@@ -116,7 +116,7 @@ function DetailsDialogContent({
     form.reset();
 
     await updateFixedExpense(expense.id, formData);
-    toast.success(dictionary.fixedExpenses.addSuccess);
+    toast.success(dictionary.fixedExpenses.updateSuccess);
   }
 
   return (

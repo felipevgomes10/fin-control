@@ -35,8 +35,10 @@ export async function updateFixedExpense(id: string, formData: FormData) {
     data: {
       ...rawData,
       tags: {
-        connect: tagsIds.map((id) => ({ id })),
-        disconnect: tagsToRemove.map((id) => ({ id })),
+        ...(tagsIds.length && { connect: tagsIds.map((id) => ({ id })) }),
+        ...(tagsToRemove.length && {
+          disconnect: tagsToRemove.map((id) => ({ id })),
+        }),
       },
     },
   });
