@@ -9,6 +9,18 @@ const createSchema = (messages?: { label?: string; amount?: string }) => {
   return z.object({
     label: z.string().min(1, label),
     amount: z.coerce.number().min(1, amount),
+    tags: z
+      .string()
+      .optional()
+      .or(
+        z.array(
+          z.object({
+            value: z.string(),
+            label: z.string(),
+          })
+        )
+      )
+      .optional(),
     notes: z.string().optional(),
   });
 };

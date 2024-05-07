@@ -46,7 +46,7 @@ function DetailsDialogContent({
 }) {
   const dictionary = useDictionary();
 
-  const { optimisticFixedExpenses, setOptimisticFixedExpenses } =
+  const { optimisticFixedExpenses, setOptimisticFixedExpenses, tags } =
     useFixedExpensesContext();
 
   const formSchema = getFixedExpenseSchema({
@@ -59,9 +59,18 @@ function DetailsDialogContent({
 
       if (!data) throw new Error("Could not find expense");
 
+      const selectedTags = data.tags
+        .split(",")
+        .filter(Boolean)
+        .map((tag) => {
+          const selectedTag = tags.find((t) => t.id === tag);
+          return { value: tag, label: selectedTag?.label || "" };
+        });
+
       return {
         label: data.label,
         amount: data.amount,
+        tags: selectedTags || [],
         notes: data.notes || "",
       };
     },
@@ -83,6 +92,7 @@ function DetailsDialogContent({
     const rawData = {
       label: formData.get("label") as string,
       amount: parseFloat(formData.get("amount") as string),
+      tags: formData.get("tags") as string,
       notes: formData.get("notes") as string,
     };
 

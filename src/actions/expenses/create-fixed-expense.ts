@@ -9,6 +9,8 @@ export async function createFixedExpense(formData: FormData) {
 
   if (!session) throw new Error("Not authenticated");
 
+  const tagsIds = (formData.get("tags") as string).split(",");
+
   const rawData = {
     label: formData.get("label") as string,
     amount: parseInt(formData.get("amount") as string),
@@ -16,7 +18,13 @@ export async function createFixedExpense(formData: FormData) {
   };
 
   await prisma.fixedExpense.create({
-    data: { ...rawData, userId: session.user.id },
+    data: {
+      ...rawData,
+      userId: session.user.id,
+      tags: {
+        connect: tagsIds.map((id) => ({ id })),
+      },
+    },
   });
 
   revalidatePath("/[locale]/me/dashboard/fixed-expenses", "page");

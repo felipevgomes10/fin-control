@@ -11,6 +11,7 @@ export const getFixedExpenses = cache(async () => {
 
   const fixedExpenses = await prisma.fixedExpense.findMany({
     where: { userId: session.user.id },
+    include: { tags: true },
   });
   return fixedExpenses;
 });

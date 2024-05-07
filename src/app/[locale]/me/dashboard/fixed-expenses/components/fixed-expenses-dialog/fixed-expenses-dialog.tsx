@@ -41,6 +41,7 @@ export function FixedExpensesDialog() {
     defaultValues: {
       label: "",
       amount: 0,
+      tags: [],
       notes: "",
     },
     resolver: zodResolver(formSchema),
@@ -54,6 +55,7 @@ export function FixedExpensesDialog() {
     const rawData = {
       label: formData.get("label") as string,
       amount: parseInt(formData.get("amount") as string),
+      tags: formData.get("tags") as string,
       notes: formData.get("notes") as string,
     };
 
@@ -78,8 +80,8 @@ export function FixedExpensesDialog() {
       if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
     });
 
-    await createFixedExpense(formData);
     form.reset();
+    await createFixedExpense(formData);
     toast.success(dictionary.fixedExpenses.addSuccess);
   }
 

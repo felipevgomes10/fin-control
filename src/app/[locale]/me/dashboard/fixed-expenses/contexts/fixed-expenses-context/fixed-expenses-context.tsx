@@ -1,13 +1,15 @@
 "use client";
 
+import { Tag } from "@prisma/client";
 import { createContext, useContext, useOptimistic } from "react";
 
 export type FormattedFixedExpense = {
   id: string;
   label: string;
   amount: number;
-  createdAt: string;
+  tags: string;
   notes?: string | null;
+  createdAt: string;
 };
 
 type FixedExpensesContextType = {
@@ -15,11 +17,13 @@ type FixedExpensesContextType = {
   setOptimisticFixedExpenses: (
     action: OptimisticFixedExpensesReducerParams
   ) => void;
+  tags: Tag[];
 };
 
 type FixedExpensesContextProps = {
   children: React.ReactNode;
   initialData: FormattedFixedExpense[];
+  tags: Tag[];
 };
 
 type OptimisticFixedExpensesReducerParams =
@@ -39,6 +43,7 @@ type OptimisticFixedExpensesReducerParams =
 const FixedExpensesContext = createContext<FixedExpensesContextType>({
   optimisticFixedExpenses: [],
   setOptimisticFixedExpenses: () => {},
+  tags: [],
 });
 
 function optimisticFixedExpensesReducer(
@@ -62,6 +67,7 @@ function optimisticFixedExpensesReducer(
 export function FixedExpensesProvider({
   children,
   initialData,
+  tags,
 }: FixedExpensesContextProps) {
   const [optimisticFixedExpenses, setOptimisticFixedExpenses] = useOptimistic<
     FormattedFixedExpense[],
@@ -73,6 +79,7 @@ export function FixedExpensesProvider({
       value={{
         optimisticFixedExpenses,
         setOptimisticFixedExpenses,
+        tags,
       }}
     >
       {children}
