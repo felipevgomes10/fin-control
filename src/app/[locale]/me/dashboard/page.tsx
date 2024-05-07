@@ -28,6 +28,12 @@ export default async function Dashboard({
         linkText={dictionary.dashboard.reportsLink}
         href="/me/dashboard/reports"
       />
+      <DashboardCard
+        title={dictionary.dashboard.tags}
+        description={dictionary.dashboard.tagsDescription}
+        linkText={dictionary.dashboard.tagsLink}
+        href="/me/dashboard/tags"
+      />
     </section>
   );
 }

@@ -23,13 +23,13 @@ export function DashboardCard({
   href,
 }: DashboardCardProps) {
   return (
-    <Card className="w-full sm:w-[350px]">
+    <Card className="flex-1 min-w-[300px]">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button asChild>
+        <Button asChild className="min-w-full  sm:min-w-[250px]">
           <Link className="flex justify-between items-center gap-2" href={href}>
             {linkText}
             <ArrowRight />
