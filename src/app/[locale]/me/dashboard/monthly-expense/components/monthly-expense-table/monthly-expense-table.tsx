@@ -51,8 +51,8 @@ export function MonthlyExpenseTable({
       <section>
         <DataTable
           filters={{
-            accessorKey: "label",
-            placeholder: dictionary.monthlyExpense.filter,
+            searchAccessorKey: "label",
+            searchPlaceholder: dictionary.monthlyExpense.filter,
           }}
           columns={monthlyExpenseColumns}
           data={optimisticMonthlyExpenses}

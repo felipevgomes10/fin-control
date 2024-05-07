@@ -1,3 +1,5 @@
+import { Row } from "@tanstack/react-table";
+
 type FormatCurrencyOptions = {
   locale: string | undefined | null;
   currency: string | undefined | null;
@@ -41,4 +43,14 @@ export function formatDate(date: Date, options?: FormatDateOptions) {
     console.error({ error, message: "Error formatting date" });
     return "Could not format date.";
   }
+}
+
+export function tagsFilterFn<TData>(
+  row: Row<TData>,
+  _: string,
+  filterValue: any
+) {
+  const tags = row.getValue("tags") as string;
+  const foundTag = tags.split(",").find((tag) => filterValue.includes(tag));
+  return !!foundTag;
 }

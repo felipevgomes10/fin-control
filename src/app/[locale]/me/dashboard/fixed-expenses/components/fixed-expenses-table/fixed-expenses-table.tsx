@@ -1,5 +1,6 @@
 "use client";
 
+import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/advanced-filters";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
 import { formatCurrency } from "@/app/[locale]/me/components/table/utils";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { UserSettings } from "@prisma/client";
+import { useSearchParams } from "next/navigation";
 import { useFixedExpensesContext } from "../../contexts/fixed-expenses-context/fixed-expenses-context";
 import { fixedExpensesColumns } from "../../table-config/fixed-expenses-columns";
 import { FixedExpensesDialog } from "../fixed-expenses-dialog/fixed-expenses-dialog";
@@ -26,13 +28,30 @@ export function FixedExpensesTable({
     0
   );
 
+  const search = useSearchParams();
+  const tagsFilter = search.get("tags")?.split(",") || [];
+  const taggedTotalAmount = optimisticFixedExpenses.reduce(
+    (acc, { amount, tags }) => {
+      const foundTag = tags.split(",").find((tag) => tagsFilter.includes(tag));
+      if (foundTag) return acc + amount;
+      return acc;
+    },
+    0
+  );
+
+  const intl = {
+    locale: userSettings?.locale,
+    currency: userSettings?.currency,
+  };
+
   return (
     <>
       <section>
         <DataTable
           filters={{
-            accessorKey: "label",
-            placeholder: dictionary.fixedExpenses.filter,
+            searchAccessorKey: "label",
+            searchPlaceholder: dictionary.fixedExpenses.filter,
+            AdvancedFilters,
           }}
           columns={fixedExpensesColumns}
           data={optimisticFixedExpenses}
@@ -52,13 +71,23 @@ export function FixedExpensesTable({
           <CardHeader>
             <CardDescription>{dictionary.fixedExpenses.total}</CardDescription>
           </CardHeader>
-          <CardContent>
-            <span className="text-2xl font-bold">
-              {formatCurrency(totalAmount, {
-                locale: userSettings?.locale,
-                currency: userSettings?.currency,
-              })}
-            </span>
+          <CardContent className="flex gap-6 flex-wrap">
+            <div className="flex flex-col">
+              <span className="text-slate-500 text-sm">
+                {dictionary.fixedExpenses.filteredTotal}
+              </span>
+              <span className="text-2xl font-bold">
+                {formatCurrency(taggedTotalAmount, intl)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-slate-500 text-sm">
+                {dictionary.fixedExpenses.totalFixedExpenses}
+              </span>
+              <span className="text-2xl font-bold">
+                {formatCurrency(totalAmount, intl)}
+              </span>
+            </div>
           </CardContent>
         </Card>
       </section>

@@ -25,8 +25,8 @@ export function TagsTable({
           currency: userSettings?.currency,
         }}
         filters={{
-          accessorKey: "label",
-          placeholder: dictionary.tags.filter,
+          searchAccessorKey: "label",
+          searchPlaceholder: dictionary.tags.filter,
         }}
         actions={
           <div className="flex justify-end w-full mr-4">

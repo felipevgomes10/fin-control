@@ -11,6 +11,13 @@
     "system": "System",
     "toggleTheme": "Toggle theme"
   },
+  "advancedFilters": {
+    "title": "Advanced Filters",
+    "tagsInput": "Tags",
+    "tagsInputPlaceholder": "Choose a tag",
+    "tagsSearchPlaceholder": "Search for a tag",
+    "tagNotFound": "Tag not found"
+  },
   "links": {
     "dashboard": "Dasboard",
     "fixed-expenses": "Fixed Expenses",
@@ -81,7 +88,9 @@
   "fixedExpenses": {
     "filter": "Filter labels...",
     "add": "Add Fixed Expense",
-    "total": "Total Fixed Expenses",
+    "total": "Total Expenses",
+    "totalFixedExpenses": "Total Fixed Expenses",
+    "filteredTotal": "Filtered Total Fixed Expenses",
     "dialogTitle": "Add a Fixed Expense",
     "dialogDescription": "Add a new fixed expense to be used later. Click save when you are done.",
     "dialogEditTitle": "expense details",
@@ -114,6 +123,7 @@
     "totalMonthlyExpenses": "Monthly Expenses",
     "totalFixedExpenses": "Fixed Expenses",
     "total": "Total Expenses",
+    "filteredTotal": "Filtered Total Monthly Expenses",
     "overBudget": "You are over the budget",
     "underBudget": "You are under the budget",
     "dialogTitle": "Add a Monthly Expense",

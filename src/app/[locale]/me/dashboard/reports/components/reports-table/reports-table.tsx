@@ -24,8 +24,8 @@ export function ReportsTable({
         currency: userSettings?.currency,
       }}
       filters={{
-        accessorKey: "month",
-        placeholder: dictionary.reports.filter,
+        searchAccessorKey: "month",
+        searchPlaceholder: dictionary.reports.filter,
       }}
       actions={
         <div className="flex justify-end w-full mr-4">

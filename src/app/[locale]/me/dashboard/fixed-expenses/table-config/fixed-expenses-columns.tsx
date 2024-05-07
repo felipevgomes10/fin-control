@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { formatCurrency, formatDate } from "../../../components/table/utils";
+import {
+  formatCurrency,
+  formatDate,
+  tagsFilterFn,
+} from "../../../components/table/utils";
 import { useFixedExpensesContext } from "../contexts/fixed-expenses-context/fixed-expenses-context";
 import { ActionsCell } from "./actions-cell";
 
@@ -62,6 +66,7 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
   },
   {
     accessorKey: "tags",
+    filterFn: tagsFilterFn,
     header: function Header() {
       const dictionary = useDictionary();
       return dictionary.table.tags;

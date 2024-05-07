@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -32,6 +33,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Table as TTable } from "@tanstack/table-core";
 import { useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
 
@@ -44,8 +46,9 @@ interface DataTableProps<TData, TValue> {
     currency: string | undefined | null;
   };
   filters?: {
-    accessorKey: string;
-    placeholder: string;
+    searchAccessorKey: string;
+    searchPlaceholder: string;
+    AdvancedFilters?: (props: { table: TTable<TData> }) => JSX.Element;
   };
 }
 
@@ -59,6 +62,12 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const {
+    searchAccessorKey: accessorKey,
+    searchPlaceholder: placeholder,
+    AdvancedFilters,
+  } = filters || {};
 
   const table = useReactTable({
     data,
@@ -76,8 +85,6 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
-
-  const { accessorKey, placeholder } = filters || {};
 
   const dictionary = useDictionary();
 
@@ -99,6 +106,15 @@ export function DataTable<TData, TValue>({
             }
             className="sm:max-w-sm"
           />
+          {AdvancedFilters && (
+            <div className="flex ml-1 gap-4 items-center w-full sm:w-auto">
+              <Separator
+                className="hidden sm:block h-8"
+                orientation="vertical"
+              />
+              <AdvancedFilters table={table} />
+            </div>
+          )}
           <div className="flex justify-end gap-4 w-full">
             {actions}
             <DropdownMenu>

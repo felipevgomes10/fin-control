@@ -11,6 +11,13 @@
     "system": "Sistema",
     "toggleTheme": "Mudar tema"
   },
+  "advancedFilters": {
+    "title": "Filtros Avançados",
+    "tagsInput": "Tags",
+    "tagsInputPlaceholder": "Selecione uma tag",
+    "tagsSearchPlaceholder": "Pesquisar por tags",
+    "tagNotFound": "Nenhuma tag encontrada"
+  },
   "links": {
     "dashboard": "Painel",
     "fixed-expenses": "Despesas Fixas",
@@ -81,7 +88,9 @@
   "fixedExpenses": {
     "filter": "Filtrar rótulos...",
     "add": "Adicionar Despesa Fixa",
-    "total": "Total de Despesas Fixas",
+    "total": "Total de Despesas",
+    "totalFixedExpenses": "Total de Despesas Fixas",
+    "filteredTotal": "Total de Despesas Fixas Filtradas",
     "dialogTitle": "Adicionar uma Despesa Fixa",
     "dialogDescription": "Adicione uma nova despesa fixa para ser usada posteriormente. Clique em salvar quando terminar.",
     "dialogEditTitle": "detalhes da despesa",
@@ -114,6 +123,7 @@
     "totalMonthlyExpenses": "Despesas Mensais",
     "totalFixedExpenses": "Despesas Fixas",
     "total": "Total de Despesas",
+    "filteredTotal": "Total de Despesas Mensais Filtradas",
     "overBudget": "Você ultrapassou o orçamento",
     "underBudget": "Você está dentro do orçamento",
     "dialogTitle": "Adicionar uma Despesa Mensal",
