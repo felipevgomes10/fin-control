@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   LocateFixedIcon,
   Paperclip,
+  Tag,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -73,6 +74,17 @@ export async function MobileMenu() {
                 >
                   <Paperclip />
                   {dictionary.links.reports}
+                </Link>
+              </Button>
+            </li>
+            <li>
+              <Button className="w-full" variant="secondary" asChild>
+                <Link
+                  className="flex !justify-start items-center gap-2 w-full"
+                  href="/me/dashboard/tags"
+                >
+                  <Tag />
+                  {dictionary.links.tags}
                 </Link>
               </Button>
             </li>
