@@ -67,9 +67,13 @@ export const tagsColumns: ColumnDef<Tags>[] = [
       return dictionary.table.createdAt;
     },
     cell: function Cell({ row }) {
-      const intl = useTableContext();
+      const { intl } = useTableContext();
       const date = row.getValue("createdAt") as string;
-      return <div>{formatDate(new Date(date), intl)}</div>;
+      return (
+        <div className="whitespace-nowrap">
+          {formatDate(new Date(date), intl)}
+        </div>
+      );
     },
   },
   {

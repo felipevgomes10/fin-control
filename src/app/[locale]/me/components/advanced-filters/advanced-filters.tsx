@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { Table as TTable } from "@tanstack/table-core";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useFixedExpensesContext } from "../../dashboard/fixed-expenses/contexts/fixed-expenses-context/fixed-expenses-context";
 import { useMonthlyExpensesContext } from "../../dashboard/monthly-expense/contexts/monthly-expense-provider/monthly-expense-provider";
@@ -20,7 +20,9 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
   const dictionary = useDictionary();
 
   const router = useRouter();
+  const pathname = usePathname();
   const search = useSearchParams();
+  const searchBuilder = new URLSearchParams(search);
 
   const { tags: fixedExpensesTags } = useFixedExpensesContext();
   const { tags: monthlyExpensesTags } = useMonthlyExpensesContext();
@@ -56,7 +58,8 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
     column?.setFilterValue(tags);
 
     const tagsLabels = joinTags(value.map((option) => option.label));
-    router.push(`?tags=${tagsLabels}`);
+    searchBuilder.set("tags", tagsLabels);
+    router.push(pathname + "?" + searchBuilder.toString());
   }
 
   return (

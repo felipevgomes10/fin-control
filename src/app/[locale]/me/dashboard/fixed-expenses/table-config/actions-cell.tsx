@@ -35,6 +35,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { splitTags } from "../../../components/table/utils";
+import { useTableContext } from "../../../contexts/table-provider/table-provider";
 import { useFixedExpensesContext } from "../contexts/fixed-expenses-context/fixed-expenses-context";
 import type { FixedExpenses } from "./fixed-expenses-columns";
 
@@ -49,6 +50,8 @@ function DetailsDialogContent({
 
   const { optimisticFixedExpenses, setOptimisticFixedExpenses, tags } =
     useFixedExpensesContext();
+
+  const { table } = useTableContext();
 
   const formSchema = getFixedExpenseSchema({
     label: dictionary.fixedExpenses.labelError,

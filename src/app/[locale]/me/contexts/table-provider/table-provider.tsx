@@ -1,24 +1,34 @@
+import type { Table as TTable } from "@tanstack/table-core";
 import { createContext, useContext, useMemo } from "react";
 
-type TableContextType =
+type Intl =
   | {
       locale: string | undefined | null;
       currency: string | undefined | null;
     }
   | undefined;
 
+type TableContextType = {
+  intl: Intl;
+  table: TTable<any> | null;
+};
+
 type TableProviderProps = {
   children: React.ReactNode;
-  intl?: TableContextType;
+  intl?: Intl;
+  table: TTable<any> | null;
 };
 
 const TableContext = createContext<TableContextType>({
-  locale: "en-US",
-  currency: "USD",
+  intl: {
+    locale: "en-US",
+    currency: "USD",
+  },
+  table: null,
 });
 
-export function TableProvider({ children, intl }: TableProviderProps) {
-  const value = useMemo(() => intl, [intl]);
+export function TableProvider({ children, intl, table }: TableProviderProps) {
+  const value = useMemo(() => ({ intl, table }), [intl, table]);
 
   return (
     <TableContext.Provider value={value}>{children}</TableContext.Provider>
