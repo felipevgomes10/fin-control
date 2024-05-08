@@ -78,8 +78,9 @@ export function DataTable<TData, TValue>({
   const [data, setData] = useState(() => initialData);
 
   useEffect(() => {
-    setData(initialData);
-  }, [initialData]);
+    const tags = search.get("tags");
+    if (!tags) setData(initialData);
+  }, [initialData, search]);
 
   useEffect(() => {
     const searchBuilder = new URLSearchParams(location.search);
