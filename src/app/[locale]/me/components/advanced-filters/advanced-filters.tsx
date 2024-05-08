@@ -11,7 +11,8 @@ import {
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { Table as TTable } from "@tanstack/table-core";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useTableContext } from "../../contexts/table-provider/table-provider";
 import { useFixedExpensesContext } from "../../dashboard/fixed-expenses/contexts/fixed-expenses-context/fixed-expenses-context";
 import { useMonthlyExpensesContext } from "../../dashboard/monthly-expense/contexts/monthly-expense-provider/monthly-expense-provider";
 import { joinTags, splitTags, swapTagsLabelsByIds } from "../table/utils";
@@ -23,6 +24,8 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
   const pathname = usePathname();
   const search = useSearchParams();
   const searchBuilder = new URLSearchParams(search);
+
+  const { initialData, setData } = useTableContext();
 
   const { tags: fixedExpensesTags } = useFixedExpensesContext();
   const { tags: monthlyExpensesTags } = useMonthlyExpensesContext();
@@ -36,6 +39,25 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
     label: tag.label,
   }));
 
+  const filterData = useCallback(
+    (tagsIds: string[]) => {
+      table.firstPage();
+
+      if (!tagsIds.length) {
+        return setData(initialData);
+      }
+
+      setData(() => {
+        const filteredData = initialData.filter((item) => {
+          const itemTags = splitTags(item.tags);
+          return itemTags.find((tag) => tagsIds.includes(tag));
+        });
+        return filteredData;
+      });
+    },
+    [setData, initialData, table]
+  );
+
   useEffect(() => {
     const tagsLabels = search.get("tags");
     if (tagsLabels) {
@@ -43,12 +65,14 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
       const tagsIds = swapTagsLabelsByIds(tags, tagsLabelsArray);
       const column = table.getColumn("tags");
       column?.setFilterValue(joinTags(tagsIds));
+      filterData(tagsIds);
     }
-  }, [search, table, tags]);
+  }, [search, setData, table, tags, filterData]);
 
   function getValue() {
     const column = table.getColumn("tags");
     const filter = (column?.getFilterValue() as string) ?? "";
+
     return comboboxOptions.filter((option) => filter.includes(option.value));
   }
 
@@ -56,6 +80,8 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
     const column = table.getColumn("tags");
     const tags = joinTags(value.map((option) => option.value));
     column?.setFilterValue(tags);
+
+    filterData(splitTags(tags));
 
     const tagsLabels = joinTags(value.map((option) => option.label));
     searchBuilder.set("tags", tagsLabels);

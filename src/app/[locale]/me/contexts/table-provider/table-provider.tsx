@@ -11,12 +11,16 @@ type Intl =
 type TableContextType = {
   intl: Intl;
   table: TTable<any> | null;
+  initialData: any[];
+  setData: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
 type TableProviderProps = {
   children: React.ReactNode;
   intl?: Intl;
   table: TTable<any> | null;
+  initialData: any[];
+  setData: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
 const TableContext = createContext<TableContextType>({
@@ -25,10 +29,21 @@ const TableContext = createContext<TableContextType>({
     currency: "USD",
   },
   table: null,
+  initialData: [],
+  setData: () => {},
 });
 
-export function TableProvider({ children, intl, table }: TableProviderProps) {
-  const value = useMemo(() => ({ intl, table }), [intl, table]);
+export function TableProvider({
+  children,
+  intl,
+  table,
+  initialData,
+  setData,
+}: TableProviderProps) {
+  const value = useMemo(
+    () => ({ intl, table, initialData, setData }),
+    [intl, table, initialData, setData]
+  );
 
   return (
     <TableContext.Provider value={value}>{children}</TableContext.Provider>

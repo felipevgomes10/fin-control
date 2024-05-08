@@ -57,7 +57,7 @@ const PAGE_SIZE = 10;
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  data: initialData,
   actions,
   intl,
   filters,
@@ -74,6 +74,8 @@ export function DataTable<TData, TValue>({
   const pathname = usePathname();
   const search = useSearchParams();
   const searchBuilder = new URLSearchParams(search);
+
+  const [data, setData] = useState(() => initialData);
 
   useEffect(() => {
     const searchBuilder = new URLSearchParams(location.search);
@@ -127,7 +129,12 @@ export function DataTable<TData, TValue>({
   const dictionary = useDictionary();
 
   return (
-    <TableProvider table={table} intl={intl}>
+    <TableProvider
+      table={table}
+      intl={intl}
+      initialData={initialData}
+      setData={setData}
+    >
       <div>
         <div className="flex flex-col sm:flex-row items-center gap-4 py-4">
           <Input
