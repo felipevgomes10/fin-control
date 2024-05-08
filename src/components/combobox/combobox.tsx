@@ -57,6 +57,11 @@ export function Combobox({
   const [uncontrolledValue, setUncontrolledValue] = useState<ComboboxOption[]>(
     []
   );
+  const [searchValue, setSearchValue] = useState("");
+
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   const filterItems = (
     option: ComboboxOption,
@@ -106,23 +111,20 @@ export function Combobox({
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-auto sm:w-[375px] p-0">
-          <Command
-            filter={(_, search) => {
-              const foundItem = options.find((option) => {
-                return option.label
-                  .toLowerCase()
-                  .startsWith(search.toLowerCase());
-              });
-              if (!!foundItem) return 1;
-              return 0;
-            }}
-          >
-            <CommandInput placeholder={searchPlaceholder} />
+          <Command shouldFilter={false}>
+            <CommandInput
+              value={searchValue}
+              onValueChange={setSearchValue}
+              placeholder={searchPlaceholder}
+            />
             <CommandList>
               <CommandEmpty>{notFoundPlaceholder}</CommandEmpty>
-              <ScrollArea className="h-52">
+              <ScrollArea
+                data-scroll={filteredOptions.length >= 8}
+                className="data-[scroll=true]:h-52"
+              >
                 <CommandGroup>
-                  {options.map((option) => (
+                  {filteredOptions.map((option) => (
                     <CommandItem
                       key={option.value}
                       value={option.value}
