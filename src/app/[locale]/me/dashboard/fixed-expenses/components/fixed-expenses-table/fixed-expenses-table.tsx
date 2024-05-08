@@ -80,14 +80,16 @@ export function FixedExpensesTable({
             <CardDescription>{dictionary.fixedExpenses.total}</CardDescription>
           </CardHeader>
           <CardContent className="flex gap-6 flex-wrap">
-            <div className="flex flex-col">
-              <span className="text-slate-500 text-sm">
-                {dictionary.fixedExpenses.filteredTotal}
-              </span>
-              <span className="text-2xl font-bold">
-                {formatCurrency(taggedTotalAmount, intl)}
-              </span>
-            </div>
+            {taggedTotalAmount > 0 && (
+              <div className="flex flex-col">
+                <span className="text-slate-500 text-sm">
+                  {dictionary.fixedExpenses.filteredTotal}
+                </span>
+                <span className="text-2xl font-bold">
+                  {formatCurrency(taggedTotalAmount, intl)}
+                </span>
+              </div>
+            )}
             <div className="flex flex-col">
               <span className="text-slate-500 text-sm">
                 {dictionary.fixedExpenses.totalFixedExpenses}
