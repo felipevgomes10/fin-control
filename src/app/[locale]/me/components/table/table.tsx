@@ -128,7 +128,9 @@ export function DataTable<TData, TValue>({
     pageCount: Math.ceil(data.length / PAGE_SIZE),
   });
 
-  const currentPage = table.getState().pagination.pageIndex;
+  const {
+    pagination: { pageIndex: currentPage },
+  } = table.getState();
 
   const dictionary = useDictionary();
 
