@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { useSortTable } from "../../../components/table/hooks/useSortTable";
 import {
   formatCurrency,
   formatDate,
@@ -27,13 +28,17 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
   {
     accessorKey: "label",
     enableHiding: false,
-    header: function Header({ column }) {
+    header: function Header() {
       const dictionary = useDictionary();
+
+      const { handleSort, isSorted } = useSortTable({ column: "label" });
 
       return (
         <Button
+          data-sorted={isSorted}
+          className="data-[sorted=true]:bg-accent data-[sorted=true]:text-accent-foreground"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={handleSort}
         >
           {dictionary.table.label}
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -46,13 +51,17 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
   },
   {
     accessorKey: "amount",
-    header: function Header({ column }) {
+    header: function Header() {
       const dictionary = useDictionary();
+
+      const { handleSort, isSorted } = useSortTable({ column: "amount" });
 
       return (
         <Button
+          data-sorted={isSorted}
+          className="data-[sorted=true]:bg-accent data-[sorted=true]:text-accent-foreground"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={handleSort}
         >
           {dictionary.table.amount}
           <ArrowUpDown className="ml-2 h-4 w-4" />

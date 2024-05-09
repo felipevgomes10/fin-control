@@ -37,6 +37,7 @@ import type { Table as TTable } from "@tanstack/table-core";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
+import { TableSearchParams, TableSortDirection } from "./table.type";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,6 +52,9 @@ interface DataTableProps<TData, TValue> {
     searchPlaceholder: string;
     AdvancedFilters?: (props: { table: TTable<TData> }) => JSX.Element;
   };
+  sortConfig: {
+    defaultSort: TableSortDirection;
+  };
 }
 
 const PAGE_SIZE = 10;
@@ -61,6 +65,7 @@ export function DataTable<TData, TValue>({
   actions,
   intl,
   filters,
+  sortConfig,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -85,15 +90,19 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     const searchBuilder = new URLSearchParams(location.search);
     const page = searchBuilder.get("page");
+    const sort = searchBuilder.get(TableSearchParams.SORT);
+
     setPagination({
       pageIndex: parseInt(page || "0"),
       pageSize: PAGE_SIZE,
     });
 
-    if (page) return;
+    if (!page) searchBuilder.set("page", "0");
+    if (!sort) {
+      searchBuilder.set(TableSearchParams.SORT, TableSortDirection.LABEL_ASC);
+    }
 
-    searchBuilder.set("page", "0");
-    router.push(pathname + "?" + searchBuilder.toString());
+    router.replace(pathname + "?" + searchBuilder.toString());
   }, [router, pathname]);
 
   const {
@@ -102,11 +111,24 @@ export function DataTable<TData, TValue>({
     AdvancedFilters,
   } = filters || {};
 
+  const { defaultSort } = sortConfig;
+
+  const sort = search.get(TableSearchParams.SORT) || defaultSort;
   function getPaginatedData(pagination: PaginationState) {
-    return data.slice(
-      pagination.pageIndex * pagination.pageSize,
-      (pagination.pageIndex + 1) * pagination.pageSize
-    );
+    const [columnId, direction] = sort.split("_");
+    return (data as any[])
+      .sort(({ [columnId]: a }, { [columnId]: b }) => {
+        const dataType = typeof a;
+
+        if (direction === "asc") {
+          return dataType === "string" ? a.localeCompare(b) : a - b;
+        }
+        return dataType === "string" ? b.localeCompare(a) : b - a;
+      })
+      .slice(
+        pagination.pageIndex * pagination.pageSize,
+        (pagination.pageIndex + 1) * pagination.pageSize
+      );
   }
 
   const table = useReactTable({
@@ -126,6 +148,7 @@ export function DataTable<TData, TValue>({
       pagination,
     },
     manualPagination: true,
+    manualSorting: true,
     pageCount: Math.ceil(data.length / PAGE_SIZE),
   });
 

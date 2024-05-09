@@ -23,6 +23,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { DeleteDialog } from "../../../components/delete-dialog/delete-dialog";
+import { useSortTable } from "../../../components/table/hooks/useSortTable";
 import { formatDate } from "../../../components/table/utils";
 import { useTableContext } from "../../../contexts/table-provider/table-provider";
 import { TagForm } from "../components/tag-form/tag-form";
@@ -43,13 +44,17 @@ export const tagsColumns: ColumnDef<Tags>[] = [
   {
     accessorKey: "label",
     enableHiding: false,
-    header: function Header({ column }) {
+    header: function Header() {
       const dictionary = useDictionary();
+
+      const { handleSort, isSorted } = useSortTable({ column: "label" });
 
       return (
         <Button
+          data-sorted={isSorted}
+          className="data-[sorted=true]:bg-accent data-[sorted=true]:text-accent-foreground"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={handleSort}
         >
           {dictionary.table.label}
           <ArrowUpDown className="ml-2 h-4 w-4" />

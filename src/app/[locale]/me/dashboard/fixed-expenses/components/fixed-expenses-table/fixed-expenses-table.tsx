@@ -2,6 +2,7 @@
 
 import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/advanced-filters";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
+import { TableSortDirection } from "@/app/[locale]/me/components/table/table.type";
 import {
   formatCurrency,
   joinTags,
@@ -61,6 +62,7 @@ export function FixedExpensesTable({
             searchPlaceholder: dictionary.fixedExpenses.filter,
             AdvancedFilters,
           }}
+          sortConfig={{ defaultSort: TableSortDirection.LABEL_ASC }}
           columns={fixedExpensesColumns}
           data={optimisticFixedExpenses}
           intl={{
