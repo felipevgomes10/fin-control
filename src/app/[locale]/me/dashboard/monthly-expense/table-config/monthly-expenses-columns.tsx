@@ -1,11 +1,33 @@
 "use client";
 
+import { deleteMonthlyExpenses } from "@/actions/expenses/delete-monthly-expenses";
 import { useTableContext } from "@/app/[locale]/me/contexts/table-provider/table-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { flushSync } from "react-dom";
+import { toast } from "sonner";
 import { useSortTable } from "../../../components/table/hooks/useSortTable";
 import {
   formatCurrency,
@@ -25,6 +47,28 @@ export type MonthlyExpenses = {
 };
 
 export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "label",
     enableHiding: false,
@@ -210,7 +254,86 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
   },
   {
     id: "actions",
+    header: function Header({ column, table }) {
+      const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+      const dictionary = useDictionary();
+
+      const { setOptimisticMonthlyExpenses } = useMonthlyExpensesContext();
+      const { rowSelection } = useTableContext();
+
+      async function deleteAction() {
+        const ids = Object.keys(rowSelection).map((id) => {
+          const { rowsById } = table.getFilteredSelectedRowModel();
+          return rowsById[id].original.id;
+        });
+
+        flushSync(() => {
+          setOptimisticMonthlyExpenses({
+            action: "delete-many",
+            payload: { ids },
+          });
+          setShowDeleteModal(false);
+          table.toggleAllPageRowsSelected(false);
+        });
+
+        await deleteMonthlyExpenses(ids);
+        toast.success(dictionary.monthlyExpense.deleteManySuccess);
+      }
+
+      return (
+        <>
+          <Dialog
+            open={showDeleteModal}
+            onOpenChange={(open) => setShowDeleteModal(open)}
+          >
+            <DialogPortal>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{dictionary.deleteDialog.title}</DialogTitle>
+                  <DialogClose />
+                  <DialogDescription>
+                    {dictionary.deleteDialog.deleteManyDescription}
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="ghost">
+                      {dictionary.deleteDialog.cancel}
+                    </Button>
+                  </DialogClose>
+                  <form action={deleteAction}>
+                    <Button type="submit" variant="destructive">
+                      {dictionary.deleteDialog.deleteMany}
+                    </Button>
+                  </form>
+                </DialogFooter>
+              </DialogContent>
+            </DialogPortal>
+          </Dialog>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">{dictionary.table.srOnly}</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{dictionary.table.actions}</DropdownMenuLabel>
+              <DropdownMenuItem
+                disabled={Object.keys(rowSelection).length === 0}
+                onClick={() => setShowDeleteModal(true)}
+              >
+                {dictionary.table.deleteMany}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      );
+    },
     enableHiding: false,
+    enableSorting: false,
     cell: ActionsCell,
   },
 ];

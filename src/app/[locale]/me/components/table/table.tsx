@@ -30,6 +30,7 @@ import {
   type ColumnDef,
   type ColumnFiltersState,
   type PaginationState,
+  type RowSelectionState,
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table";
@@ -74,6 +75,7 @@ export function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize: PAGE_SIZE,
   });
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const router = useRouter();
   const pathname = usePathname();
@@ -141,11 +143,13 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onPaginationChange: setPagination,
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       pagination,
+      rowSelection,
     },
     manualPagination: true,
     manualSorting: true,
@@ -163,6 +167,7 @@ export function DataTable<TData, TValue>({
       table={table}
       intl={intl}
       initialData={initialData}
+      rowSelection={rowSelection}
       setData={setData}
     >
       <div>

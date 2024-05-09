@@ -1,4 +1,4 @@
-import type { Table as TTable } from "@tanstack/table-core";
+import type { RowSelectionState, Table as TTable } from "@tanstack/table-core";
 import { createContext, useContext, useMemo } from "react";
 
 type Intl =
@@ -12,6 +12,7 @@ type TableContextType = {
   intl: Intl;
   table: TTable<any> | null;
   initialData: any[];
+  rowSelection: RowSelectionState;
   setData: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
@@ -20,6 +21,7 @@ type TableProviderProps = {
   intl?: Intl;
   table: TTable<any> | null;
   initialData: any[];
+  rowSelection: RowSelectionState;
   setData: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
@@ -30,6 +32,7 @@ const TableContext = createContext<TableContextType>({
   },
   table: null,
   initialData: [],
+  rowSelection: {},
   setData: () => {},
 });
 
@@ -38,11 +41,12 @@ export function TableProvider({
   intl,
   table,
   initialData,
+  rowSelection,
   setData,
 }: TableProviderProps) {
   const value = useMemo(
-    () => ({ intl, table, initialData, setData }),
-    [intl, table, initialData, setData]
+    () => ({ intl, table, initialData, rowSelection, setData }),
+    [intl, table, initialData, rowSelection, setData]
   );
 
   return (

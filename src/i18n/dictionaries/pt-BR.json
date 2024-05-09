@@ -73,6 +73,7 @@
     "actions": "Ações",
     "viewDetails": "Ver Detalhes",
     "delete": "Excluir",
+    "deleteMany": "Excluir Selecionados",
     "columns": "Colunas",
     "previous": "Anterior",
     "next": "Próximo",
@@ -82,8 +83,10 @@
   "deleteDialog": {
     "title": "Você tem absoluta certeza?",
     "description": "Esta ação não pode ser desfeita. Isso excluirá permanentemente este item.",
+    "deleteManyDescription": "Esta ação não pode ser desfeita. Isso excluirá permanentemente todos os itens selecionados.",
     "cancel": "Cancelar",
-    "delete": "Excluir"
+    "delete": "Excluir",
+    "deleteMany": "Excluir Selecionados"
   },
   "fixedExpenses": {
     "filter": "Filtrar rótulos...",
@@ -148,6 +151,8 @@
     "updateError": "Erro ao atualizar a Despesa Mensal",
     "deleteSuccess": "Despesa Mensal excluída com sucesso",
     "deleteError": "Erro ao excluir a Despesa Mensal",
+    "deleteManySuccess": "Despesas Mensais excluídas com sucesso",
+    "deleteManyError": "Erro ao excluir as Despesas Mensais",
     "addSuccess": "Despesa Mensal adicionada com sucesso",
     "addError": "Erro ao adicionar a Despesa Mensal",
     "save": "Salvar Despesa",

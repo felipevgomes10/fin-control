@@ -37,6 +37,10 @@ type OptimisticMonthlyExpensesReducerParams =
       payload: { id: string };
     }
   | {
+      action: "delete-many";
+      payload: { ids: string[] };
+    }
+  | {
       action: "update";
       payload: FormattedMonthlyExpense;
     };
@@ -56,6 +60,10 @@ function optimisticMonthlyExpensesReducer(
       return [...state, payload];
     case "delete":
       return state.filter((monthlyExpense) => monthlyExpense.id !== payload.id);
+    case "delete-many":
+      return state.filter((monthlyExpense) => {
+        return !payload.ids.includes(monthlyExpense.id);
+      });
     case "update":
       return state.map((monthlyExpense) => {
         return monthlyExpense.id === payload.id ? payload : monthlyExpense;
