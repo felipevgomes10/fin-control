@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTableContext } from "../../../contexts/table-provider/table-provider";
 import { TableSearchParams, TableSortDirection } from "../table.type";
 
 type UseSortTable = {
@@ -16,10 +17,13 @@ export function useSortTable({
   const router = useRouter();
   const search = useSearchParams();
 
+  const { table } = useTableContext();
+
   const sortedColumn = search.get(TableSearchParams.SORT) || defaultSort;
   const currentSortedColumn = sortedColumn.split("_").at(0);
 
   function handleSort() {
+    table?.toggleAllPageRowsSelected(false);
     const searchBuilder = new URLSearchParams(location.search);
     const sort = search.get(TableSearchParams.SORT);
 

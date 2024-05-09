@@ -43,6 +43,7 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
   const filterData = useCallback(
     (tagsIds: string[]) => {
       table.firstPage();
+      table.toggleAllPageRowsSelected(false);
 
       if (!tagsIds.length) {
         return setData(initialData);
