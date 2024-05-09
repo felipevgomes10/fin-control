@@ -83,13 +83,13 @@ export function DataTable<TData, TValue>({
   const [data, setData] = useState(() => initialData);
 
   useEffect(() => {
-    const tags = search.get("tags");
+    const tags = search.get(TableSearchParams.TAGS);
     if (!tags) setData(initialData);
   }, [initialData, search]);
 
   useEffect(() => {
     const searchBuilder = new URLSearchParams(location.search);
-    const page = searchBuilder.get("page");
+    const page = searchBuilder.get(TableSearchParams.PAGE);
     const sort = searchBuilder.get(TableSearchParams.SORT);
 
     setPagination({

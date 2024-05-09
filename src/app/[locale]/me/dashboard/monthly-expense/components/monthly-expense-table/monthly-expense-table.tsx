@@ -2,7 +2,10 @@
 
 import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/advanced-filters";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
-import { TableSortDirection } from "@/app/[locale]/me/components/table/table.type";
+import {
+  TableSearchParams,
+  TableSortDirection,
+} from "@/app/[locale]/me/components/table/table.type";
 import {
   formatCurrency,
   joinTags,
@@ -45,7 +48,7 @@ export function MonthlyExpenseTable({
   );
 
   const search = useSearchParams();
-  const tagsFilter = splitTags(search.get("tags") || "");
+  const tagsFilter = splitTags(search.get(TableSearchParams.TAGS) || "");
   const tagsIds = swapTagsLabelsByIds(tags, tagsFilter);
   const taggedTotalAmount = optimisticMonthlyExpenses.reduce(
     (acc, { amount, installments, tags }) => {

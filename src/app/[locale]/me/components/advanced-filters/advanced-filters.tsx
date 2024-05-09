@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useTableContext } from "../../contexts/table-provider/table-provider";
 import { useFixedExpensesContext } from "../../dashboard/fixed-expenses/contexts/fixed-expenses-context/fixed-expenses-context";
 import { useMonthlyExpensesContext } from "../../dashboard/monthly-expense/contexts/monthly-expense-provider/monthly-expense-provider";
+import { TableSearchParams } from "../table/table.type";
 import { joinTags, splitTags, swapTagsLabelsByIds } from "../table/utils";
 
 export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
@@ -59,7 +60,7 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
   );
 
   useEffect(() => {
-    const tagsLabels = search.get("tags");
+    const tagsLabels = search.get(TableSearchParams.TAGS);
     if (tagsLabels) {
       const tagsLabelsArray = splitTags(tagsLabels || "");
       const tagsIds = swapTagsLabelsByIds(tags, tagsLabelsArray);
