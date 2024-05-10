@@ -1,6 +1,7 @@
 "use client";
 
 import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/advanced-filters";
+import { BulkUploadDialog } from "@/app/[locale]/me/components/bulk-upload-dialog/bulk-upload-dialog";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
 import {
   TableSearchParams,
@@ -73,8 +74,9 @@ export function FixedExpensesTable({
             currency: userSettings?.currency,
           }}
           actions={
-            <div className="flex justify-end w-full mr-4">
+            <div className="flex justify-end gap-8 w-full mr-4">
               <FixedExpensesDialog />
+              <BulkUploadDialog variant="fixed-expenses" />
             </div>
           }
         />

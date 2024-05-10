@@ -33,6 +33,10 @@ type OptimisticMonthlyExpensesReducerParams =
       payload: FormattedMonthlyExpense;
     }
   | {
+      action: "add-many";
+      payload: FormattedMonthlyExpense[];
+    }
+  | {
       action: "delete";
       payload: { id: string };
     }
@@ -58,6 +62,8 @@ function optimisticMonthlyExpensesReducer(
   switch (action) {
     case "add":
       return [...state, payload];
+    case "add-many":
+      return [...state, ...payload];
     case "delete":
       return state.filter((monthlyExpense) => monthlyExpense.id !== payload.id);
     case "delete-many":

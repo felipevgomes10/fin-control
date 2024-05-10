@@ -88,6 +88,19 @@
     "delete": "Delete",
     "deleteMany": "Delete selected items"
   },
+  "bulkUploadDialog": {
+    "fixedExpensesTitle": "Bulk Upload Fixed Expenses",
+    "monthlyExpensesTitle": "Bulk Upload Monthly Expenses",
+    "fixedExpensesDescription": "Upload a JSON file",
+    "monthlyExpensesDescription": "Upload a JSON file",
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "uploadSuccess": "Upload successful",
+    "uploadError": "Error uploading file",
+    "invalidFile": "Invalid file",
+    "cancel": "Cancel",
+    "trigger": "Upload JSON file"
+  },
   "fixedExpenses": {
     "filter": "Filter labels...",
     "add": "Add Fixed Expense",

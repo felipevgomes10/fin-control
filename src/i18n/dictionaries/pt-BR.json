@@ -88,6 +88,19 @@
     "delete": "Excluir",
     "deleteMany": "Excluir Selecionados"
   },
+  "bulkUploadDialog": {
+    "fixedExpensesTitle": "Suba Despesas Fixas em massa",
+    "monthlyExpensesTitle": "Suba Despesas Mensais em massa",
+    "fixedExpensesDescription": "Escolha um arquivo JSON",
+    "monthlyExpensesDescription": "Escolha um arquivo JSON",
+    "upload": "Subir",
+    "uploading": "Subindo...",
+    "uploadSuccess": "Arquivo subido com sucesso",
+    "uploadError": "Erro ao subir o arquivo",
+    "invalidFile": "Arquivo inválido",
+    "cancel": "Cancelar",
+    "trigger": "Subir arquivo JSON"
+  },
   "fixedExpenses": {
     "filter": "Filtrar rótulos...",
     "add": "Adicionar Despesa Fixa",

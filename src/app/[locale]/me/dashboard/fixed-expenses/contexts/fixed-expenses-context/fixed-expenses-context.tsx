@@ -32,6 +32,10 @@ type OptimisticFixedExpensesReducerParams =
       payload: FormattedFixedExpense;
     }
   | {
+      action: "add-many";
+      payload: FormattedFixedExpense[];
+    }
+  | {
       action: "delete";
       payload: { id: string };
     }
@@ -53,6 +57,8 @@ function optimisticFixedExpensesReducer(
   switch (action) {
     case "add":
       return [...state, payload];
+    case "add-many":
+      return [...state, ...payload];
     case "delete":
       return state.filter((fixedExpense) => fixedExpense.id !== payload.id);
     case "update":
