@@ -20,7 +20,7 @@ import {
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { useRef, useState } from "react";
+import { startTransition, useRef, useState } from "react";
 import { toast } from "sonner";
 import { DeleteDialog } from "../../../components/delete-dialog/delete-dialog";
 import { useSortTable } from "../../../components/table/hooks/useSortTable";
@@ -97,13 +97,15 @@ export const tagsColumns: ColumnDef<Tags>[] = [
 
       async function action(formData: FormData) {
         try {
-          setOptimisticTags({
-            action: "update",
-            payload: {
-              id: row.original.id,
-              label: formData.get("label") as string,
-              createdAt: row.getValue("createdAt"),
-            },
+          startTransition(() => {
+            setOptimisticTags({
+              action: "update",
+              payload: {
+                id: row.original.id,
+                label: formData.get("label") as string,
+                createdAt: row.getValue("createdAt"),
+              },
+            });
           });
 
           dialogCloseRef.current?.click();

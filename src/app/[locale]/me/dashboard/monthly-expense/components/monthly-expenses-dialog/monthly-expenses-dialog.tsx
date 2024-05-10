@@ -19,7 +19,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { startTransition, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -74,15 +74,17 @@ export function MonthlyExpensesDialog() {
     }
 
     flushSync(() => {
-      setOptimisticMonthlyExpenses({
-        action: "add",
-        payload: {
-          id: crypto.randomUUID(),
-          createdAt: new Date().toUTCString(),
-          ...rawData,
-        },
+      startTransition(() => {
+        setOptimisticMonthlyExpenses({
+          action: "add",
+          payload: {
+            id: crypto.randomUUID(),
+            createdAt: new Date().toUTCString(),
+            ...rawData,
+          },
+        });
+        if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
       });
-      if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
     });
 
     await createMonthlyExpense(formData);

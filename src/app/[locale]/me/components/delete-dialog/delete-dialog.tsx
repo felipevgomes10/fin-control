@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
-import type { Dispatch, SetStateAction } from "react";
+import { startTransition, type Dispatch, type SetStateAction } from "react";
 import { flushSync } from "react-dom";
 import { toast } from "sonner";
 
@@ -56,11 +56,13 @@ export function DeleteDialog({
               action={async () => {
                 try {
                   flushSync(() => {
-                    setOptimisticData?.({
-                      action: "delete",
-                      payload: { id: itemId },
+                    startTransition(() => {
+                      setOptimisticData?.({
+                        action: "delete",
+                        payload: { id: itemId },
+                      });
+                      setShowDeleteModal(false);
                     });
-                    setShowDeleteModal(false);
                   });
 
                   await action(itemId);

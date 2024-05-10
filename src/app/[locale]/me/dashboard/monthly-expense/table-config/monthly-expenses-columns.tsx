@@ -25,7 +25,7 @@ import {
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import { flushSync } from "react-dom";
 import { toast } from "sonner";
 import { useSortTable } from "../../../components/table/hooks/useSortTable";
@@ -269,12 +269,14 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
         });
 
         flushSync(() => {
-          setOptimisticMonthlyExpenses({
-            action: "delete-many",
-            payload: { ids },
+          startTransition(() => {
+            setOptimisticMonthlyExpenses({
+              action: "delete-many",
+              payload: { ids },
+            });
+            setShowDeleteModal(false);
+            table.toggleAllPageRowsSelected(false);
           });
-          setShowDeleteModal(false);
-          table.toggleAllPageRowsSelected(false);
         });
 
         await deleteMonthlyExpenses(ids);

@@ -15,7 +15,7 @@ import {
   Dictionary,
   useDictionary,
 } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
-import type { RefObject } from "react";
+import { startTransition, type RefObject } from "react";
 import { toast } from "sonner";
 import { useReportsContext } from "../../contexts/reports-context/reports-context";
 import { months } from "./utils";
@@ -34,14 +34,16 @@ export function ReportForm({
       className="flex flex-col gap-4"
       action={async (formData: FormData) => {
         try {
-          setOptimisticReports({
-            action: "add",
-            payload: {
-              id: crypto.randomUUID(),
-              month: months[parseInt(formData.get("month") as string)],
-              year: new Date().getFullYear(),
-              createdAt: new Date().toUTCString(),
-            },
+          startTransition(() => {
+            setOptimisticReports({
+              action: "add",
+              payload: {
+                id: crypto.randomUUID(),
+                month: months[parseInt(formData.get("month") as string)],
+                year: new Date().getFullYear(),
+                createdAt: new Date().toUTCString(),
+              },
+            });
           });
 
           dialogCloseRef.current?.click();

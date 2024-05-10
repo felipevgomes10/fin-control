@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
-import { useRef } from "react";
+import { startTransition, useRef } from "react";
 import { toast } from "sonner";
 import { useTagsContext } from "../../contexts/tags-provider/tags-provider";
 import { TagForm } from "../tag-form/tag-form";
@@ -24,13 +24,15 @@ export function TagDialog() {
 
   async function action(formData: FormData) {
     try {
-      setOptimisticTags({
-        action: "add",
-        payload: {
-          id: "-",
-          label: formData.get("label") as string,
-          createdAt: new Date().toUTCString(),
-        },
+      startTransition(() => {
+        setOptimisticTags({
+          action: "add",
+          payload: {
+            id: "-",
+            label: formData.get("label") as string,
+            createdAt: new Date().toUTCString(),
+          },
+        });
       });
 
       dialogCloseRef.current?.click();

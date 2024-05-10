@@ -29,7 +29,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CellContext } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -109,11 +109,13 @@ function DetailsDialogContent({
     }
 
     flushSync(() => {
-      setOptimisticFixedExpenses({
-        action: "update",
-        payload: { id: expense.id, ...rawData, createdAt: expense.createdAt },
+      startTransition(() => {
+        setOptimisticFixedExpenses({
+          action: "update",
+          payload: { id: expense.id, ...rawData, createdAt: expense.createdAt },
+        });
+        closeDetailsModal();
       });
-      closeDetailsModal();
     });
 
     form.reset();
@@ -155,11 +157,13 @@ export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
     const { id } = row.original;
 
     flushSync(() => {
-      setOptimisticFixedExpenses({
-        action: "delete",
-        payload: { id },
+      startTransition(() => {
+        setOptimisticFixedExpenses({
+          action: "delete",
+          payload: { id },
+        });
+        setShowDeleteModal(false);
       });
-      setShowDeleteModal(false);
     });
 
     await deleteFixedExpense(id);

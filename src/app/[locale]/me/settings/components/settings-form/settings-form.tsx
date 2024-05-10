@@ -18,7 +18,7 @@ import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-pr
 import { UserSettings } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useOptimistic } from "react";
+import { startTransition, useOptimistic } from "react";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
 
@@ -65,7 +65,11 @@ export function SettingsForm({
               ) as string,
               userName: formData.get("userName") as string,
             };
-            setOptimisticData(rawFormData);
+
+            startTransition(() => {
+              setOptimisticData(rawFormData);
+            });
+
             await editUserSettings(formData);
             toast.success(dictionary.settings.settingsUpdateSuccess);
           }}
