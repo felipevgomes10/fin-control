@@ -171,36 +171,41 @@ export function DataTable<TData, TValue>({
       setData={setData}
     >
       <div>
-        <div className="flex flex-col sm:flex-row items-center gap-4 py-4">
-          <Input
-            placeholder={placeholder || "Filter labels..."}
-            value={
-              (table
-                .getColumn(accessorKey || "label")
-                ?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) => {
-              table.firstPage();
-              table
-                .getColumn(accessorKey || "label")
-                ?.setFilterValue(event.target.value);
-            }}
-            className="sm:max-w-sm"
-          />
-          {AdvancedFilters && (
-            <div className="flex ml-1 gap-4 items-center w-full sm:w-auto">
-              <Separator
-                className="hidden sm:block h-8"
-                orientation="vertical"
-              />
-              <AdvancedFilters table={table} />
-            </div>
-          )}
-          <div className="flex justify-end gap-4 w-full">
+        <div className="flex flex-col sm:flex-row flex-nowrap sm:flex-wrap sm:items-center gap-4 sm:gap-4 md:gap-8 py-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 flex-1 w-full">
+            <Input
+              placeholder={placeholder || "Filter labels..."}
+              className="flex-1 min-w-[150px]"
+              value={
+                (table
+                  .getColumn(accessorKey || "label")
+                  ?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) => {
+                table.firstPage();
+                table
+                  .getColumn(accessorKey || "label")
+                  ?.setFilterValue(event.target.value);
+              }}
+            />
+            {AdvancedFilters && (
+              <div className="flex ml-1 gap-4 items-center w-full sm:w-auto">
+                <Separator
+                  className="hidden sm:block h-8"
+                  orientation="vertical"
+                />
+                <AdvancedFilters table={table} />
+              </div>
+            )}
+          </div>
+          <div className="flex justify-between sm:justify-end gap-4 flex-wrap sm:flex-nowrap flex-1">
             {actions}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="ml-auto">
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto sm:ml-auto"
+                >
                   {dictionary.table.columns}
                 </Button>
               </DropdownMenuTrigger>

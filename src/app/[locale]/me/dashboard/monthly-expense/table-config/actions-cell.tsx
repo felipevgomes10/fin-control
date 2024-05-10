@@ -142,7 +142,10 @@ function DetailsDialogContent({
   );
 }
 
-export function ActionsCell({ row }: CellContext<MonthlyExpenses, unknown>) {
+export function ActionsCell({
+  row,
+  table,
+}: CellContext<MonthlyExpenses, unknown>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
@@ -164,6 +167,7 @@ export function ActionsCell({ row }: CellContext<MonthlyExpenses, unknown>) {
           payload: { id },
         });
         setShowDeleteModal(false);
+        table.toggleAllPageRowsSelected(false);
       });
     });
 

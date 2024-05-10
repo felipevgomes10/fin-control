@@ -114,7 +114,7 @@ export function BulkUploadDialog({ variant }: BulkUploadDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary">
+        <Button className="w-full sm:w-auto" variant="secondary">
           {dictionary.bulkUploadDialog.trigger}
         </Button>
       </DialogTrigger>

@@ -89,7 +89,7 @@ export function MonthlyExpenseTable({
             currency: userSettings?.currency,
           }}
           actions={
-            <div className="flex justify-end gap-8 w-full mr-4">
+            <div className="flex justify-between sm:justify-end flex-wrap sm:flex-nowrap gap-4 sm:gap-8 w-full sm:mr-4">
               <MonthlyExpensesDialog />
               <BulkUploadDialog variant="monthly-expenses" />
             </div>
