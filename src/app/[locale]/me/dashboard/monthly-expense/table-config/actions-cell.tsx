@@ -35,8 +35,10 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { splitTags } from "../../../components/table/utils";
 import { MonthlyExpenseForm } from "../components/monthly-expense-form/monthly-expense-form";
-import { useMonthlyExpensesContext } from "../contexts/monthly-expense-provider/monthly-expense-provider";
-import type { MonthlyExpenses } from "./monthly-expenses-columns";
+import {
+  useMonthlyExpensesContext,
+  type FormattedMonthlyExpense,
+} from "../contexts/monthly-expense-provider/monthly-expense-provider";
 
 function DetailsDialogContent({
   id,
@@ -113,7 +115,12 @@ function DetailsDialogContent({
       startTransition(() => {
         setOptimisticMonthlyExpenses({
           action: "update",
-          payload: { id: expense.id, ...rawData, createdAt: expense.createdAt },
+          payload: {
+            id: expense.id,
+            ...rawData,
+            createdAt: expense.createdAt,
+            pending: true,
+          },
         });
         closeDetailsModal();
       });
@@ -145,7 +152,7 @@ function DetailsDialogContent({
 export function ActionsCell({
   row,
   table,
-}: CellContext<MonthlyExpenses, unknown>) {
+}: CellContext<FormattedMonthlyExpense, unknown>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 

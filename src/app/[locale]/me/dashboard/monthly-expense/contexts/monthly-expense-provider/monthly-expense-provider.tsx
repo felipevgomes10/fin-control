@@ -11,6 +11,7 @@ export type FormattedMonthlyExpense = {
   installments: number;
   createdAt: string;
   notes?: string | null;
+  pending?: boolean;
 };
 
 type MonthlyExpenseContextType = {

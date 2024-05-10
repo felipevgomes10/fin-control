@@ -35,9 +35,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { splitTags } from "../../../components/table/utils";
-import { useTableContext } from "../../../contexts/table-provider/table-provider";
-import { useFixedExpensesContext } from "../contexts/fixed-expenses-context/fixed-expenses-context";
-import type { FixedExpenses } from "./fixed-expenses-columns";
+import {
+  useFixedExpensesContext,
+  type FormattedFixedExpense,
+} from "../contexts/fixed-expenses-context/fixed-expenses-context";
 
 function DetailsDialogContent({
   id,
@@ -50,8 +51,6 @@ function DetailsDialogContent({
 
   const { optimisticFixedExpenses, setOptimisticFixedExpenses, tags } =
     useFixedExpensesContext();
-
-  const { table } = useTableContext();
 
   const formSchema = getFixedExpenseSchema({
     label: dictionary.fixedExpenses.labelError,
@@ -112,7 +111,12 @@ function DetailsDialogContent({
       startTransition(() => {
         setOptimisticFixedExpenses({
           action: "update",
-          payload: { id: expense.id, ...rawData, createdAt: expense.createdAt },
+          payload: {
+            id: expense.id,
+            ...rawData,
+            createdAt: expense.createdAt,
+            pending: true,
+          },
         });
         closeDetailsModal();
       });
@@ -141,7 +145,9 @@ function DetailsDialogContent({
   );
 }
 
-export function ActionsCell({ row }: CellContext<FixedExpenses, unknown>) {
+export function ActionsCell({
+  row,
+}: CellContext<FormattedFixedExpense, unknown>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 

@@ -6,6 +6,7 @@ export type FormattedTag = {
   id: string;
   label: string;
   createdAt: string;
+  pending?: boolean;
 };
 
 type TagsContextType = {

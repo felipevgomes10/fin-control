@@ -8,6 +8,7 @@ export type FormattedReport = {
   month: string;
   year: number;
   createdAt: string;
+  pending?: boolean;
 };
 
 type ReportsContextType = {

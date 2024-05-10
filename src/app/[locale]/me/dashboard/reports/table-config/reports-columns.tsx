@@ -17,20 +17,17 @@ import {
   useDictionary,
 } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Loader2, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useSortTable } from "../../../components/table/hooks/useSortTable";
 import { months } from "../components/report-form/utils";
-import { useReportsContext } from "../contexts/reports-context/reports-context";
+import {
+  useReportsContext,
+  type FormattedReport,
+} from "../contexts/reports-context/reports-context";
 
-type Reports = {
-  id: string;
-  month: string;
-  year: number;
-};
-
-export const reportsColumns: ColumnDef<Reports>[] = [
+export const reportsColumns: ColumnDef<FormattedReport>[] = [
   {
     accessorKey: "month",
     enableHiding: false,
@@ -58,7 +55,13 @@ export const reportsColumns: ColumnDef<Reports>[] = [
       const dictionary = useDictionary();
 
       return (
-        <div className="ml-4">
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500 flex gap-2 items-center"
+        >
+          {row.original?.pending && (
+            <Loader2 className="animate-spin h-4 w-4 stroke-slate-500" />
+          )}
           {dictionary.months[month.toString() as keyof Dictionary["months"]]}
         </div>
       );
@@ -84,7 +87,14 @@ export const reportsColumns: ColumnDef<Reports>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="ml-4">{row.getValue("year")}</div>;
+      return (
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500"
+        >
+          {row.getValue("year")}
+        </div>
+      );
     },
   },
   {
@@ -97,7 +107,10 @@ export const reportsColumns: ColumnDef<Reports>[] = [
       const { intl } = useTableContext();
       const date = row.getValue("createdAt") as string;
       return (
-        <div className="whitespace-nowrap">
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500 whitespace-nowrap"
+        >
           {formatDate(new Date(date), intl)}
         </div>
       );

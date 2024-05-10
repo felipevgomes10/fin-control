@@ -18,7 +18,6 @@ import {
 } from "@/schemas/monthly-expense-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CheckedState } from "@radix-ui/react-checkbox";
-import { useRouter } from "next/navigation";
 import { startTransition, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
@@ -31,8 +30,6 @@ export function MonthlyExpensesDialog() {
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
   const [addNewExpenseChecked, setAddNewExpenseChecked] =
     useState<CheckedState>(false);
-
-  const router = useRouter();
 
   const dictionary = useDictionary();
 
@@ -80,6 +77,7 @@ export function MonthlyExpensesDialog() {
           payload: {
             id: crypto.randomUUID(),
             createdAt: new Date().toUTCString(),
+            pending: true,
             ...rawData,
           },
         });

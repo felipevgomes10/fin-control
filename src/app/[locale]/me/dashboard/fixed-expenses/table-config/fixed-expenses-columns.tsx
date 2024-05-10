@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Loader2 } from "lucide-react";
 import { useSortTable } from "../../../components/table/hooks/useSortTable";
 import {
   formatCurrency,
@@ -13,18 +13,13 @@ import {
   splitTags,
   tagsFilterFn,
 } from "../../../components/table/utils";
-import { useFixedExpensesContext } from "../contexts/fixed-expenses-context/fixed-expenses-context";
+import {
+  useFixedExpensesContext,
+  type FormattedFixedExpense,
+} from "../contexts/fixed-expenses-context/fixed-expenses-context";
 import { ActionsCell } from "./actions-cell";
 
-export type FixedExpenses = {
-  id: string;
-  label: string;
-  tags: string;
-  amount: number;
-  createdAt: string;
-};
-
-export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
+export const fixedExpensesColumns: ColumnDef<FormattedFixedExpense>[] = [
   {
     accessorKey: "label",
     enableHiding: false,
@@ -46,7 +41,17 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="ml-4">{row.getValue("label")}</div>;
+      return (
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500 flex gap-2 items-center"
+        >
+          {row.original?.pending && (
+            <Loader2 className="animate-spin h-4 w-4 stroke-slate-500" />
+          )}
+          {row.getValue("label")}
+        </div>
+      );
     },
   },
   {
@@ -71,7 +76,14 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
     cell: function Cell({ row }) {
       const { intl } = useTableContext();
       const amount = parseFloat(row.getValue("amount"));
-      return <div className="ml-4">{formatCurrency(amount, intl)}</div>;
+      return (
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500"
+        >
+          {formatCurrency(amount, intl)}
+        </div>
+      );
     },
   },
   {
@@ -98,7 +110,10 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
       });
 
       return (
-        <div className="ml-1">
+        <div
+          data-pending={row.original?.pending}
+          className="ml-1 data-[pending=true]:text-slate-500"
+        >
           {tagsCell ? (
             <div className="flex gap-2 flex-wrap w-max">
               {tagsBadges} {additionalValuesText}
@@ -121,7 +136,10 @@ export const fixedExpensesColumns: ColumnDef<FixedExpenses>[] = [
       const { intl } = useTableContext();
       const date = row.getValue("createdAt") as string;
       return (
-        <div className="whitespace-nowrap">
+        <div
+          data-pending={row.original?.pending}
+          className="data-[pending=true]:text-slate-500 whitespace-nowrap"
+        >
           {formatDate(new Date(date), intl)}
         </div>
       );

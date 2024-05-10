@@ -42,6 +42,7 @@ export function ReportForm({
                 month: months[parseInt(formData.get("month") as string)],
                 year: new Date().getFullYear(),
                 createdAt: new Date().toUTCString(),
+                pending: true,
               },
             });
           });

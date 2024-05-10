@@ -10,6 +10,7 @@ export type FormattedFixedExpense = {
   tags: string;
   notes?: string | null;
   createdAt: string;
+  pending?: boolean;
 };
 
 type FixedExpensesContextType = {

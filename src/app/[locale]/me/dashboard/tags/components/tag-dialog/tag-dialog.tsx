@@ -31,6 +31,7 @@ export function TagDialog() {
             id: "-",
             label: formData.get("label") as string,
             createdAt: new Date().toUTCString(),
+            pending: true,
           },
         });
       });

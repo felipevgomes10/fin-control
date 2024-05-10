@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Loader2, MoreHorizontal } from "lucide-react";
 import { startTransition, useState } from "react";
 import { flushSync } from "react-dom";
 import { toast } from "sonner";
@@ -35,18 +35,13 @@ import {
   splitTags,
   tagsFilterFn,
 } from "../../../components/table/utils";
-import { useMonthlyExpensesContext } from "../contexts/monthly-expense-provider/monthly-expense-provider";
+import {
+  FormattedMonthlyExpense,
+  useMonthlyExpensesContext,
+} from "../contexts/monthly-expense-provider/monthly-expense-provider";
 import { ActionsCell } from "./actions-cell";
 
-export type MonthlyExpenses = {
-  id: string;
-  label: string;
-  amount: number;
-  installments?: number;
-  createdAt: string;
-};
-
-export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
+export const monthlyExpenseColumns: ColumnDef<FormattedMonthlyExpense>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -90,7 +85,17 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="ml-4">{row.getValue("label")}</div>;
+      return (
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500 flex gap-2 items-center"
+        >
+          {row.original?.pending && (
+            <Loader2 className="animate-spin h-4 w-4 stroke-slate-500" />
+          )}
+          {row.getValue("label")}
+        </div>
+      );
     },
   },
   {
@@ -115,7 +120,14 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
     cell: function Cell({ row }) {
       const { intl } = useTableContext();
       const amount = parseFloat(row.getValue("amount"));
-      return <div className="ml-4">{formatCurrency(amount, intl)}</div>;
+      return (
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500"
+        >
+          {formatCurrency(amount, intl)}
+        </div>
+      );
     },
   },
   {
@@ -143,7 +155,10 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
       const hasInstallments = !isNaN(installments) && installments > 1;
 
       return (
-        <div className="ml-4">
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500"
+        >
           {hasInstallments
             ? installments + "x"
             : dictionary.monthlyExpense.oneTimePayment}
@@ -169,7 +184,14 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
         return <div>-</div>;
       }
 
-      return <div>{formatCurrency(amount / installments, intl)}</div>;
+      return (
+        <div
+          data-pending={row.original?.pending}
+          className="data-[pending=true]:text-slate-500"
+        >
+          {formatCurrency(amount / installments, intl)}
+        </div>
+      );
     },
   },
   {
@@ -194,7 +216,10 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
       const installmentsLeft = installments - (currentMonth - createdAtMonth);
 
       return (
-        <div>
+        <div
+          data-pending={row.original?.pending}
+          className="data-[pending=true]:text-slate-500"
+        >
           {installmentsLeft} {dictionary.monthlyExpense.installmentsLeft}
         </div>
       );
@@ -224,7 +249,10 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
       });
 
       return (
-        <div className="ml-1">
+        <div
+          data-pending={row.original?.pending}
+          className="ml-1 data-[pending=true]:text-slate-500"
+        >
           {tagsCell ? (
             <div className="flex gap-2 flex-wrap w-max">
               {tagsBadges} {additionalValuesText}
@@ -246,7 +274,10 @@ export const monthlyExpenseColumns: ColumnDef<MonthlyExpenses>[] = [
       const { intl } = useTableContext();
       const date = row.getValue("createdAt") as string;
       return (
-        <div className="whitespace-nowrap">
+        <div
+          data-pending={row.original?.pending}
+          className="whitespace-nowrap data-[pending=true]:text-slate-500"
+        >
           {formatDate(new Date(date), intl)}
         </div>
       );

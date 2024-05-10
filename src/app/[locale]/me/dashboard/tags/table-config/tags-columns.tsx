@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Loader2, MoreHorizontal } from "lucide-react";
 import { startTransition, useRef, useState } from "react";
 import { toast } from "sonner";
 import { DeleteDialog } from "../../../components/delete-dialog/delete-dialog";
@@ -27,15 +27,12 @@ import { useSortTable } from "../../../components/table/hooks/useSortTable";
 import { formatDate } from "../../../components/table/utils";
 import { useTableContext } from "../../../contexts/table-provider/table-provider";
 import { TagForm } from "../components/tag-form/tag-form";
-import { useTagsContext } from "../contexts/tags-provider/tags-provider";
+import {
+  useTagsContext,
+  type FormattedTag,
+} from "../contexts/tags-provider/tags-provider";
 
-type Tags = {
-  id: string;
-  label: string;
-  createdAt: string;
-};
-
-export const tagsColumns: ColumnDef<Tags>[] = [
+export const tagsColumns: ColumnDef<FormattedTag>[] = [
   {
     accessorKey: "id",
     enableHiding: false,
@@ -62,7 +59,17 @@ export const tagsColumns: ColumnDef<Tags>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="ml-4">{row.getValue("label")}</div>;
+      return (
+        <div
+          data-pending={row.original?.pending}
+          className="ml-4 data-[pending=true]:text-slate-500 flex gap-2 items-center"
+        >
+          {row.original?.pending && (
+            <Loader2 className="animate-spin h-4 w-4 stroke-slate-500" />
+          )}
+          {row.getValue("label")}
+        </div>
+      );
     },
   },
   {
@@ -75,7 +82,10 @@ export const tagsColumns: ColumnDef<Tags>[] = [
       const { intl } = useTableContext();
       const date = row.getValue("createdAt") as string;
       return (
-        <div className="whitespace-nowrap">
+        <div
+          data-pending={row.original?.pending}
+          className="data-[pending=true]:text-slate-500 whitespace-nowrap"
+        >
           {formatDate(new Date(date), intl)}
         </div>
       );
@@ -104,6 +114,7 @@ export const tagsColumns: ColumnDef<Tags>[] = [
                 id: row.original.id,
                 label: formData.get("label") as string,
                 createdAt: row.getValue("createdAt"),
+                pending: true,
               },
             });
           });

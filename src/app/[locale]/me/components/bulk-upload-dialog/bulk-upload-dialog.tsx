@@ -52,6 +52,7 @@ const formatData = (
     tags: joinTags(tagsIds),
     id: crypto.randomUUID(),
     createdAt: new Date().toUTCString(),
+    pending: true,
   };
 };
 

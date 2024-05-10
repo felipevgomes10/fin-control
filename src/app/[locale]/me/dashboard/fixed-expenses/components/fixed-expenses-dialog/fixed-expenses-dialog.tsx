@@ -75,6 +75,7 @@ export function FixedExpensesDialog() {
           payload: {
             id: crypto.randomUUID(),
             createdAt: new Date().toUTCString(),
+            pending: true,
             ...rawData,
           },
         });
