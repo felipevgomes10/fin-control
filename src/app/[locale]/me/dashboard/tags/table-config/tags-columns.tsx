@@ -167,7 +167,11 @@ export const tagsColumns: ColumnDef<FormattedTag>[] = [
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button
+                disabled={row.original?.pending}
+                variant="ghost"
+                className="h-8 w-8 p-0"
+              >
                 <span className="sr-only">{dictionary.table.srOnly}</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
