@@ -5,6 +5,7 @@ import { bulkMonthlyExpensesSchema } from "@/schemas/bulk-monthly-expense-schema
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "~/prisma/client";
+import { redis } from "~/upstash/client";
 
 export async function createMonthlyExpenses(
   monthlyExpenses: z.infer<typeof bulkMonthlyExpensesSchema>
@@ -28,6 +29,8 @@ export async function createMonthlyExpenses(
       });
     })
   );
+
+  await redis?.del(`monthly-expenses:${session.user.id}`);
 
   revalidatePath("/[locale]/me/dashboard/monthly-expense", "page");
 

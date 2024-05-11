@@ -4,6 +4,7 @@ import { splitTags } from "@/app/[locale]/me/components/table/utils";
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
+import { redis } from "~/upstash/client";
 
 export async function updateMonthlyExpense(id: string, formData: FormData) {
   const session = await auth();
@@ -43,6 +44,8 @@ export async function updateMonthlyExpense(id: string, formData: FormData) {
       },
     },
   });
+
+  await redis?.del(`monthly-expenses:${session.user.id}`);
 
   revalidatePath("/[locale]/me/dashboard/monthly-expense", "page");
 

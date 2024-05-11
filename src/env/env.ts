@@ -14,6 +14,9 @@ const envSchema = z.object({
     TURSO_DATABASE_URL: z.string(),
     TURSO_AUTH_TOKEN: z.string(),
     LOCAL_DB_URL: z.string().optional(),
+
+    UPSTASH_REDIS_URL: z.string().optional(),
+    UPSTASH_REDIS_PASSWORD: z.string().optional(),
   }),
 });
 

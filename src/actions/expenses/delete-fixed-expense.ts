@@ -3,6 +3,7 @@
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
+import { redis } from "~/upstash/client";
 
 export async function deleteFixedExpense(id: string) {
   const session = await auth();
@@ -12,6 +13,8 @@ export async function deleteFixedExpense(id: string) {
   await prisma.fixedExpense.delete({
     where: { id, userId: session.user.id },
   });
+
+  await redis?.del(`fixed-expenses:${session.user.id}`);
 
   revalidatePath("/[locale]/me/dashboard/fixed-expenses", "page");
 

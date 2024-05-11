@@ -23,7 +23,7 @@ async function Content() {
       amount,
       tags: joinTags(tags.map(({ id }) => id)),
       notes,
-      createdAt: createdAt.toUTCString(),
+      createdAt: new Date(createdAt).toUTCString(),
     })
   );
 

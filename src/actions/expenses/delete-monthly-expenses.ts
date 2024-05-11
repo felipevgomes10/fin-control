@@ -3,6 +3,7 @@
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
+import { redis } from "~/upstash/client";
 
 export async function deleteMonthlyExpenses(ids: string[]) {
   const session = await auth();
@@ -16,6 +17,8 @@ export async function deleteMonthlyExpenses(ids: string[]) {
       });
     })
   );
+
+  await redis?.del(`monthly-expenses:${session.user.id}`);
 
   revalidatePath("/[locale]/me/dashboard/monthly-expenses", "page");
 

@@ -25,15 +25,21 @@ async function Content() {
       tags: joinTags(tags.map(({ id }) => id)),
       amount,
       installments: installments || 1,
-      createdAt: createdAt.toUTCString(),
+      createdAt: new Date(createdAt).toUTCString(),
     })
   );
+
+  const parsedFixedExpenses = fixedExpenses.map((data) => ({
+    ...data,
+    createdAt: new Date(data.createdAt),
+    updatedAt: new Date(data.updatedAt),
+  }));
 
   return (
     <MonthlyExpensesProvider initialData={data} tags={tags}>
       <MonthlyExpenseTable
         userSettings={userSettings}
-        fixedExpenses={fixedExpenses}
+        fixedExpenses={parsedFixedExpenses}
       />
     </MonthlyExpensesProvider>
   );
