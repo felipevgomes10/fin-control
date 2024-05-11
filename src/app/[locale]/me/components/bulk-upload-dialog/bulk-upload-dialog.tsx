@@ -103,7 +103,9 @@ export function BulkUploadDialog({ variant }: BulkUploadDialogProps) {
         if (isMonthlyExpenses) createMonthlyExpenses(parsedData.data as any);
         else createFixedExpenses(parsedData.data as any);
       } catch (error) {
-        toast.error(dictionary.bulkUploadDialog.uploadError);
+        toast.error(dictionary.bulkUploadDialog.uploadError, {
+          description: (error as Error).message,
+        });
         console.error(error);
       }
     };
