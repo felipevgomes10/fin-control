@@ -86,6 +86,8 @@ export function BulkUploadDialog({ variant }: BulkUploadDialogProps) {
           formatData(item, tags)
         );
 
+        dialogCloseRef.current?.click();
+
         flushSync(() => {
           startTransition(() => {
             const action = {
@@ -94,7 +96,6 @@ export function BulkUploadDialog({ variant }: BulkUploadDialogProps) {
             };
             if (isMonthlyExpenses) setOptimisticMonthlyExpenses(action as any);
             else setOptimisticFixedExpenses(action as any);
-            dialogCloseRef.current?.click();
           });
         });
 

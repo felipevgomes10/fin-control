@@ -107,6 +107,8 @@ export const tagsColumns: ColumnDef<FormattedTag>[] = [
 
       async function action(formData: FormData) {
         try {
+          dialogCloseRef.current?.click();
+
           startTransition(() => {
             setOptimisticTags({
               action: "update",
@@ -118,8 +120,6 @@ export const tagsColumns: ColumnDef<FormattedTag>[] = [
               },
             });
           });
-
-          dialogCloseRef.current?.click();
 
           await updateTag(row.original.id, formData);
           toast.success(dictionary.tags.updateSuccess);

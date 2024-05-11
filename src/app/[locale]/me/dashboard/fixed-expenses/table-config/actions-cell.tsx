@@ -107,6 +107,8 @@ function DetailsDialogContent({
       return;
     }
 
+    closeDetailsModal();
+
     flushSync(() => {
       startTransition(() => {
         setOptimisticFixedExpenses({
@@ -118,7 +120,6 @@ function DetailsDialogContent({
             pending: true,
           },
         });
-        closeDetailsModal();
       });
     });
 
@@ -162,13 +163,14 @@ export function ActionsCell({
   async function deleteAction() {
     const { id } = row.original;
 
+    setShowDeleteModal(false);
+
     flushSync(() => {
       startTransition(() => {
         setOptimisticFixedExpenses({
           action: "delete",
           payload: { id },
         });
-        setShowDeleteModal(false);
       });
     });
 

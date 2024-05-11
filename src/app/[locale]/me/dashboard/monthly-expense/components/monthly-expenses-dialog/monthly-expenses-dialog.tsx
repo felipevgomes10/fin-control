@@ -70,6 +70,8 @@ export function MonthlyExpensesDialog() {
       return;
     }
 
+    if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
+
     flushSync(() => {
       startTransition(() => {
         setOptimisticMonthlyExpenses({
@@ -81,12 +83,12 @@ export function MonthlyExpensesDialog() {
             ...rawData,
           },
         });
-        if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
       });
     });
 
-    await createMonthlyExpense(formData);
     form.reset();
+
+    await createMonthlyExpense(formData);
     toast.success(dictionary.monthlyExpense.addSuccess);
   }
 

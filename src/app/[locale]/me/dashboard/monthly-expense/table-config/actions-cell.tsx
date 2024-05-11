@@ -111,6 +111,8 @@ function DetailsDialogContent({
       return;
     }
 
+    closeDetailsModal();
+
     flushSync(() => {
       startTransition(() => {
         setOptimisticMonthlyExpenses({
@@ -122,7 +124,6 @@ function DetailsDialogContent({
             pending: true,
           },
         });
-        closeDetailsModal();
       });
     });
 
@@ -167,14 +168,15 @@ export function ActionsCell({
   async function deleteAction() {
     const { id } = row.original;
 
+    setShowDeleteModal(false);
+    table.toggleAllPageRowsSelected(false);
+
     flushSync(() => {
       startTransition(() => {
         setOptimisticMonthlyExpenses({
           action: "delete",
           payload: { id },
         });
-        setShowDeleteModal(false);
-        table.toggleAllPageRowsSelected(false);
       });
     });
 

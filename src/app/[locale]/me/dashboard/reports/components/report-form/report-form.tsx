@@ -34,6 +34,8 @@ export function ReportForm({
       className="flex flex-col gap-4"
       action={async (formData: FormData) => {
         try {
+          dialogCloseRef.current?.click();
+
           startTransition(() => {
             setOptimisticReports({
               action: "add",
@@ -46,8 +48,6 @@ export function ReportForm({
               },
             });
           });
-
-          dialogCloseRef.current?.click();
 
           await createExpenseReport(formData);
           toast.success(dictionary.reports.addSuccess);

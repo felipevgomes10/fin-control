@@ -24,6 +24,8 @@ export function TagDialog() {
 
   async function action(formData: FormData) {
     try {
+      dialogCloseRef.current?.click();
+
       startTransition(() => {
         setOptimisticTags({
           action: "add",
@@ -35,8 +37,6 @@ export function TagDialog() {
           },
         });
       });
-
-      dialogCloseRef.current?.click();
 
       await createTag(formData);
       toast.success(dictionary.tags.addSuccess);

@@ -68,6 +68,8 @@ export function FixedExpensesDialog() {
       return;
     }
 
+    if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
+
     flushSync(() => {
       startTransition(() => {
         setOptimisticFixedExpenses({
@@ -79,11 +81,11 @@ export function FixedExpensesDialog() {
             ...rawData,
           },
         });
-        if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
       });
     });
 
     form.reset();
+
     await createFixedExpense(formData);
     toast.success(dictionary.fixedExpenses.addSuccess);
   }

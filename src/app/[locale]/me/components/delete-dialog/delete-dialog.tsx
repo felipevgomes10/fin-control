@@ -55,13 +55,14 @@ export function DeleteDialog({
             <form
               action={async () => {
                 try {
+                  setShowDeleteModal(false);
+
                   flushSync(() => {
                     startTransition(() => {
                       setOptimisticData?.({
                         action: "delete",
                         payload: { id: itemId },
                       });
-                      setShowDeleteModal(false);
                     });
                   });
 
