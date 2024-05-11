@@ -111,9 +111,8 @@ function DetailsDialogContent({
       return;
     }
 
-    closeDetailsModal();
-
     flushSync(() => {
+      closeDetailsModal();
       startTransition(() => {
         setOptimisticMonthlyExpenses({
           action: "update",
@@ -168,10 +167,9 @@ export function ActionsCell({
   async function deleteAction() {
     const { id } = row.original;
 
-    setShowDeleteModal(false);
-    table.toggleAllPageRowsSelected(false);
-
     flushSync(() => {
+      setShowDeleteModal(false);
+      table.toggleAllPageRowsSelected(false);
       startTransition(() => {
         setOptimisticMonthlyExpenses({
           action: "delete",

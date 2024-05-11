@@ -24,9 +24,8 @@ export function TagDialog() {
 
   async function action(formData: FormData) {
     try {
-      dialogCloseRef.current?.click();
-
       startTransition(() => {
+        dialogCloseRef.current?.click();
         setOptimisticTags({
           action: "add",
           payload: {

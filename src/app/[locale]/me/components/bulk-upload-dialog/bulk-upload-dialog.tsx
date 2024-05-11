@@ -86,9 +86,8 @@ export function BulkUploadDialog({ variant }: BulkUploadDialogProps) {
           formatData(item, tags)
         );
 
-        dialogCloseRef.current?.click();
-
         flushSync(() => {
+          dialogCloseRef.current?.click();
           startTransition(() => {
             const action = {
               action: "add-many",

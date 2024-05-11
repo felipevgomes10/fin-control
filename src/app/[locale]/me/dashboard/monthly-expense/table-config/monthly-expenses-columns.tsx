@@ -299,10 +299,9 @@ export const monthlyExpenseColumns: ColumnDef<FormattedMonthlyExpense>[] = [
           return rowsById[id].original.id;
         });
 
-        setShowDeleteModal(false);
-        table.toggleAllPageRowsSelected(false);
-
         flushSync(() => {
+          setShowDeleteModal(false);
+          table.toggleAllPageRowsSelected(false);
           startTransition(() => {
             setOptimisticMonthlyExpenses({
               action: "delete-many",

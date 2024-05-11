@@ -107,9 +107,8 @@ export const tagsColumns: ColumnDef<FormattedTag>[] = [
 
       async function action(formData: FormData) {
         try {
-          dialogCloseRef.current?.click();
-
           startTransition(() => {
+            dialogCloseRef.current?.click();
             setOptimisticTags({
               action: "update",
               payload: {

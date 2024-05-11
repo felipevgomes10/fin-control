@@ -70,9 +70,8 @@ export function MonthlyExpensesDialog() {
       return;
     }
 
-    if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
-
     flushSync(() => {
+      if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
       startTransition(() => {
         setOptimisticMonthlyExpenses({
           action: "add",

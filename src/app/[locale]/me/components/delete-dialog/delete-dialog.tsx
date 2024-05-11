@@ -55,9 +55,8 @@ export function DeleteDialog({
             <form
               action={async () => {
                 try {
-                  setShowDeleteModal(false);
-
                   flushSync(() => {
+                    setShowDeleteModal(false);
                     startTransition(() => {
                       setOptimisticData?.({
                         action: "delete",

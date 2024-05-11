@@ -34,9 +34,8 @@ export function ReportForm({
       className="flex flex-col gap-4"
       action={async (formData: FormData) => {
         try {
-          dialogCloseRef.current?.click();
-
           startTransition(() => {
+            dialogCloseRef.current?.click();
             setOptimisticReports({
               action: "add",
               payload: {

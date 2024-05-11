@@ -107,9 +107,8 @@ function DetailsDialogContent({
       return;
     }
 
-    closeDetailsModal();
-
     flushSync(() => {
+      closeDetailsModal();
       startTransition(() => {
         setOptimisticFixedExpenses({
           action: "update",
@@ -163,9 +162,8 @@ export function ActionsCell({
   async function deleteAction() {
     const { id } = row.original;
 
-    setShowDeleteModal(false);
-
     flushSync(() => {
+      setShowDeleteModal(false);
       startTransition(() => {
         setOptimisticFixedExpenses({
           action: "delete",

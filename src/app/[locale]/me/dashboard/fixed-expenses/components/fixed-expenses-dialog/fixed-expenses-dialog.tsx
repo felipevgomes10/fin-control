@@ -68,9 +68,8 @@ export function FixedExpensesDialog() {
       return;
     }
 
-    if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
-
     flushSync(() => {
+      if (!addNewExpenseChecked) dialogCloseRef?.current?.click();
       startTransition(() => {
         setOptimisticFixedExpenses({
           action: "add",
