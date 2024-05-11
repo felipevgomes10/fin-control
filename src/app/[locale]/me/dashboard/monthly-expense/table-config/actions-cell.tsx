@@ -178,8 +178,11 @@ export function ActionsCell({
       });
     });
 
-    await deleteMonthlyExpense(id);
-    toast.success(dictionary.monthlyExpense.deleteSuccess);
+    toast.promise(deleteMonthlyExpense(id), {
+      loading: dictionary.deleteDialog.deleting,
+      success: dictionary.monthlyExpense.deleteSuccess,
+      error: dictionary.monthlyExpense.deleteError,
+    });
   }
 
   return (

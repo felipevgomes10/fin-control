@@ -85,6 +85,7 @@
     "description": "This action cannot be undone. This will permanently delete this item.",
     "deleteManyDescription": "This action cannot be undone. This will permanently delete these items.",
     "cancel": "Cancel",
+    "deleting": "Deleting...",
     "delete": "Delete",
     "deleteMany": "Delete selected items"
   },

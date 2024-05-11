@@ -62,8 +62,11 @@ export function DeleteDialog({
                     });
                   });
 
-                  await action(itemId);
-                  toast.success(successMessage || "Item deleted successfully");
+                  toast.promise(action(itemId), {
+                    loading: dictionary.deleteDialog.deleting,
+                    success: successMessage || "Item deleted successfully",
+                    error: (error) => (error as Error).message,
+                  });
                 } catch (error) {
                   toast.error((error as Error).message);
                   console.error(error);

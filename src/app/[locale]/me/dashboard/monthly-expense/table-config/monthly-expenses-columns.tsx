@@ -310,8 +310,11 @@ export const monthlyExpenseColumns: ColumnDef<FormattedMonthlyExpense>[] = [
           });
         });
 
-        await deleteMonthlyExpenses(ids);
-        toast.success(dictionary.monthlyExpense.deleteManySuccess);
+        toast.promise(deleteMonthlyExpenses(ids), {
+          loading: dictionary.deleteDialog.deleting,
+          success: dictionary.monthlyExpense.deleteManySuccess,
+          error: dictionary.monthlyExpense.deleteManyError,
+        });
       }
 
       return (

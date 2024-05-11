@@ -172,8 +172,11 @@ export function ActionsCell({
       });
     });
 
-    await deleteFixedExpense(id);
-    toast.success(dictionary.fixedExpenses.deleteSuccess);
+    toast.promise(deleteFixedExpense(id), {
+      loading: dictionary.deleteDialog.deleting,
+      success: dictionary.fixedExpenses.deleteSuccess,
+      error: dictionary.fixedExpenses.deleteError,
+    });
   }
 
   return (

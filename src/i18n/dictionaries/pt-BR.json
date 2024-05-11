@@ -86,6 +86,7 @@
     "deleteManyDescription": "Esta ação não pode ser desfeita. Isso excluirá permanentemente todos os itens selecionados.",
     "cancel": "Cancelar",
     "delete": "Excluir",
+    "deleting": "Excluindo...",
     "deleteMany": "Excluir Selecionados"
   },
   "bulkUploadDialog": {
