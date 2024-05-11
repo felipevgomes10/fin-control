@@ -39,6 +39,12 @@ export default async function Reports({
       <Suspense
         fallback={
           <Loading.TableSkeleton
+            translations={{
+              placeholder: dictionary.reports.filter,
+              columnsButtonText: dictionary.table.columns,
+              previousButtonText: dictionary.table.previous,
+              nextButtonText: dictionary.table.next,
+            }}
             columns={[
               {
                 accessorKey: "month",

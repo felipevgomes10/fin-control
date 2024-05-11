@@ -46,6 +46,12 @@ export default async function FixedExpenses() {
       fallback={
         <>
           <Loading.TableSkeleton
+            translations={{
+              placeholder: dictionary.fixedExpenses.filter,
+              columnsButtonText: dictionary.table.columns,
+              previousButtonText: dictionary.table.previous,
+              nextButtonText: dictionary.table.next,
+            }}
             columns={[
               { accessorKey: "label", header: dictionary.table.label },
               { accessorKey: "amount", header: dictionary.table.amount },

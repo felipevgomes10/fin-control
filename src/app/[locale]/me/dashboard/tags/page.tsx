@@ -33,6 +33,12 @@ export default async function Tags({ params }: { params: { locale: string } }) {
       <Suspense
         fallback={
           <Loading.TableSkeleton
+            translations={{
+              placeholder: dictionary.tags.filter,
+              columnsButtonText: dictionary.table.columns,
+              previousButtonText: dictionary.table.previous,
+              nextButtonText: dictionary.table.next,
+            }}
             columns={[
               {
                 accessorKey: "id",

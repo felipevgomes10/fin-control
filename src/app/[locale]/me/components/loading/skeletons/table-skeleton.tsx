@@ -25,11 +25,16 @@ import {
 import { useMemo } from "react";
 
 export function TableSkeleton({
-  placeholder,
   columns,
   rowsNumber,
+  translations,
 }: {
-  placeholder?: string;
+  translations: {
+    placeholder: string;
+    columnsButtonText: string;
+    previousButtonText: string;
+    nextButtonText: string;
+  };
   columns: { header: string; accessorKey: string }[];
   rowsNumber: number;
 }) {
@@ -58,14 +63,14 @@ export function TableSkeleton({
     <div className="pointer-events-none">
       <div className="flex flex-col sm:flex-row items-center gap-4 py-4">
         <Input
-          placeholder={placeholder || "Filter labels..."}
+          placeholder={translations.placeholder || "Filter labels..."}
           className="sm:max-w-sm"
         />
         <div className="flex justify-end gap-4 w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                Columns
+                {translations.columnsButtonText || "Columns"}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -116,10 +121,10 @@ export function TableSkeleton({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button variant="outline" size="sm">
-          Previous
+          {translations.previousButtonText || "Previous"}
         </Button>
         <Button variant="outline" size="sm">
-          Next
+          {translations.nextButtonText || "Next"}
         </Button>
       </div>
     </div>
