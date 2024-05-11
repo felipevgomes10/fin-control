@@ -48,10 +48,7 @@ export function DeleteDialog({
               {dictionary.deleteDialog.description}
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="ghost">{dictionary.deleteDialog.cancel}</Button>
-            </DialogClose>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
             <form
               action={async () => {
                 try {
@@ -81,6 +78,9 @@ export function DeleteDialog({
                 {dictionary.deleteDialog.delete}
               </Button>
             </form>
+            <DialogClose asChild>
+              <Button variant="ghost">{dictionary.deleteDialog.cancel}</Button>
+            </DialogClose>
           </DialogFooter>
         </DialogContent>
       </DialogPortal>

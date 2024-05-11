@@ -135,7 +135,7 @@ export function BulkUploadDialog({ variant }: BulkUploadDialogProps) {
             </DialogDescription>
             <form action={action} className="space-y-2">
               <Input name="file" type="file" required />
-              <DialogFooter>
+              <DialogFooter className="flex flex-col sm:fle-row gap-2">
                 <Button
                   type="button"
                   variant="secondary"

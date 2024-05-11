@@ -329,14 +329,18 @@ export const monthlyExpenseColumns: ColumnDef<FormattedMonthlyExpense>[] = [
                     {dictionary.deleteDialog.deleteManyDescription}
                   </DialogDescription>
                 </DialogHeader>
-                <DialogFooter>
+                <DialogFooter className="flex flex-col sm:flex-row gap-2">
                   <DialogClose asChild>
                     <Button variant="ghost">
                       {dictionary.deleteDialog.cancel}
                     </Button>
                   </DialogClose>
                   <form action={deleteAction}>
-                    <Button type="submit" variant="destructive">
+                    <Button
+                      className="w-full sm:w-auto"
+                      type="submit"
+                      variant="destructive"
+                    >
                       {dictionary.deleteDialog.deleteMany}
                     </Button>
                   </form>

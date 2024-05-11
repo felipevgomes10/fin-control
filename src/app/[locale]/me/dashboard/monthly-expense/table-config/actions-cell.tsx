@@ -198,17 +198,21 @@ export function ActionsCell({
                 {dictionary.deleteDialog.description}
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter>
+            <DialogFooter className="flex flex-col sm:flex-row gap-2">
+              <form action={deleteAction}>
+                <Button
+                  className="w-full sm:w-auto"
+                  type="submit"
+                  variant="destructive"
+                >
+                  {dictionary.deleteDialog.delete}
+                </Button>
+              </form>
               <DialogClose asChild>
                 <Button variant="ghost">
                   {dictionary.deleteDialog.cancel}
                 </Button>
               </DialogClose>
-              <form action={deleteAction}>
-                <Button type="submit" variant="destructive">
-                  {dictionary.deleteDialog.delete}
-                </Button>
-              </form>
             </DialogFooter>
           </DialogContent>
         </DialogPortal>
