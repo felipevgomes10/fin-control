@@ -153,6 +153,7 @@ export function DataTable<TData, TValue>({
     },
     manualPagination: true,
     manualSorting: true,
+    manualFiltering: true,
     pageCount: Math.ceil(data.length / PAGE_SIZE),
   });
 
@@ -182,10 +183,14 @@ export function DataTable<TData, TValue>({
                   ?.getFilterValue() as string) ?? ""
               }
               onChange={(event) => {
+                searchBuilder.set(TableSearchParams.PAGE, "0");
+
                 table.firstPage();
                 table
                   .getColumn(accessorKey || "label")
                   ?.setFilterValue(event.target.value);
+
+                router.push(pathname + "?" + searchBuilder.toString());
               }}
             />
             {AdvancedFilters && (

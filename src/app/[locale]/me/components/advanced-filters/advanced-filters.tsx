@@ -24,7 +24,7 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
   const router = useRouter();
   const pathname = usePathname();
   const search = useSearchParams();
-  const searchBuilder = new URLSearchParams(search);
+  const searchBuilder = useMemo(() => new URLSearchParams(search), [search]);
 
   const { initialData, setData } = useTableContext();
 
@@ -42,8 +42,12 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
 
   const filterData = useCallback(
     (tagsIds: string[]) => {
+      searchBuilder.set(TableSearchParams.PAGE, "0");
+
       table.firstPage();
       table.toggleAllPageRowsSelected(false);
+
+      router.push(pathname + "?" + searchBuilder.toString());
 
       if (!tagsIds.length) {
         return setData(initialData);
@@ -57,7 +61,7 @@ export function AdvancedFilters<TData>({ table }: { table: TTable<TData> }) {
         return filteredData;
       });
     },
-    [setData, initialData, table]
+    [searchBuilder, table, router, pathname, setData, initialData]
   );
 
   useEffect(() => {
