@@ -2,6 +2,7 @@ export enum TableSearchParams {
   PAGE = "page",
   SORT = "sort",
   TAGS = "tags",
+  SEARCH = "search",
 }
 
 export enum TableSortDirection {

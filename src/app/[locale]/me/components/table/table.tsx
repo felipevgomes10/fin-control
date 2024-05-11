@@ -184,11 +184,22 @@ export function DataTable<TData, TValue>({
               }
               onChange={(event) => {
                 searchBuilder.set(TableSearchParams.PAGE, "0");
-
                 table.firstPage();
+
                 table
                   .getColumn(accessorKey || "label")
                   ?.setFilterValue(event.target.value);
+
+                setData(() => {
+                  const filteredData = initialData.filter((item: any) => {
+                    const searchValue = event.target.value.toLowerCase();
+                    const itemValue =
+                      item[accessorKey || "label"].toLowerCase();
+
+                    return itemValue.includes(searchValue);
+                  });
+                  return filteredData;
+                });
 
                 router.push(pathname + "?" + searchBuilder.toString());
               }}
