@@ -2,6 +2,7 @@
 
 import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/advanced-filters";
 import { BulkUploadDialog } from "@/app/[locale]/me/components/bulk-upload-dialog/bulk-upload-dialog";
+import { Loading } from "@/app/[locale]/me/components/loading/loading";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
 import {
   TableSearchParams,
@@ -38,7 +39,7 @@ export function MonthlyExpenseTable({
 
   const totalMonthlyExpenseAmount = optimisticMonthlyExpenses.reduce(
     (acc, { amount, installments }) => {
-      return acc + amount / installments;
+      return acc + amount / (installments || 1);
     },
     0
   );
@@ -56,7 +57,7 @@ export function MonthlyExpenseTable({
       const foundTag = splitTags(tags).find((tag) =>
         joinTags(tagsIds).includes(tag)
       );
-      if (foundTag) return acc + amount / installments;
+      if (foundTag) return acc + amount / (installments || 1);
       return acc;
     },
     0
@@ -143,7 +144,8 @@ export function MonthlyExpenseTable({
                   : dictionary.monthlyExpense.underBudget}
               </span>
               <span className="text-2xl font-bold">
-                {formatCurrency(totalExpenses, intl)}
+                {totalExpenses && formatCurrency(totalExpenses, intl)}
+                {!totalExpenses && <Loading.Total />}
               </span>
             </div>
           </CardContent>
