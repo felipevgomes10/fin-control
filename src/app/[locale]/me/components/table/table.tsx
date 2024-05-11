@@ -294,6 +294,7 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => {
               table.previousPage();
+              table.toggleAllRowsSelected(false);
               searchBuilder.set("page", (currentPage - 1).toString());
               router.push(pathname + "?" + searchBuilder.toString());
             }}
@@ -306,6 +307,7 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => {
               table.nextPage();
+              table.toggleAllRowsSelected(false);
               searchBuilder.set("page", (currentPage + 1).toString());
               router.push(pathname + "?" + searchBuilder.toString());
             }}
