@@ -3,7 +3,7 @@
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
-import { redis } from "~/upstash/client";
+import { redis } from "~/upstash/redis-client";
 
 export async function deleteMonthlyExpense(id: string) {
   const session = await auth();

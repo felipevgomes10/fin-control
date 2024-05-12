@@ -4,7 +4,7 @@ import { splitTags } from "@/app/[locale]/me/components/table/utils";
 import { auth } from "@/auth/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
-import { redis } from "~/upstash/client";
+import { redis } from "~/upstash/redis-client";
 
 export async function createFixedExpense(formData: FormData) {
   const session = await auth();

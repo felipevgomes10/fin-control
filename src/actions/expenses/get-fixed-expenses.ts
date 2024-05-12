@@ -3,7 +3,7 @@
 import { auth } from "@/auth/auth";
 import { cache } from "react";
 import { prisma } from "~/prisma/client";
-import { redis } from "~/upstash/client";
+import { redis } from "~/upstash/redis-client";
 import type { CachedFixedExpenses } from "~/upstash/types/fixed-expenses.type";
 
 export const getFixedExpenses = cache(async () => {
