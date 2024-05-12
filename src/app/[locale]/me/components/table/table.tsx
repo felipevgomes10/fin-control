@@ -36,7 +36,7 @@ import {
 } from "@tanstack/react-table";
 import type { Table as TTable } from "@tanstack/table-core";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
 import { TableSearchParams, TableSortDirection } from "./table.type";
 
@@ -83,10 +83,13 @@ export function DataTable<TData, TValue>({
   const searchBuilder = new URLSearchParams(search);
 
   const [data, setData] = useState(() => initialData);
+  const previousInitialData = useRef(initialData);
 
   useEffect(() => {
     const tags = search.get(TableSearchParams.TAGS);
-    if (!tags) setData(initialData);
+    if (!tags && !Object.is(initialData, previousInitialData.current)) {
+      setData(initialData);
+    }
   }, [initialData, search]);
 
   useEffect(() => {
