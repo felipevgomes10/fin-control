@@ -54,7 +54,7 @@ export function FixedExpensesDialog() {
 
     const rawData = {
       label: formData.get("label") as string,
-      amount: parseInt(formData.get("amount") as string),
+      amount: parseFloat(formData.get("amount") as string),
       tags: formData.get("tags") as string,
       notes: formData.get("notes") as string,
     };
