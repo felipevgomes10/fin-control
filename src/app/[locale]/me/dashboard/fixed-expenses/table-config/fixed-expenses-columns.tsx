@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Loader2 } from "lucide-react";
-import { useSortTable } from "../../../components/table/hooks/useSortTable";
+import { useSortTable } from "../../../components/table/hooks/use-sort-table/use-sort-table";
 import {
   formatCurrency,
   formatDate,

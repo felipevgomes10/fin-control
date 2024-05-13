@@ -20,7 +20,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Loader2, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useSortTable } from "../../../components/table/hooks/useSortTable";
+import { useSortTable } from "../../../components/table/hooks/use-sort-table/use-sort-table";
 import { months } from "../components/report-form/utils";
 import {
   useReportsContext,

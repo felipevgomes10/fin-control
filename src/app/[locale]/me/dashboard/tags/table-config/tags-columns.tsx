@@ -23,7 +23,7 @@ import { ArrowUpDown, Loader2, MoreHorizontal } from "lucide-react";
 import { startTransition, useRef, useState } from "react";
 import { toast } from "sonner";
 import { DeleteDialog } from "../../../components/delete-dialog/delete-dialog";
-import { useSortTable } from "../../../components/table/hooks/useSortTable";
+import { useSortTable } from "../../../components/table/hooks/use-sort-table/use-sort-table";
 import { formatDate } from "../../../components/table/utils";
 import { useTableContext } from "../../../contexts/table-provider/table-provider";
 import { TagForm } from "../components/tag-form/tag-form";

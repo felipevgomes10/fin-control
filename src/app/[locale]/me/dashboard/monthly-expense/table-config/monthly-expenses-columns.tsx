@@ -28,7 +28,7 @@ import { ArrowUpDown, Loader2, MoreHorizontal } from "lucide-react";
 import { startTransition, useState } from "react";
 import { flushSync } from "react-dom";
 import { toast } from "sonner";
-import { useSortTable } from "../../../components/table/hooks/useSortTable";
+import { useSortTable } from "../../../components/table/hooks/use-sort-table/use-sort-table";
 import {
   formatCurrency,
   formatDate,

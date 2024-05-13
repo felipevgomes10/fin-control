@@ -37,8 +37,9 @@ import {
 import type { Table as TTable } from "@tanstack/table-core";
 import isEqual from "lodash.isequal";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
+import { useDebouncedValue } from "./hooks/use-debounced-value/use-debounced-value";
 import { TableSearchParams, TableSortDirection } from "./table.type";
 import { sortById } from "./utils/sort-by-id/sort-by-id";
 
@@ -83,6 +84,11 @@ export function DataTable<TData, TValue>({
   const pathname = usePathname();
   const search = useSearchParams();
   const searchBuilder = new URLSearchParams(search);
+
+  const [searchValue, setSearchValue] = useState(() => {
+    return search.get(TableSearchParams.SEARCH) || "";
+  });
+  const debouncedSearch = useDebouncedValue(searchValue);
 
   const [data, setData] = useState(() => initialData);
   const previousInitialData = useRef(initialData);
@@ -172,6 +178,36 @@ export function DataTable<TData, TValue>({
 
   const dictionary = useDictionary();
 
+  function onSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
+    table.firstPage();
+    table.toggleAllRowsSelected(false);
+
+    setSearchValue(event.target.value);
+
+    const currentPage = searchBuilder.get(TableSearchParams.PAGE);
+    if (currentPage !== "0") {
+      searchBuilder.set(TableSearchParams.PAGE, "0");
+      router.replace(pathname + "?" + searchBuilder.toString());
+    }
+  }
+
+  useEffect(() => {
+    startTransition(() => {
+      setData(() => {
+        const filteredData = initialData.filter((item: any) => {
+          const searchValue = debouncedSearch.toLowerCase();
+          const itemValue = item[accessorKey || "label"].toLowerCase();
+          return itemValue.includes(searchValue);
+        });
+        return filteredData;
+      });
+    });
+
+    const searchBuilder = new URLSearchParams(location.search);
+    searchBuilder.set(TableSearchParams.SEARCH, debouncedSearch);
+    router.replace(pathname + "?" + searchBuilder.toString());
+  }, [accessorKey, debouncedSearch, initialData, router, pathname]);
+
   return (
     <TableProvider
       table={table}
@@ -186,32 +222,8 @@ export function DataTable<TData, TValue>({
             <Input
               placeholder={placeholder || "Filter labels..."}
               className="flex-1 min-w-[150px]"
-              value={
-                (table
-                  .getColumn(accessorKey || "label")
-                  ?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) => {
-                searchBuilder.set(TableSearchParams.PAGE, "0");
-                table.firstPage();
-
-                table
-                  .getColumn(accessorKey || "label")
-                  ?.setFilterValue(event.target.value);
-
-                setData(() => {
-                  const filteredData = initialData.filter((item: any) => {
-                    const searchValue = event.target.value.toLowerCase();
-                    const itemValue =
-                      item[accessorKey || "label"].toLowerCase();
-
-                    return itemValue.includes(searchValue);
-                  });
-                  return filteredData;
-                });
-
-                router.push(pathname + "?" + searchBuilder.toString());
-              }}
+              value={searchValue}
+              onChange={onSearchChange}
             />
             {AdvancedFilters && (
               <div className="flex ml-1 gap-4 items-center w-full sm:w-auto">

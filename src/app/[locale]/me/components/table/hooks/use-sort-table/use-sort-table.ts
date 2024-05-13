@@ -1,8 +1,8 @@
 "use client";
 
+import { useTableContext } from "@/app/[locale]/me/contexts/table-provider/table-provider";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useTableContext } from "../../../contexts/table-provider/table-provider";
-import { TableSearchParams, TableSortDirection } from "../table.type";
+import { TableSearchParams, TableSortDirection } from "../../table.type";
 
 type UseSortTable = {
   column: string;
