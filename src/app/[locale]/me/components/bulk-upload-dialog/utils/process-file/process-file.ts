@@ -119,13 +119,16 @@ export function useProcessFile(variant: BulkUploadDialogProps["variant"]) {
 
         if (isMonthly) {
           const monthlyExpenses = data as MonthlyExpense[];
-          await uploadMonthlyExpenses(monthlyExpenses);
-          return router.refresh();
+          uploadMonthlyExpenses(monthlyExpenses).then(() => {
+            router.refresh();
+          });
+          return;
         }
 
         const fixedExpenses = data as FixedExpense[];
-        await uploadFixedExpenses(fixedExpenses);
-        router.refresh();
+        uploadFixedExpenses(fixedExpenses).then(() => {
+          router.refresh();
+        });
       } catch (error) {
         toast.error(dictionary.bulkUploadDialog.uploadError, {
           description: (error as Error).message,

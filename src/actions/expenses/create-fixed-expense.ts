@@ -18,7 +18,7 @@ export async function createFixedExpense(
 
   const rawData = {
     label: formData.get("label") as string,
-    amount: parseInt(formData.get("amount") as string),
+    amount: parseFloat(formData.get("amount") as string),
     notes: formData.get("notes") as string,
   };
 

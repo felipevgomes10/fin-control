@@ -18,9 +18,9 @@ export async function createMonthlyExpense(
 
   const rawData = {
     label: formData.get("label") as string,
-    amount: parseInt(formData.get("amount") as string),
+    amount: parseFloat(formData.get("amount") as string),
     notes: formData.get("notes") as string,
-    installments: parseInt(formData.get("installments") as string),
+    installments: parseInt(formData.get("installments") as string) || 1,
   };
 
   await prisma.monthlyExpense.create({
