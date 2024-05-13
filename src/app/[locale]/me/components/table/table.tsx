@@ -35,10 +35,12 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import type { Table as TTable } from "@tanstack/table-core";
+import isEqual from "lodash.isequal";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
 import { TableSearchParams, TableSortDirection } from "./table.type";
+import { sortById } from "./utils/sort-by-id/sort-by-id";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -87,7 +89,11 @@ export function DataTable<TData, TValue>({
 
   useEffect(() => {
     const tags = search.get(TableSearchParams.TAGS);
-    if (!tags && !Object.is(initialData, previousInitialData.current)) {
+    const isDataEqual = isEqual(
+      (initialData as any).sort(sortById),
+      (previousInitialData.current as any).sort(sortById)
+    );
+    if (!tags && !isDataEqual) {
       setData(initialData);
     }
   }, [initialData, search]);
@@ -315,7 +321,9 @@ export function DataTable<TData, TValue>({
               table.previousPage();
               table.toggleAllRowsSelected(false);
               searchBuilder.set("page", (currentPage - 1).toString());
-              router.push(pathname + "?" + searchBuilder.toString());
+              router.push(pathname + "?" + searchBuilder.toString(), {
+                scroll: false,
+              });
             }}
             disabled={!table.getCanPreviousPage()}
           >
@@ -328,7 +336,9 @@ export function DataTable<TData, TValue>({
               table.nextPage();
               table.toggleAllRowsSelected(false);
               searchBuilder.set("page", (currentPage + 1).toString());
-              router.push(pathname + "?" + searchBuilder.toString());
+              router.push(pathname + "?" + searchBuilder.toString(), {
+                scroll: false,
+              });
             }}
             disabled={!table.getCanNextPage()}
           >
