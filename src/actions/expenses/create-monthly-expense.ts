@@ -6,7 +6,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
 import { redis } from "~/upstash/redis-client";
 
-export async function createMonthlyExpense(formData: FormData) {
+export async function createMonthlyExpense(
+  formData: FormData,
+  revalidate = true
+) {
   const session = await auth();
 
   if (!session) throw new Error("Not authenticated");
@@ -32,7 +35,9 @@ export async function createMonthlyExpense(formData: FormData) {
 
   await redis?.del(`monthly-expenses:${session.user.id}`);
 
-  revalidatePath("/[locale]/me/dashboard/monthly-expense", "page");
+  if (revalidate) {
+    revalidatePath("/[locale]/me/dashboard/monthly-expense", "page");
+  }
 
   return { message: "Monthly Expense created" };
 }

@@ -6,7 +6,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "~/prisma/client";
 import { redis } from "~/upstash/redis-client";
 
-export async function createFixedExpense(formData: FormData) {
+export async function createFixedExpense(
+  formData: FormData,
+  revalidate = true
+) {
   const session = await auth();
 
   if (!session) throw new Error("Not authenticated");
@@ -31,7 +34,9 @@ export async function createFixedExpense(formData: FormData) {
 
   await redis?.del(`fixed-expenses:${session.user.id}`);
 
-  revalidatePath("/[locale]/me/dashboard/fixed-expenses", "page");
+  if (revalidate) {
+    revalidatePath("/[locale]/me/dashboard/fixed-expenses", "page");
+  }
 
   return { message: "Fixed Expense created" };
 }
