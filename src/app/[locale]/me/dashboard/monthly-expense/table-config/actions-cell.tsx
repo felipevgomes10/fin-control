@@ -124,9 +124,8 @@ function DetailsDialogContent({
           },
         });
       });
+      form.reset();
     });
-
-    form.reset();
 
     await updateMonthlyExpense(expense.id, formData);
     toast.success(dictionary.monthlyExpense.updateSuccess);

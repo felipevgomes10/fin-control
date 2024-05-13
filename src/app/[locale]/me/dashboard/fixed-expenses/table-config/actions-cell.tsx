@@ -120,9 +120,8 @@ function DetailsDialogContent({
           },
         });
       });
+      form.reset();
     });
-
-    form.reset();
 
     await updateFixedExpense(expense.id, formData);
     toast.success(dictionary.fixedExpenses.updateSuccess);

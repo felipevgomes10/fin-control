@@ -81,9 +81,8 @@ export function FixedExpensesDialog() {
           },
         });
       });
+      form.reset();
     });
-
-    form.reset();
 
     await createFixedExpense(formData);
     toast.success(dictionary.fixedExpenses.addSuccess);

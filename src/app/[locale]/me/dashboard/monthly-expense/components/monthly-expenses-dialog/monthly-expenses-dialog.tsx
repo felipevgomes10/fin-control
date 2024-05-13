@@ -83,9 +83,8 @@ export function MonthlyExpensesDialog() {
           },
         });
       });
+      form.reset();
     });
-
-    form.reset();
 
     await createMonthlyExpense(formData);
     toast.success(dictionary.monthlyExpense.addSuccess);
