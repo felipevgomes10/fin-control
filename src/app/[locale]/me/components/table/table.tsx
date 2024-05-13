@@ -41,6 +41,7 @@ import { startTransition, useEffect, useRef, useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
 import { useDebouncedValue } from "./hooks/use-debounced-value/use-debounced-value";
 import { TableSearchParams, TableSortDirection } from "./table.type";
+import { filterBySearch } from "./utils/filter-by-search/filter-by-search";
 import { sortById } from "./utils/sort-by-id/sort-by-id";
 
 interface DataTableProps<TData, TValue> {
@@ -52,7 +53,7 @@ interface DataTableProps<TData, TValue> {
     currency: string | undefined | null;
   };
   filters?: {
-    searchAccessorKey: string;
+    searchAccessorKey: keyof TData;
     searchPlaceholder: string;
     AdvancedFilters?: (props: { table: TTable<TData> }) => JSX.Element;
   };
@@ -94,17 +95,6 @@ export function DataTable<TData, TValue>({
   const previousInitialData = useRef(initialData);
 
   useEffect(() => {
-    const tags = search.get(TableSearchParams.TAGS);
-    const isDataEqual = isEqual(
-      (initialData as any).sort(sortById),
-      (previousInitialData.current as any).sort(sortById)
-    );
-    if (!tags && !isDataEqual) {
-      setData(initialData);
-    }
-  }, [initialData, search]);
-
-  useEffect(() => {
     const searchBuilder = new URLSearchParams(location.search);
     const page = searchBuilder.get(TableSearchParams.PAGE);
     const sort = searchBuilder.get(TableSearchParams.SORT);
@@ -123,10 +113,21 @@ export function DataTable<TData, TValue>({
   }, [router, pathname]);
 
   const {
-    searchAccessorKey: accessorKey,
+    searchAccessorKey: accessorKey = "label" as keyof TData,
     searchPlaceholder: placeholder,
     AdvancedFilters,
   } = filters || {};
+
+  useEffect(() => {
+    const tags = search.get(TableSearchParams.TAGS);
+    const searchTerm = search.get(TableSearchParams.SEARCH) || "";
+    const isDataEqual = isEqual(
+      (initialData as any).sort(sortById),
+      (previousInitialData.current as any).sort(sortById)
+    );
+    if (!tags && !isDataEqual)
+      setData(filterBySearch(searchTerm, initialData, [accessorKey]));
+  }, [accessorKey, initialData, search]);
 
   const { defaultSort } = sortConfig;
 
@@ -194,15 +195,12 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     startTransition(() => {
       setData(() => {
-        const filteredData = initialData.filter((item: any) => {
-          const searchValue = debouncedSearch.toLowerCase();
-          const itemValue = item[accessorKey || "label"].toLowerCase();
-          return itemValue.includes(searchValue);
-        });
+        const filteredData = filterBySearch(debouncedSearch, initialData, [
+          accessorKey,
+        ]);
         return filteredData;
       });
     });
-
     const searchBuilder = new URLSearchParams(location.search);
     searchBuilder.set(TableSearchParams.SEARCH, debouncedSearch);
     router.replace(pathname + "?" + searchBuilder.toString());
