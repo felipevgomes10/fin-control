@@ -36,7 +36,7 @@ import {
 } from "@tanstack/react-table";
 import type { Table as TTable } from "@tanstack/table-core";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
 import { useFixedExpensesContext } from "../../dashboard/fixed-expenses/contexts/fixed-expenses-context/fixed-expenses-context";
 import { useMonthlyExpensesContext } from "../../dashboard/monthly-expense/contexts/monthly-expense-provider/monthly-expense-provider";
@@ -95,7 +95,6 @@ export function DataTable<TData, TValue>({
   const debouncedSearch = useDebouncedValue(searchValue);
 
   const [data, setData] = useState(() => initialData);
-  const previousInitialData = useRef(initialData);
 
   const { tags: fixedExpensesTags } = useFixedExpensesContext();
   const { tags: monthlyExpensesTags } = useMonthlyExpensesContext();
