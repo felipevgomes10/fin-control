@@ -36,7 +36,7 @@ import {
 } from "@tanstack/react-table";
 import type { Table as TTable } from "@tanstack/table-core";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
 import { useFixedExpensesContext } from "../../dashboard/fixed-expenses/contexts/fixed-expenses-context/fixed-expenses-context";
 import { useMonthlyExpensesContext } from "../../dashboard/monthly-expense/contexts/monthly-expense-provider/monthly-expense-provider";
@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
     AdvancedFilters,
   } = filters || {};
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const tagsLabels = search.get(TableSearchParams.TAGS);
     const tagsLabelsArray = splitTags(tagsLabels || "");
     const tagsIds = swapTagsLabelsByIds(tags, tagsLabelsArray);
