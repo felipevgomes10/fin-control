@@ -4,16 +4,8 @@ import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/a
 import { BulkUploadDialog } from "@/app/[locale]/me/components/bulk-upload-dialog/bulk-upload-dialog";
 import { Loading } from "@/app/[locale]/me/components/loading/loading";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
-import {
-  TableSearchParams,
-  TableSortDirection,
-} from "@/app/[locale]/me/components/table/table.type";
-import {
-  formatCurrency,
-  joinTags,
-  splitTags,
-  swapTagsLabelsByIds,
-} from "@/app/[locale]/me/components/table/utils";
+import { TableSortDirection } from "@/app/[locale]/me/components/table/table.type";
+import { formatCurrency } from "@/app/[locale]/me/components/table/utils";
 import {
   Card,
   CardContent,
@@ -22,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { FixedExpense, UserSettings } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
+import { useGetFilteredDataAmount } from "../../../hooks/useGetFilteredDataAmount/useGetFilteredDataAmount";
 import { useMonthlyExpensesContext } from "../../contexts/monthly-expense-provider/monthly-expense-provider";
 import { monthlyExpenseColumns } from "../../table-config/monthly-expenses-columns";
 import { MonthlyExpensesDialog } from "../monthly-expenses-dialog/monthly-expenses-dialog";
@@ -49,18 +41,10 @@ export function MonthlyExpenseTable({
     0
   );
 
-  const search = useSearchParams();
-  const tagsFilter = splitTags(search.get(TableSearchParams.TAGS) || "");
-  const tagsIds = swapTagsLabelsByIds(tags, tagsFilter);
-  const taggedTotalAmount = optimisticMonthlyExpenses.reduce(
-    (acc, { amount, installments, tags }) => {
-      const foundTag = splitTags(tags).find((tag) =>
-        joinTags(tagsIds).includes(tag)
-      );
-      if (foundTag) return acc + amount / (installments || 1);
-      return acc;
-    },
-    0
+  const filteredTotalAmount = useGetFilteredDataAmount(
+    optimisticMonthlyExpenses,
+    "label",
+    tags
   );
 
   const intl = {
@@ -103,13 +87,13 @@ export function MonthlyExpenseTable({
             <CardDescription>{dictionary.monthlyExpense.total}</CardDescription>
           </CardHeader>
           <CardContent className="flex gap-6 flex-wrap">
-            {taggedTotalAmount > 0 && (
+            {filteredTotalAmount > 0 && (
               <div className="flex flex-col">
                 <span className="text-slate-500 text-sm">
                   {dictionary.monthlyExpense.filteredTotal}
                 </span>
                 <span className="text-2xl font-bold">
-                  {formatCurrency(taggedTotalAmount, intl)}
+                  {formatCurrency(filteredTotalAmount, intl)}
                 </span>
               </div>
             )}

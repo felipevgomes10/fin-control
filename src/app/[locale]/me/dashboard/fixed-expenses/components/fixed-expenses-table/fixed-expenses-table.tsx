@@ -3,16 +3,8 @@
 import { AdvancedFilters } from "@/app/[locale]/me/components/advanced-filters/advanced-filters";
 import { BulkUploadDialog } from "@/app/[locale]/me/components/bulk-upload-dialog/bulk-upload-dialog";
 import { DataTable } from "@/app/[locale]/me/components/table/table";
-import {
-  TableSearchParams,
-  TableSortDirection,
-} from "@/app/[locale]/me/components/table/table.type";
-import {
-  formatCurrency,
-  joinTags,
-  splitTags,
-  swapTagsLabelsByIds,
-} from "@/app/[locale]/me/components/table/utils";
+import { TableSortDirection } from "@/app/[locale]/me/components/table/table.type";
+import { formatCurrency } from "@/app/[locale]/me/components/table/utils";
 import {
   Card,
   CardContent,
@@ -21,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { useDictionary } from "@/i18n/contexts/dictionary-provider/dictionary-provider";
 import { UserSettings } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
+import { useGetFilteredDataAmount } from "../../../hooks/useGetFilteredDataAmount/useGetFilteredDataAmount";
 import { useFixedExpensesContext } from "../../contexts/fixed-expenses-context/fixed-expenses-context";
 import { fixedExpensesColumns } from "../../table-config/fixed-expenses-columns";
 import { FixedExpensesDialog } from "../fixed-expenses-dialog/fixed-expenses-dialog";
@@ -38,18 +30,10 @@ export function FixedExpensesTable({
     0
   );
 
-  const search = useSearchParams();
-  const tagsFilter = splitTags(search.get(TableSearchParams.TAGS) || "");
-  const tagsIds = swapTagsLabelsByIds(tags, tagsFilter);
-  const taggedTotalAmount = optimisticFixedExpenses.reduce(
-    (acc, { amount, tags }) => {
-      const foundTag = splitTags(tags).find((tag) =>
-        joinTags(tagsIds).includes(tag)
-      );
-      if (foundTag) return acc + amount;
-      return acc;
-    },
-    0
+  const filteredTotalAmount = useGetFilteredDataAmount(
+    optimisticFixedExpenses,
+    "label",
+    tags
   );
 
   const intl = {
@@ -87,13 +71,13 @@ export function FixedExpensesTable({
             <CardDescription>{dictionary.fixedExpenses.total}</CardDescription>
           </CardHeader>
           <CardContent className="flex gap-6 flex-wrap">
-            {taggedTotalAmount > 0 && (
+            {filteredTotalAmount > 0 && (
               <div className="flex flex-col">
                 <span className="text-slate-500 text-sm">
                   {dictionary.fixedExpenses.filteredTotal}
                 </span>
                 <span className="text-2xl font-bold">
-                  {formatCurrency(taggedTotalAmount, intl)}
+                  {formatCurrency(filteredTotalAmount, intl)}
                 </span>
               </div>
             )}
