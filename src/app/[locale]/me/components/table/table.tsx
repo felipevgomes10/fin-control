@@ -35,14 +35,17 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import type { Table as TTable } from "@tanstack/table-core";
-import isEqual from "lodash.isequal";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { startTransition, useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TableProvider } from "../../contexts/table-provider/table-provider";
+import { useFixedExpensesContext } from "../../dashboard/fixed-expenses/contexts/fixed-expenses-context/fixed-expenses-context";
+import { useMonthlyExpensesContext } from "../../dashboard/monthly-expense/contexts/monthly-expense-provider/monthly-expense-provider";
 import { useDebouncedValue } from "./hooks/use-debounced-value/use-debounced-value";
 import { TableSearchParams, TableSortDirection } from "./table.type";
+import { splitTags, swapTagsLabelsByIds } from "./utils";
+import { applyFilters } from "./utils/apply-filters/apply-filters";
 import { filterBySearch } from "./utils/filter-by-search/filter-by-search";
-import { sortById } from "./utils/sort-by-id/sort-by-id";
+import { filterByTags } from "./utils/filter-by-tags/filter-by-tags";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -94,6 +97,43 @@ export function DataTable<TData, TValue>({
   const [data, setData] = useState(() => initialData);
   const previousInitialData = useRef(initialData);
 
+  const { tags: fixedExpensesTags } = useFixedExpensesContext();
+  const { tags: monthlyExpensesTags } = useMonthlyExpensesContext();
+  const tags = useMemo(
+    () => [...fixedExpensesTags, ...monthlyExpensesTags],
+    [fixedExpensesTags, monthlyExpensesTags]
+  );
+
+  const {
+    searchAccessorKey: accessorKey = "label" as keyof TData,
+    searchPlaceholder: placeholder,
+    AdvancedFilters,
+  } = filters || {};
+
+  useEffect(() => {
+    const tagsLabels = search.get(TableSearchParams.TAGS);
+    const tagsLabelsArray = splitTags(tagsLabels || "");
+    const tagsIds = swapTagsLabelsByIds(tags, tagsLabelsArray);
+
+    setData(
+      applyFilters(initialData, [
+        filterBySearch.bind(null, debouncedSearch, [accessorKey] as any),
+        filterByTags.bind(null, tagsIds),
+      ]) as TData[]
+    );
+    const searchBuilder = new URLSearchParams(location.search);
+    searchBuilder.set(TableSearchParams.SEARCH, debouncedSearch);
+    router.replace(pathname + "?" + searchBuilder.toString());
+  }, [
+    accessorKey,
+    debouncedSearch,
+    initialData,
+    pathname,
+    router,
+    search,
+    tags,
+  ]);
+
   useEffect(() => {
     const searchBuilder = new URLSearchParams(location.search);
     const page = searchBuilder.get(TableSearchParams.PAGE);
@@ -111,23 +151,6 @@ export function DataTable<TData, TValue>({
 
     router.replace(pathname + "?" + searchBuilder.toString());
   }, [router, pathname]);
-
-  const {
-    searchAccessorKey: accessorKey = "label" as keyof TData,
-    searchPlaceholder: placeholder,
-    AdvancedFilters,
-  } = filters || {};
-
-  useEffect(() => {
-    const tags = search.get(TableSearchParams.TAGS);
-    const searchTerm = search.get(TableSearchParams.SEARCH) || "";
-    const isDataEqual = isEqual(
-      (initialData as any).sort(sortById),
-      (previousInitialData.current as any).sort(sortById)
-    );
-    if (!tags && !isDataEqual)
-      setData(filterBySearch(searchTerm, initialData, [accessorKey]));
-  }, [accessorKey, initialData, search]);
 
   const { defaultSort } = sortConfig;
 
@@ -191,20 +214,6 @@ export function DataTable<TData, TValue>({
       router.replace(pathname + "?" + searchBuilder.toString());
     }
   }
-
-  useEffect(() => {
-    startTransition(() => {
-      setData(() => {
-        const filteredData = filterBySearch(debouncedSearch, initialData, [
-          accessorKey,
-        ]);
-        return filteredData;
-      });
-    });
-    const searchBuilder = new URLSearchParams(location.search);
-    searchBuilder.set(TableSearchParams.SEARCH, debouncedSearch);
-    router.replace(pathname + "?" + searchBuilder.toString());
-  }, [accessorKey, debouncedSearch, initialData, router, pathname]);
 
   return (
     <TableProvider

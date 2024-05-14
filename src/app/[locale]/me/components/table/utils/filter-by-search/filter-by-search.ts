@@ -1,7 +1,7 @@
 export function filterBySearch<T>(
   search: string,
-  data: T[],
-  keys: (keyof T)[]
+  keys: (keyof T)[],
+  data: T[]
 ): T[] {
   const searchTerm = search.toLowerCase();
   const filteredData = data.filter((item) => {
