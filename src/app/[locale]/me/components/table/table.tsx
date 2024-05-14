@@ -116,7 +116,7 @@ export function DataTable<TData, TValue>({
 
     setData(
       applyFilters(initialData, [
-        filterBySearch.bind(null, debouncedSearch, [accessorKey] as any),
+        filterBySearch.bind(null, debouncedSearch, [accessorKey]),
         filterByTags.bind(null, tagsIds),
       ]) as TData[]
     );
