@@ -78,6 +78,47 @@ Then to access your database you can run:
 npx prisma studio
 ```
 
+## Auth
+
+This application uses [Auth.js](https://authjs.dev/) the following env variables are needed:
+
+```bash
+AUTH_TRUST_HOST=
+AUTH_SECRET=
+
+AUTH_GITHUB_ID=
+AUTH_GITHUB_SECRET=
+
+AUTH_RESEND_KEY=
+AUTH_RESEND_DOMAIN=
+```
+
+The first two are for Auth.js itself so refer to their docs for more info. Besides, as auth providers the app uses Github and [Resend](https://resend.com/home), so they need to be setup accordingly too.
+
+On Github an OAuth App needs to be setup so refer two their docs to create one.
+
+For Resend a domain needs to be setup so that the magic links are functional.
+
+All the info on how to setup the providers can be found on Auth.js docs.
+
+## Storage
+
+This app uses [Uploadthing](https://uploadthing.com/) as a storage provider. So the app needs an account on this service and the following env vars to work.
+
+```bash
+UPLOADTHING_SECRET=
+UPLOADTHING_APP_ID=
+```
+
+## Caching
+
+The application implement a simple layer of caching just so the database is spared a little. For this it uses [Upstash](https://upstash.com/) and needs a Redis database and the following env vars:
+
+```bash
+UPSTASH_REDIS_URL=
+UPSTASH_REDIS_PASSWORD=
+```
+
 ## Issues
 
 [Top level await](https://github.com/prisma/prisma/issues/23600)
