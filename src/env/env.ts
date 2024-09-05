@@ -17,6 +17,9 @@ const envSchema = z.object({
 
     UPSTASH_REDIS_URL: z.string().optional(),
     UPSTASH_REDIS_PASSWORD: z.string().optional(),
+
+    UPLOADTHING_SECRET: z.string(),
+    UPLOADTHING_APP_ID: z.string(),
   }),
 });
 
